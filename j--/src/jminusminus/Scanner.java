@@ -113,9 +113,11 @@ class Scanner {
                     while (ch != '\n' && ch != EOFCH) {
                         nextCh();
                     }
+                } else {
+                    return new TokenInfo(DIV, line);
                 }
             } else {
-                return new TokenInfo(DIV, line);
+                moreWhiteSpace = false;
             }
         }
         line = input.line();
