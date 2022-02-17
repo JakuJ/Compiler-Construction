@@ -143,6 +143,9 @@ class Scanner {
         case ';':
             nextCh();
             return new TokenInfo(SEMI, line);
+        case ':':
+            nextCh();
+            return new TokenInfo(COLON, line);
         case ',':
             nextCh();
             return new TokenInfo(COMMA, line);

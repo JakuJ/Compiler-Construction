@@ -59,6 +59,7 @@ RBRACK      ::= "]"
 RCURLY      ::= "}"
 RPAREN      ::= ")"
 SEMI        ::= ";"
+COLON       ::= ":"
 
 // Identifiers
 IDENTIFIER ::= ("a"-"z"|"A"-"Z"|"_"|"$") {"a"-"z"|"A"-"Z"|"_"|"0"-"9"|"$"}
