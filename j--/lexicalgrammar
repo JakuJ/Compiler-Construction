@@ -12,6 +12,7 @@
 // Reserved words
 ABSTRACT    ::= "abstract"
 BOOLEAN     ::= "boolean"
+BREAK       ::= "break"
 CHAR        ::= "char"
 CLASS       ::= "class"
 ELSE        ::= "else"

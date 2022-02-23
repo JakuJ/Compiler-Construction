@@ -66,6 +66,7 @@ class Scanner {
         reserved = new Hashtable<String, TokenKind>();
         reserved.put(ABSTRACT.image(), ABSTRACT);
         reserved.put(BOOLEAN.image(), BOOLEAN);
+        reserved.put(BREAK.image(), BREAK);
         reserved.put(CHAR.image(), CHAR);
         reserved.put(CLASS.image(), CLASS);
         reserved.put(ELSE.image(), ELSE);

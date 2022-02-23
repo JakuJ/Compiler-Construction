@@ -16,7 +16,7 @@ enum TokenKind {
     EOF("<EOF>"), 
 
     // Reserved words
-    ABSTRACT("abstract"), BOOLEAN("boolean"), CHAR("char"), CLASS("class"), 
+    ABSTRACT("abstract"), BOOLEAN("boolean"), CHAR("char"), BREAK("break"), CLASS("class"), 
     ELSE("else"), EXTENDS("extends"), IF("if"), IMPORT("import"), 
     INSTANCEOF("instanceof"), INT("int"), NEW("new"), PACKAGE("package"), 
     PRIVATE("private"), PROTECTED("protected"), PUBLIC("public"), 
