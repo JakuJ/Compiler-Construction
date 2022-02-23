@@ -113,7 +113,29 @@ class Scanner {
                     while (ch != '\n' && ch != EOFCH) {
                         nextCh();
                     }
-                } else {
+                } 
+
+                // The addition of multi-line comments
+                else if(ch == '*'){
+                    nextCh();
+                    
+                    // Loop until the end of the file to find the ending of the multi-line comment
+                    while(ch != EOFCH){
+                        nextCh();
+
+                        // Find the second *
+                        if(ch == '*'){
+                            nextCh();
+
+                            // Check if it's the end of the comment else keep looping until another * is found
+                            if(ch == '/'){
+                                // The end of the comment has been found
+                                break; // break the search
+                            }
+                        }
+                    }
+                } 
+                else {
                     return new TokenInfo(DIV, line);
                 }
             } else {
