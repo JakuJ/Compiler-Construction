@@ -198,7 +198,10 @@ class Scanner {
             }
         case '-':
             nextCh();
-            if (ch == '-') {
+            if (ch == '=') {
+                nextCh();
+                return new TokenInfo(MINUS_ASSIGN, line);
+            } else if (ch == '-') {
                 nextCh();
                 return new TokenInfo(DEC, line);
             } else {
