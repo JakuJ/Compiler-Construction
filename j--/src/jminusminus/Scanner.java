@@ -193,6 +193,15 @@ class Scanner {
         case ':':
             nextCh();
             return new TokenInfo(COLON, line);
+        case '|':
+            nextCh();
+            return new TokenInfo(BIT_OR, line); // BIT_OR '|' by ONilsson
+        case '~':
+            nextCh();
+            return new TokenInfo(BIT_COM, line); // BIT_COM '~' by ONilsson
+        case '^':
+            nextCh();
+            return new TokenInfo(BIT_XOR, line); // BIT_XOR '^' by ONilsson
         case ',':
             nextCh();
             return new TokenInfo(COMMA, line);
@@ -238,18 +247,40 @@ class Scanner {
                 nextCh();
                 return new TokenInfo(LAND, line);
             } else {
-                reportScannerError("Operator & is not supported in j--.");
-                return getNextToken();
+                // BIT_AND '&' by ONilsson
+                return new TokenInfo(BIT_AND, line);
             }
         case '>':
+            
             nextCh();
-            return new TokenInfo(GT, line);
+
+            if(ch == '>'){
+                
+                // Needs to check for the SHIFT_R '>>' & SHIFT_RU '>>>'
+                nextCh();
+                if(ch == ">"){
+                    nextCh();
+                    return new TokenInfo(SHIFT_RU, line); // the SHIFT_RU '>>>' by ONilsson
+                }else {
+                    return new TokenInfo(SHIFT_R, line); // the SHIFT_R '>>' by ONilsson
+                }
+
+            } else {
+                return new TokenInfo(GT, line);
+            }
+            
         case '<':
             nextCh();
             if (ch == '=') {
                 nextCh();
                 return new TokenInfo(LE, line);
-            } else {
+            }
+            else if (ch == '<'){
+                nextCh();
+                return new TokenInfo(SHIFT_L, line); // the SHIFT_L '<<' by ONilsson
+
+            } 
+            else {
                 reportScannerError("Operator < is not supported in j--.");
                 return getNextToken();
             }
