@@ -1150,7 +1150,7 @@ public class Parser {
      * 
      * <pre>
      *   unaryExpression ::= INC unaryExpression // level 1
-     *                     | MINUS unaryExpression
+     *                     | {(MINUS | PLUS) unaryExpression}
      *                     | simpleUnaryExpression
      * </pre>
      * 
@@ -1163,7 +1163,11 @@ public class Parser {
             return new JPreIncrementOp(line, unaryExpression());
         } else if (have(MINUS)) {
             return new JNegateOp(line, unaryExpression());
-        } else {
+        } else if (have(PLUS)){
+            // Added the plus unary expression as seen in step 0
+            return new JPreIncrementOp(line, unaryExpression());
+        } 
+        else {
             return simpleUnaryExpression();
         }
     }
