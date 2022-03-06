@@ -9,6 +9,9 @@
 // Single line comment -- ignored
 "//" {~("\n"|"\r")} ("\n"|"\r"["\n"])
 
+// Multiline comment -- ignored 
+"/*" {~("\n"|"\r")} ("\n"|"\r"["\n"]) "*/" // Added in Step 1 by ONilsson
+
 // Reserved words
 ABSTRACT    ::= "abstract"
 BOOLEAN     ::= "boolean"
@@ -62,7 +65,7 @@ WHILE       ::= "while"
 
 // Operators
 ASSIGN      ::= "="
-DIV			::= "/"		// Added in Lecture 1
+DIV			::= "/"		// Added in Lecture 1 by ONilsson
 EQUAL       ::= "=="
 GT          ::= ">"
 INC         ::= "++"
@@ -74,6 +77,14 @@ MINUS_ASSIGN::= "-="
 PLUS        ::= "+"
 PLUS_ASSIGN ::= "+="
 STAR        ::= "*"
+SHIFT_R		::= ">>"	// Added in Step 0 by ONilsson
+SHIFT_RU	::= ">>>"	// Added in Step 0 by ONilsson
+SHIFT_L		::= "<<"	// Added in Step 0 by ONilsson
+BIT_OR		::= "|"		// Added in Step 0 by ONilsson
+BIT_XOR		::= "^"		// Added in Step 0 by ONilsson
+BIT_AND		::= "&"		// Added in Step 0 by ONilsson
+BIT_COM		::= "~"		// Added in Step 0 by ONilsson
+
 
 // Separators
 COMMA       ::= ","

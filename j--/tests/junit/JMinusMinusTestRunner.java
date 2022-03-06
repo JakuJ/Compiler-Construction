@@ -23,8 +23,9 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(ClassesTest.class);
 
         // Start of the addition of new test cases
-        suite.addTestSuite(DivisionTest.class); // Lecture 1
+        suite.addTestSuite(DivisionTest.class); // Lecture 1 - ONilsson
         suite.addTestSuite(SubtractionTest.class);
+        suite.addTestSuite(OperatorsTest.class); // Step 0 - ONilsson
         return suite;
     }
 

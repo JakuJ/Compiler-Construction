@@ -92,7 +92,7 @@ multiplicativeExpression ::= unaryExpression       // level 2
                                {(STAR | DIV) unaryExpression}
 
 unaryExpression ::= INC unaryExpression  // level 1
-                  | MINUS unaryExpression
+                  | {(MINUS | PLUS) unaryExpression}
                   | simpleUnaryExpression
 
 simpleUnaryExpression ::= LNOT unaryExpression

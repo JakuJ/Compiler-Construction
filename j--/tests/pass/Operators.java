@@ -6,7 +6,7 @@ package pass;
  * 
  * shift-wise operators:    << >> >>>
  * bit-wise operators:      - | ^ &
- * unary operators          +
+ * unary operators          + ~
  * 
  */
 public class Operators {
@@ -42,19 +42,19 @@ public class Operators {
         return a & b;
     }
 
+    public int bitwiseComplement(int num){
+        return ~num;
+    }
+
 
     // Unary Operators
     // ----------------------------------------------------
-    
+
     public int unaryPlus(int num){
         return +num;
     }
 
     public int unaryPlus(String string){
         return Integer.parseInt(string.replaceAll("[\\D]", "")); // Will return all digits in string
-    }
-
-    public int unaryComplement(int num){
-        return -num;
     }
 }
