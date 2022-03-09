@@ -27,3 +27,6 @@ hs_err_pid*
 *.iml
 .DS_Store
 j--/out
+j--/src/jminusminus/JavaCCParser.java
+j--/src/jminusminus/JavaCCParserConstants.java
+j--/src/jminusminus/JavaCCParserTokenManager.java

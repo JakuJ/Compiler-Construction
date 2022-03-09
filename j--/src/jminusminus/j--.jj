@@ -174,18 +174,43 @@ TOKEN: {
 
 // Operators (these could be combined with the reserved words)
 TOKEN: {
-  <PLUS: "+">
+<QUESTION_MARK: "?">
 | <ASSIGN: "=">
-| <DEC: "--">
 | <EQUAL: "==">
-| <GT: ">">
-| <INC: "++">
-| <LAND: "&&">
-| <LE: "<=">
 | <LNOT: "!">
-| <MINUS: "-">
+| <TILDE: "~">
+| <NEQUAL: "!=">
+| <DIVIDE: "/">
+| <DIVIDE_ASSIGN: "/=">
+| <PLUS: "+">
 | <PLUS_ASSIGN: "+=">
+| <INC: "++">
+| <MINUS: "-">
+
+| <MINUS_ASSIGN: "-=">
+| <DEC: "--">
 | <STAR: "*">
+| <STAR_ASSIGN: "*=">
+| <PERCENT: "%">
+| <PERCENT_ASSIGN: "%=">
+| <SHIFTR: ">>">
+| <SHIFTR_ASSIGN: ">>=">
+| <USHIFTR: ">>>">
+| <USHIFTR_ASSIGN: ">>>=">
+| <GE: ">=">
+| <GT: ">">
+| <SHIFTL: "<<">
+| <SHIFTL_ASSIGN: "<<=">
+| <LE: "<=">
+| <LT: "<">
+| <HAT: "^">
+| <HAT_ASSIGN: "^=">
+| <BIT_OR: "|">
+| <BIT_OR_ASSIGN: "|=">
+| <LOR: "||">
+| <BIT_AND: "&">
+| <BIT_AND_ASSIGN: "&=">
+| <LAND: "&&">
 }
 
 // Separators (these could be combined with the reserved words)
