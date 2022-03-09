@@ -30,3 +30,7 @@ j--/out
 j--/src/jminusminus/JavaCCParser.java
 j--/src/jminusminus/JavaCCParserConstants.java
 j--/src/jminusminus/JavaCCParserTokenManager.java
+j--/src/jminusminus/ParseException.java
+j--/src/jminusminus/SimpleCharStream.java
+j--/src/jminusminus/Token.java
+j--/src/jminusminus/TokenMgrError.java
