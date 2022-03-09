@@ -16,9 +16,9 @@ public class ModuloTest extends TestCase {
     }
 
     public void testMod() {
-        this.assertEquals(modulo.mod(2, 5), 2);
-        this.assertEquals(modulo.mod(0, 42), 0);
-        this.assertEquals(modulo.mod(100, 2), 0);
+        assertEquals(2, modulo.mod(2, 5));
+        assertEquals(0, modulo.mod(0, 42));
+        assertEquals(0, modulo.mod(100, 2));
     }
 
 }
