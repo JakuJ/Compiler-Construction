@@ -16,16 +16,19 @@ enum TokenKind {
     EOF("<EOF>"), 
 
     // Reserved words
-    ABSTRACT("abstract"), BOOLEAN("boolean"), CHAR("char"), CLASS("class"), 
-    ELSE("else"), EXTENDS("extends"), IF("if"), IMPORT("import"), 
-    INSTANCEOF("instanceof"), INT("int"), NEW("new"), PACKAGE("package"), 
+    ABSTRACT("abstract"), BOOLEAN("boolean"), CHAR("char"), BREAK("break"), BYTE("byte"), CLASS("class"), 
+    CASE("case"), CATCH("catch"), CONST("const"), CONTINUE("continue"), DEFAULT("default"), DO("do"), DOUBLE("double"),
+    ELSE("else"), EXTENDS("extends"), FINAL("final"), FINALLY("finally"), FLOAT("float"), GOTO("goto"), IMPLEMENTS("implements"),
+    INTERFACE("interface"), IF("if"), IMPORT("import"), 
+    INSTANCEOF("instanceof"), INT("int"), LONG("long"), NATIVE("native"), NEW("new"), PACKAGE("package"), 
     PRIVATE("private"), PROTECTED("protected"), PUBLIC("public"), 
-    RETURN("return"), STATIC("static"), SUPER("super"), THIS("this"), 
+    RETURN("return"), SHORT("short"), STRICTFP("strictfp"), SWITCH("switch"), SYNCHRONIZED("synchronized"),
+    STATIC("static"), SUPER("super"), THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), THIS("this"), 
     VOID("void"), WHILE("while"), 
 
     // Operators
     ASSIGN("="), DEC("--"), EQUAL("=="), GT(">"), INC("++"), LAND("&&"), 
-    LE("<="), LNOT("!"), MINUS("-"), PLUS("+"), PLUS_ASSIGN("+="), STAR("*"), DIV("/"), MOD("%"),
+    LE("<="), LNOT("!"), MINUS("-"), MINUS_ASSIGN("-="), PLUS("+"), PLUS_ASSIGN("+="), STAR("*"), DIV("/"),  MOD("%"),
 
     // Separators
     LPAREN("("), RPAREN(")"), LCURLY("{"), RCURLY("}"), LBRACK("["), 

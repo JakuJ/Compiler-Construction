@@ -1007,6 +1007,8 @@ public class Parser {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
             return new JPlusAssignOp(line, lhs, assignmentExpression());
+        } else if (have(MINUS_ASSIGN)){
+            return new JMinusAssignOp(line, lhs, assignmentExpression());
         } else {
             return lhs;
         }

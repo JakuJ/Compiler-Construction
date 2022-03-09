@@ -66,13 +66,30 @@ class Scanner {
         reserved = new Hashtable<String, TokenKind>();
         reserved.put(ABSTRACT.image(), ABSTRACT);
         reserved.put(BOOLEAN.image(), BOOLEAN);
+        reserved.put(BREAK.image(), BREAK);
+        reserved.put(BYTE.image(), BYTE);
+        reserved.put(CASE.image(), CASE);
+        reserved.put(CATCH.image(), CATCH);
+        reserved.put(CONST.image(), CONST);
+        reserved.put(CONTINUE.image(), CONTINUE);
         reserved.put(CHAR.image(), CHAR);
         reserved.put(CLASS.image(), CLASS);
+        reserved.put(DEFAULT.image(), DEFAULT);
+        reserved.put(DO.image(), DO);
+        reserved.put(DOUBLE.image(), DOUBLE);
         reserved.put(ELSE.image(), ELSE);
         reserved.put(EXTENDS.image(), EXTENDS);
         reserved.put(FALSE.image(), FALSE);
+        reserved.put(FINAL.image(), FINAL);
+        reserved.put(FINALLY.image(), FINALLY);
+        reserved.put(FLOAT.image(), FLOAT);
+        reserved.put(GOTO.image(), GOTO);
+        reserved.put(IMPLEMENTS.image(), IMPLEMENTS);
+        reserved.put(INTERFACE.image(), INTERFACE);
         reserved.put(IF.image(), IF);
         reserved.put(IMPORT.image(), IMPORT);
+        reserved.put(LONG.image(), LONG);
+        reserved.put(NATIVE.image(), NATIVE);
         reserved.put(INSTANCEOF.image(), INSTANCEOF);
         reserved.put(INT.image(), INT);
         reserved.put(NEW.image(), NEW);
@@ -82,8 +99,16 @@ class Scanner {
         reserved.put(PROTECTED.image(), PROTECTED);
         reserved.put(PUBLIC.image(), PUBLIC);
         reserved.put(RETURN.image(), RETURN);
+        reserved.put(SHORT.image(), SHORT);
+        reserved.put(STRICTFP.image(), STRICTFP);
+        reserved.put(SWITCH.image(), SWITCH);
+        reserved.put(SYNCHRONIZED.image(), SYNCHRONIZED);
         reserved.put(STATIC.image(), STATIC);
         reserved.put(SUPER.image(), SUPER);
+        reserved.put(THROW.image(), THROW);
+        reserved.put(THROWS.image(), THROWS);
+        reserved.put(TRANSIENT.image(), TRANSIENT);
+        reserved.put(TRY.image(), TRY);
         reserved.put(THIS.image(), THIS);
         reserved.put(TRUE.image(), TRUE);
         reserved.put(VOID.image(), VOID);
@@ -113,7 +138,29 @@ class Scanner {
                     while (ch != '\n' && ch != EOFCH) {
                         nextCh();
                     }
-                } else {
+                } 
+
+                // The addition of multi-line comments
+                else if(ch == '*'){
+                    nextCh();
+                    
+                    // Loop until the end of the file to find the ending of the multi-line comment
+                    while(ch != EOFCH){
+                        nextCh();
+
+                        // Find the second *
+                        if(ch == '*'){
+                            nextCh();
+
+                            // Check if it's the end of the comment else keep looping until another * is found
+                            if(ch == '/'){
+                                // The end of the comment has been found
+                                break; // break the search
+                            }
+                        }
+                    }
+                } 
+                else {
                     return new TokenInfo(DIV, line);
                 }
             } else {
@@ -179,7 +226,10 @@ class Scanner {
             }
         case '-':
             nextCh();
-            if (ch == '-') {
+            if (ch == '=') {
+                nextCh();
+                return new TokenInfo(MINUS_ASSIGN, line);
+            } else if (ch == '-') {
                 nextCh();
                 return new TokenInfo(DEC, line);
             } else {
