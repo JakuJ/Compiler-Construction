@@ -73,7 +73,7 @@ statementExpression ::= expression // but must have side-effect, eg i++
 expression ::= assignmentExpression
 
 assignmentExpression ::= conditionalAndExpression  // must be a valid lhs
-                           [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN) assignmentExpression]
+                           [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN | DIV_ASSIGN | MOD_ASSIGN) assignmentExpression]
 
 conditionalAndExpression ::= equalityExpression // level 10
                                {LAND equalityExpression}
