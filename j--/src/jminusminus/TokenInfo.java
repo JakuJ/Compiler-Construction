@@ -16,20 +16,23 @@ enum TokenKind {
     EOF("<EOF>"), 
 
     // Reserved words
-    ABSTRACT("abstract"), BOOLEAN("boolean"), CHAR("char"), CLASS("class"), 
-    ELSE("else"), EXTENDS("extends"), IF("if"), IMPORT("import"), 
-    INSTANCEOF("instanceof"), INT("int"), NEW("new"), PACKAGE("package"), 
+    ABSTRACT("abstract"), BOOLEAN("boolean"), CHAR("char"), BREAK("break"), BYTE("byte"), CLASS("class"), 
+    CASE("case"), CATCH("catch"), CONST("const"), CONTINUE("continue"), DEFAULT("default"), DO("do"), DOUBLE("double"),
+    ELSE("else"), EXTENDS("extends"), FINAL("final"), FINALLY("finally"), FLOAT("float"), GOTO("goto"), IMPLEMENTS("implements"),
+    INTERFACE("interface"), IF("if"), IMPORT("import"), 
+    INSTANCEOF("instanceof"), INT("int"), LONG("long"), NATIVE("native"), NEW("new"), PACKAGE("package"), 
     PRIVATE("private"), PROTECTED("protected"), PUBLIC("public"), 
-    RETURN("return"), STATIC("static"), SUPER("super"), THIS("this"), 
+    RETURN("return"), SHORT("short"), STRICTFP("strictfp"), SWITCH("switch"), SYNCHRONIZED("synchronized"),
+    STATIC("static"), SUPER("super"), THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), THIS("this"), 
     VOID("void"), WHILE("while"), 
 
     // Operators
     ASSIGN("="), DIV("/"), EQUAL("=="), GT(">"), INC("++"), LAND("&&"), 
     LE("<="), LNOT("!"), MINUS("-"), MINUS_ASSIGN("-="), PLUS("+"), PLUS_ASSIGN("+="), STAR("*"), TER("?"),L_SHIFT("<<"),
-    DEC("--"),L_SH_ASSIGN("<<="),STAR_ASSIGN("*="),LESS_THAN("<"),NOT("~"),DIV_REMAIN("%"),XOR("^"),NOT_EQUAL("!="),MOD_ASSIGN("%="),
-    XOR_ASSIGN("^="),R_SHIFT(">>"),OR("|"),DIV_ASSIGN("/="),R_SH_ASSIGN(">>="),OR_ASSIGN("|="),UN_R_SHIFT(">>>"),LOG_OR("||"),AND("&"),
+    DEC("--"),L_SH_ASSIGN("<<="),STAR_ASSIGN("*="),LESS_THAN("<"),NOT("~"),MOD("%"),XOR("^"),NOT_EQUAL("!="),MOD_ASSIGN("%="),
+    XOR_ASSIGN("^="),R_SHIFT(">>"),OR("|"),DIV_ASSIGN("/="),R_SH_ASSIGN(">>="),OR_ASSIGN("|="),UN_R_SHIFT(">>>"),LOR("||"),AND("&"),
     UN_R_SH_ASSI(">>>="),GT_EQUAL(">="),AND_ASSIGN("&="),
-
+  
     // Separators
     LPAREN("("), RPAREN(")"), LCURLY("{"), RCURLY("}"), LBRACK("["), 
     RBRACK("]"), SEMI(";"), COLON(":"), COMMA(","), DOT("."),

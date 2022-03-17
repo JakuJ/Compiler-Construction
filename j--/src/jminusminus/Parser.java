@@ -1032,6 +1032,8 @@ public class Parser {
         while (more) {
             if (have(LAND)) {
                 lhs = new JLogicalAndOp(line, lhs, equalityExpression());
+            }else if(have(LOR)){
+                lhs = new JLogicalOrOp(line, lhs, equalityExpression());
             } else {
                 more = false;
             }
@@ -1137,6 +1139,8 @@ public class Parser {
                 lhs = new JMultiplyOp(line, lhs, unaryExpression());
             } else if(have(DIV)){
                 lhs = new JDivideOp(line, lhs, unaryExpression());
+            } else if (have(MOD)){
+                lhs = new JModOp(line, lhs, unaryExpression());
             }
             else {
                 more = false;

@@ -81,7 +81,7 @@ assignmentExpression ::= conditionalAndExpression  // must be a valid lhs
 conditionalExpression ::= conditionalOrExpression // level 12
                            [TER assignmentExpression : conditionalExpression]
 
-conditionalOrExpression ::= conditionalAndExpression { LOG_OR conditionalAndExpression } // level 11
+conditionalOrExpression ::= conditionalAndExpression { LOR conditionalAndExpression } // level 11
 
 conditionalAndExpression ::= inclusiveOrExpression  { LAND inclusiveOrExpression} // level 10
 
@@ -104,7 +104,7 @@ additiveExpression ::= multiplicativeExpression // level 3
                          {(PLUS | MINUS) multiplicativeExpression}
 
 multiplicativeExpression ::= unaryExpression       // level 2
-                               {(STAR | DIV | DIV_REMAIN) unaryExpression}
+                               {(STAR | DIV | MOD) unaryExpression}
 
 unaryExpression ::= INC unaryExpression // level 1
                   | DEC unaryExpression
