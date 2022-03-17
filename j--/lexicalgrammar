@@ -74,6 +74,7 @@ MINUS_ASSIGN::= "-="
 PLUS        ::= "+"
 PLUS_ASSIGN ::= "+="
 STAR        ::= "*"
+MOD         ::= "%"
 
 // Separators
 COMMA       ::= ","
