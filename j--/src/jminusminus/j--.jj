@@ -271,6 +271,7 @@ TOKEN: {
   <INT_LITERAL: ("0" | <NON_ZERO_DIGIT> (<DIGIT>)*) >
 | <CHAR_LITERAL: "'" (<ESC> | ~["'","\\","\n","\r"]) "'" >
 | <STRING_LITERAL: "\"" (<ESC> | ~["\"","\\","\n","\r"])* "\"" >
+| <DOUBLE_LITERAL: ("0" | <NON_ZERO_DIGIT> (<DIGIT>)*) ("." (<DIGIT>)*)? >
 | <#ESC: "\\" ["n","t","b","r","f","\\","'","\""] >
 }
 
@@ -1055,7 +1056,7 @@ private Type type(): {
  * Parse a basic type.
  * 
  * <pre>
- *   basicType ::= BOOLEAN | CHAR | INT
+ *   basicType ::= BOOLEAN | CHAR | INT | DOUBLE
  * </pre>
  * 
  * @return an instance of Type.
@@ -1068,7 +1069,8 @@ private Type basicType(): {
     try {
         <BOOLEAN> { type = Type.BOOLEAN; } |
         <CHAR> { type = Type.CHAR; } |
-        <INT> { type = Type.INT; }
+        <INT> { type = Type.INT; } |
+        <DOUBLE> { type = Type.DOUBLE; }
     }
     catch (ParseException e) {
         recoverFromError(new int[] { SEMI, EOF }, e);
@@ -1718,7 +1720,7 @@ private JNewArrayOp newArrayDeclarator(Type type): {
  * Parse a literal.
  * 
  * <pre>
- *   literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL
+ *   literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL | DOUBLE_LITERAL
  *             | TRUE        | FALSE        | NULL
  * </pre>
  * 
@@ -1739,6 +1741,10 @@ private JExpression literal(): {
         <STRING_LITERAL>
         { expr =
               new JLiteralString(token.beginLine, token.image); } |
+
+        <DOUBLE_LITERAL>
+        { expr =
+              new JLiteralDouble(token.beginLine, token.image); } |
 
         <TRUE>
         { expr = new JLiteralTrue(token.beginLine); } |
