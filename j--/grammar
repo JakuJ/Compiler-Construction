@@ -74,9 +74,11 @@ expression ::= assignmentExpression
 
 assignmentExpression ::= conditionalAndExpression  // must be a valid lhs
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN) assignmentExpression]
+conditionalOrExpression ::= conditionalAndExpression
+                               {LOR conditionalOrExpression}
 
 conditionalAndExpression ::= equalityExpression // level 10
-                               {(LAND | LOR) equalityExpression}
+                               {LAND equalityExpression}
 
 equalityExpression ::= relationalExpression  // level 6
                          {EQUAL relationalExpression}
