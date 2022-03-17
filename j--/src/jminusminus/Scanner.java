@@ -216,6 +216,15 @@ class Scanner {
                 reportScannerError("Operator & is not supported in j--.");
                 return getNextToken();
             }
+        case '|':
+            nextCh();
+            if (ch == '|') {
+                nextCh();
+                return new TokenInfo(LOR, line);
+            } else {
+                reportScannerError("Operator | is not supported in j--.");
+                return getNextToken();
+            }
         case '>':
             nextCh();
             return new TokenInfo(GT, line);

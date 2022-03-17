@@ -24,7 +24,7 @@ enum TokenKind {
     VOID("void"), WHILE("while"), 
 
     // Operators
-    ASSIGN("="), DEC("--"), EQUAL("=="), GT(">"), INC("++"), LAND("&&"), 
+    ASSIGN("="), DEC("--"), EQUAL("=="), GT(">"), INC("++"), LAND("&&"), LOR("||"),
     LE("<="), LNOT("!"), MINUS("-"), MINUS_ASSIGN("-="), PLUS("+"), PLUS_ASSIGN("+="), STAR("*"), DIV("/"),
 
     // Separators
