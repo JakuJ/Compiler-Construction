@@ -73,17 +73,32 @@ statementExpression ::= expression // but must have side-effect, eg i++
 expression ::= assignmentExpression
 
 assignmentExpression ::= conditionalAndExpression  // must be a valid lhs
-                           [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN) assignmentExpression]
+                           [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN 
+                           | DIV_ASSIGN | MOD_ASSIGN                              
+                           | R_SH_ASSIGN | UN_R_SH_ASSI | L_SH_ASSIGN
+                           | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
 
-conditionalAndExpression ::= equalityExpression // level 10
-                               {LAND equalityExpression}
+conditionalExpression ::= conditionalOrExpression // level 12
+                           [TER assignmentExpression : conditionalExpression]
+
+conditionalOrExpression ::= conditionalAndExpression { LOR conditionalAndExpression } // level 11
+
+conditionalAndExpression ::= inclusiveOrExpression  { LAND inclusiveOrExpression} // level 10
+
+inclusiveOrExpression ::= exclusiveOrExpression { OR exclusiveOrExpression } // level 9
+
+exclusiveOrExpression ::= andExpression { XOR andExpression } // level 8
+
+andExpression ::= equalityExpression { AND equalityExpression } // level 7
 
 equalityExpression ::= relationalExpression  // level 6
-                         {EQUAL relationalExpression}
+                         {(EQUAL | NOT_EQUAL) relationalExpression}
 
-relationalExpression ::= additiveExpression       // level 5
-                           [(GT | LE) additiveExpression
+relationalExpression ::= shiftExpression       // level 5
+                           [(LESS_THAN | GT | LE | GT_EQUAL) shiftExpression
                            | INSTANCEOF referenceType]
+
+shiftExpression ::= additiveExpression { ( L_SHIFT | R_SHIFT | UN_R_SHIFT ) additiveExpression } // level 4
 
 additiveExpression ::= multiplicativeExpression // level 3
                          {(PLUS | MINUS) multiplicativeExpression}
@@ -91,8 +106,9 @@ additiveExpression ::= multiplicativeExpression // level 3
 multiplicativeExpression ::= unaryExpression       // level 2
                                {(STAR | DIV | MOD) unaryExpression}
 
-unaryExpression ::= INC unaryExpression  // level 1
-                  | MINUS unaryExpression
+unaryExpression ::= INC unaryExpression // level 1
+                  | DEC unaryExpression
+                  | (PLUS | MINUS) unaryExpression
                   | simpleUnaryExpression
 
 simpleUnaryExpression ::= LNOT unaryExpression
