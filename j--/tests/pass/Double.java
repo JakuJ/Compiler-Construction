@@ -1,12 +1,12 @@
 package pass;
 
 public class Double {
-    private double variable;
+    private double field;
 
-    public double method(int argument) {
+    public double method(double argument) {
         double a = 3.14;
-        double b = 1 + 2;
-        return a + b * (double)argument;
+        double b = 0.1 + 2.12332;
+        return a + b * (double)2 + argument;
     }
 
 }
