@@ -155,6 +155,7 @@ class Scanner {
                             // Check if it's the end of the comment else keep looping until another * is found
                             if(ch == '/'){
                                 // The end of the comment has been found
+                                nextCh();
                                 break; // break the search
                             }
                         }
@@ -200,7 +201,7 @@ class Scanner {
             nextCh();
             if (ch == '=') {
                 nextCh();
-                return new TokenInfo(EQUAL, line);
+                return new TokenInfo(EQ, line);
             } else {
                 return new TokenInfo(ASSIGN, line);
             }

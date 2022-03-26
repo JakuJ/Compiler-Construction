@@ -205,12 +205,12 @@ TOKEN: {
 
 // Operators (these could be combined with the reserved words)
 TOKEN: {
-<QUESTION: "?">
+<TERNARY: "?">
 | <ASSIGN: "=">
-| <EQUAL: "==">
+| <EQ: "==">
 | <LNOT: "!">
 | <TILDE: "~">
-| <NEQUAL: "!=">
+| <NEQ: "!=">
 | <DIV: "/">
 | <DIV_ASSIGN: "/=">
 | <PLUS: "+">
@@ -233,8 +233,8 @@ TOKEN: {
 | <SHIFTL_ASSIGN: "<<=">
 | <LE: "<=">
 | <LT: "<">
-| <HAT: "^">
-| <HAT_ASSIGN: "^=">
+| <XOR: "^">
+| <XOR_ASSIGN: "^=">
 | <BIT_OR: "|">
 | <BIT_OR_ASSIGN: "|=">
 | <LOR: "||">
@@ -1249,7 +1249,7 @@ private JExpression conditionalAndExpression(): {
  * 
  * <pre>
  *   equalityExpression ::= relationalExpression         // level 6
- *                            {EQUAL relationalExpression}
+ *                            {EQ relationalExpression}
  * </pre>
  * 
  * @return an AST for an equalityExpression.
@@ -1263,7 +1263,7 @@ private JExpression equalityExpression(): {
     try {
         lhs = relationalExpression() { line = lhs.line(); }
         (
-            <EQUAL>
+            <EQ>
             rhs = relationalExpression()
             { lhs = new JEqualOp(line, lhs, rhs); }
         )*
