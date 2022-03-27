@@ -141,19 +141,41 @@ SKIP: {" "|"\t"|"\n"|"\r"|"\f"}
 // Single line comment -- ignored
 SKIP: {<SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>}
 
+// Single multiline comment -- ignored
+SKIP: {<MULTI_LINE_COMMENT: "/*"> : ML_COMMENT_STATE }
+<ML_COMMENT_STATE> SKIP : { "*/" : DEFAULT | < ~[] > }
+
 // Reserved words
 TOKEN: {
   <ABSTRACT: "abstract">
 | <BOOLEAN: "boolean">
+| <BREAK: "break">
+| <BYTE: "byte">
+| <CASE: "case">
+| <CATCH: "catch">
 | <CHAR: "char">
 | <CLASS: "class">
+| <CONST: "const">
+| <CONTINUE: "continue">
+| <DEFAULT_KW: "default">
+| <DO: "do">
+| <DOUBLE: "double">
 | <ELSE: "else">
 | <EXTENDS: "extends">
+| <FINAL: "final">
+| <FINALLY: "finally">
+| <FLOAT: "float">
+| <FOR: "for">
 | <FALSE: "false">
+| <GOTO: "goto">
 | <IF: "if">
+| <IMPLEMENTS: "implements">
 | <IMPORT: "import">
 | <INSTANCEOF: "instanceof">
 | <INT: "int">
+| <INTERFACE: "interface">
+| <LONG: "long">
+| <NATIVE: "native">
 | <NEW: "new">
 | <NULL: "null">
 | <PACKAGE: "package">
@@ -161,28 +183,61 @@ TOKEN: {
 | <PROTECTED: "protected">
 | <PUBLIC: "public">
 | <RETURN: "return">
+| <SHORT: "short">
 | <STATIC: "static">
+| <STRICTFP: "strictfp">
 | <SUPER: "super">
+| <SWITCH: "switch">
+| <SYNCHRONIZED: "synchronized">
 | <THIS: "this">
+| <THROW: "throw">
+| <THROWS: "throws">
+| <TRANSIENT: "transient">
 | <TRUE: "true">
+| <TRY: "try">
 | <VOID: "void">
+| <VOLATILE: "volatile">
 | <WHILE: "while">
 }
 
 // Operators (these could be combined with the reserved words)
 TOKEN: {
-  <PLUS: "+">
+<TERNARY: "?">
 | <ASSIGN: "=">
-| <DEC: "--">
-| <EQUAL: "==">
-| <GT: ">">
-| <INC: "++">
-| <LAND: "&&">
-| <LE: "<=">
+| <EQ: "==">
 | <LNOT: "!">
-| <MINUS: "-">
+| <TILDE: "~">
+| <NEQ: "!=">
+| <DIV: "/">
+| <DIV_ASSIGN: "/=">
+| <PLUS: "+">
 | <PLUS_ASSIGN: "+=">
+| <INC: "++">
+| <MINUS: "-">
+| <MINUS_ASSIGN: "-=">
+| <DEC: "--">
 | <STAR: "*">
+| <STAR_ASSIGN: "*=">
+| <MOD: "%">
+| <MOD_ASSIGN: "%=">
+| <SHIFTR: ">>">
+| <SHIFTR_ASSIGN: ">>=">
+| <USHIFTR: ">>>">
+| <USHIFTR_ASSIGN: ">>>=">
+| <GE: ">=">
+| <GT: ">">
+| <SHIFTL: "<<">
+| <SHIFTL_ASSIGN: "<<=">
+| <LE: "<=">
+| <LT: "<">
+| <XOR: "^">
+| <XOR_ASSIGN: "^=">
+| <BIT_OR: "|">
+| <BIT_OR_ASSIGN: "|=">
+| <LOR: "||">
+| <BIT_AND: "&">
+| <BIT_AND_ASSIGN: "&=">
+| <LAND: "&&">
 }
 
 // Separators (these could be combined with the reserved words)
@@ -194,6 +249,7 @@ TOKEN: {
 | <LBRACK: "[">
 | <RBRACK: "]">
 | <SEMI: ";">
+| <COLON: ":">
 | <COMMA: ",">
 | <DOT: ".">
 }
@@ -1188,7 +1244,7 @@ private JExpression conditionalAndExpression(): {
  * 
  * <pre>
  *   equalityExpression ::= relationalExpression         // level 6
- *                            {EQUAL relationalExpression}
+ *                            {EQ relationalExpression}
  * </pre>
  * 
  * @return an AST for an equalityExpression.
@@ -1202,7 +1258,7 @@ private JExpression equalityExpression(): {
     try {
         lhs = relationalExpression() { line = lhs.line(); }
         (
-            <EQUAL>
+            <EQ>
             rhs = relationalExpression()
             { lhs = new JEqualOp(line, lhs, rhs); }
         )*

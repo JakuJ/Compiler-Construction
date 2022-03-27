@@ -1032,6 +1032,8 @@ public class Parser {
         while (more) {
             if (have(LAND)) {
                 lhs = new JLogicalAndOp(line, lhs, equalityExpression());
+            }else if(have(LOR)){
+                lhs = new JLogicalOrOp(line, lhs, equalityExpression());
             } else {
                 more = false;
             }
@@ -1044,7 +1046,7 @@ public class Parser {
      * 
      * <pre>
      *   equalityExpression ::= relationalExpression  // level 6
-     *                            {EQUAL relationalExpression}
+     *                            {EQ relationalExpression}
      * </pre>
      * 
      * @return an AST for an equalityExpression.
@@ -1055,10 +1057,13 @@ public class Parser {
         boolean more = true;
         JExpression lhs = relationalExpression();
         while (more) {
-            if (have(EQUAL)) {
+            if (have(EQ)) {
                 lhs = new JEqualOp(line, lhs, relationalExpression());
             } else {
                 more = false;
+                int x = 1;
+                x++;
+                ++x;
             }
         }
         return lhs;
@@ -1137,6 +1142,8 @@ public class Parser {
                 lhs = new JMultiplyOp(line, lhs, unaryExpression());
             } else if(have(DIV)){
                 lhs = new JDivideOp(line, lhs, unaryExpression());
+            } else if (have(MOD)){
+                lhs = new JModOp(line, lhs, unaryExpression());
             }
             else {
                 more = false;
