@@ -22,7 +22,7 @@ public class OperatorsTest extends TestCase {
         // ----------------------------------------------------
         this.assertEquals(operators.shiftLeft(5, 1), 2);
         this.assertEquals(operators.shiftRight(5, 1), 2);
-        this.assertEquals(operators.shiftRightUnsigned(5, 1), 10);
+        this.assertEquals(operators.shiftRightUnsigned(5, 1), 2);
 
         // Bitwise Operators
         // ----------------------------------------------------
