@@ -53,8 +53,4 @@ public class Operators {
     public int unaryPlus(int num){
         return +num;
     }
-
-    public int unaryPlus(String string){
-        return Integer.parseInt(string.replaceAll("[\\D]", "")); // Will return all digits in string
-    }
 }

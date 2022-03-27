@@ -1172,7 +1172,7 @@ public class Parser {
             return new JNegateOp(line, unaryExpression());
         } else if (have(PLUS)){
             // Added the plus unary expression as seen in step 0
-            return new JPreIncrementOp(line, unaryExpression());
+            return new JUnaryPlusOp(line, unaryExpression());
         } 
         else {
             return simpleUnaryExpression();
