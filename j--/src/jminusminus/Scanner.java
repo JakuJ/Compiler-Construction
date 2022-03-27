@@ -271,7 +271,7 @@ class Scanner {
                 
                 // Needs to check for the SHIFT_R '>>' & SHIFT_RU '>>>'
                 nextCh();
-                if(ch == ">"){
+                if(ch == '>'){
                     nextCh();
                     return new TokenInfo(SHIFT_RU, line); // the SHIFT_RU '>>>' by ONilsson
                 }else {

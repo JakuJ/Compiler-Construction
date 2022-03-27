@@ -20,9 +20,9 @@ public class OperatorsTest extends TestCase {
 
         // Shift-wise Operators
         // ----------------------------------------------------
-        assertEquals(operators.shiftRight(5, 1), 2);
-        assertEquals(operators.shiftLeft(5, 1), 2);
-        assertEquals(operators.shiftRightUnsigned(5, 1), 10);
+        this.assertEquals(operators.shiftLeft(5, 1), 2);
+        this.assertEquals(operators.shiftRight(5, 1), 2);
+        this.assertEquals(operators.shiftRightUnsigned(5, 1), 2);
 
         // Bitwise Operators
         // ----------------------------------------------------
