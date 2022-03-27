@@ -277,14 +277,14 @@ public class Parser {
      * Are we looking at a basic type? ie.
      * 
      * <pre>
-     * BOOLEAN | CHAR | INT
+     * BOOLEAN | CHAR | INT | DOUBLE
      * </pre>
      * 
      * @return true iff we're looking at a basic type; false otherwise.
      */
 
     private boolean seeBasicType() {
-        return (see(BOOLEAN) || see(CHAR) || see(INT));
+        return (see(BOOLEAN) || see(CHAR) || see(INT)) || see(DOUBLE);
     }
 
     /**
@@ -1408,7 +1408,7 @@ public class Parser {
      * Parse a literal.
      * 
      * <pre>
-     *   literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL
+     *   literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL | DOUBLE_LITERAL
      *             | TRUE        | FALSE        | NULL
      * </pre>
      * 
@@ -1417,8 +1417,11 @@ public class Parser {
 
     private JExpression literal() {
         int line = scanner.token().line();
+
         if (have(INT_LITERAL)) {
             return new JLiteralInt(line, scanner.previousToken().image());
+        } else if (have(DOUBLE_LITERAL)){
+            return new JLiteralDouble(line, scanner.previousToken().image());
         } else if (have(CHAR_LITERAL)) {
             return new JLiteralChar(line, scanner.previousToken().image());
         } else if (have(STRING_LITERAL)) {
@@ -1430,7 +1433,7 @@ public class Parser {
         } else if (have(NULL)) {
             return new JLiteralNull(line);
         } else {
-            reportParserError("Literal sought where %s found", scanner.token()
+            reportParserError("Literal sought where '%s' found!", scanner.token()
                     .image());
             return new JWildExpression(line);
         }
