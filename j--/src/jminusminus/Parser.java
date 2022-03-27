@@ -1048,7 +1048,7 @@ public class Parser {
      * 
      * <pre>
      *   equalityExpression ::= relationalExpression  // level 6
-     *                            {EQUAL relationalExpression}
+     *                            {EQ relationalExpression}
      * </pre>
      * 
      * @return an AST for an equalityExpression.
@@ -1059,10 +1059,13 @@ public class Parser {
         boolean more = true;
         JExpression lhs = relationalExpression();
         while (more) {
-            if (have(EQUAL)) {
+            if (have(EQ)) {
                 lhs = new JEqualOp(line, lhs, relationalExpression());
             } else {
                 more = false;
+                int x = 1;
+                x++;
+                ++x;
             }
         }
         return lhs;
