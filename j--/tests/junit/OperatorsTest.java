@@ -18,11 +18,11 @@ public class OperatorsTest extends TestCase {
 
     public void testOperators() {
 
-        // Shift-wise Operators
+        // Shift-wise Operators 
         // ----------------------------------------------------
-        this.assertEquals(operators.shiftLeft(5, 1), 2);
-        this.assertEquals(operators.shiftRight(5, 1), 2);
-        this.assertEquals(operators.shiftRightUnsigned(5, 1), 2);
+        assertEquals(operators.shiftLeft(5, 1), 2);
+        assertEquals(operators.shiftRight(5, 1), 2);
+        assertEquals(operators.shiftRightUnsigned(5, 1), 2);
 
         // Bitwise Operators
         // ----------------------------------------------------
