@@ -10,7 +10,7 @@
 "//" {~("\n"|"\r")} ("\n"|"\r"["\n"])
 
 // Multiline comment -- ignored 
-"/*" {~("\n"|"\r")} ("\n"|"\r"["\n"]) "*/" // Added in Step 1 by ONilsson
+"/*" {~("\n"|"\r")} ("\n"|"\r"["\n"]) "*/" // Added in Step 1
 
 // Reserved words
 ABSTRACT    ::= "abstract"

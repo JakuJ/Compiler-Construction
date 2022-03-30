@@ -105,7 +105,43 @@ class JNegateOp extends JUnaryExpression {
         arg.codegen(output);
         output.addNoArgInstruction(INEG);
     }
+}
 
+/**
+ * The AST node made for step 0 unary plus (+) expression.
+ */
+class JUnaryPlusOp extends JUnaryExpression {
+    /**
+     * Constructor for the AST using line number and operand
+     * 
+     * @param line line in which the operand occurs in source file
+     * @param arg operand (+)
+     */
+    public JUnaryPlusOp(int line, JExpression arg){
+        super(line, "+", arg);
+    }
+    
+    /**
+     * To analyze simply check if the operand is working with an int or a string/char
+     */
+    public JExpression analyze(Context context) {
+        arg = arg.analyze(context);
+
+        // Creates the expected types string | int
+        Type[] types = {Type.INT, Type.STRING, Type.CHAR};
+
+        arg.type().mustMatchOneOf(line, types);
+        type = Type.INT;
+        return this;
+    }
+
+    /**
+     * This might be wrong ask what the CLConstant value for a Unary Plus is.
+     */
+    public void codegen(CLEmitter output) {
+        arg.codegen(output);
+        output.addNoArgInstruction(INEG);
+    }
 }
 
 /**

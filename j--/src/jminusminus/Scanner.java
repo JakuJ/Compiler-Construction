@@ -196,13 +196,13 @@ class Scanner {
             return new TokenInfo(COLON, line);
         case '|':
             nextCh();
-            return new TokenInfo(BIT_OR, line); // BIT_OR '|' by ONilsson
+            return new TokenInfo(BIT_OR, line); // BIT_OR '|' 
         case '~':
             nextCh();
-            return new TokenInfo(BIT_COM, line); // BIT_COM '~' by ONilsson
+            return new TokenInfo(BIT_COM, line); // BIT_COM '~'
         case '^':
             nextCh();
-            return new TokenInfo(BIT_XOR, line); // BIT_XOR '^' by ONilsson
+            return new TokenInfo(BIT_XOR, line); // BIT_XOR '^'
         case ',':
             nextCh();
             return new TokenInfo(COMMA, line);
@@ -251,7 +251,7 @@ class Scanner {
                 nextCh();
                 return new TokenInfo(LAND, line);
             } else {
-                // BIT_AND '&' by ONilsson
+                // BIT_AND '&'
                 return new TokenInfo(BIT_AND, line);
             }
         case '|':
@@ -273,9 +273,9 @@ class Scanner {
                 nextCh();
                 if(ch == '>'){
                     nextCh();
-                    return new TokenInfo(SHIFT_RU, line); // the SHIFT_RU '>>>' by ONilsson
+                    return new TokenInfo(SHIFT_RU, line); // the SHIFT_RU '>>>'
                 }else {
-                    return new TokenInfo(SHIFT_R, line); // the SHIFT_R '>>' by ONilsson
+                    return new TokenInfo(SHIFT_R, line); // the SHIFT_R '>>'
                 }
 
             } else {
@@ -290,7 +290,7 @@ class Scanner {
             }
             else if (ch == '<'){
                 nextCh();
-                return new TokenInfo(SHIFT_L, line); // the SHIFT_L '<<' by ONilsson
+                return new TokenInfo(SHIFT_L, line); // the SHIFT_L '<<' 
 
             } 
             else {
