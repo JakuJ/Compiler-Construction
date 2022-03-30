@@ -28,6 +28,7 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(SubtractionTest.class);
         suite.addTestSuite(LogicalOrTest.class);
         suite.addTestSuite(Double.class);
+        suite.addTestSuite(StarTest.class);
         return suite;
     }
 
