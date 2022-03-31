@@ -49,36 +49,8 @@ class JLiteralDouble extends JExpression {
      */
 
     public void codegen(CLEmitter output) {
-        double i = Double.parseDouble(text);
-
-        switch ((int) i) {
-            case 0:
-                output.addNoArgInstruction(ICONST_0);
-                break;
-            case 1:
-                output.addNoArgInstruction(ICONST_1);
-                break;
-            case 2:
-                output.addNoArgInstruction(ICONST_2);
-                break;
-            case 3:
-                output.addNoArgInstruction(ICONST_3);
-                break;
-            case 4:
-                output.addNoArgInstruction(ICONST_4);
-                break;
-            case 5:
-                output.addNoArgInstruction(ICONST_5);
-                break;
-            default:
-                if (i >= 6 && i <= 127) {
-                    output.addOneArgInstruction(BIPUSH, (int) i);
-                } else if (i >= 128 && i <= 32767) {
-                    output.addOneArgInstruction(SIPUSH, (int) i);
-                } else {
-                    output.addLDCInstruction(i);
-                }
-        }
+        double d = Double.parseDouble(text);
+        throw new UnsupportedOperationException("NOT IMPLEMENTED");
     }
 
     /**
