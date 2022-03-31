@@ -42,14 +42,14 @@ public class Operators {
         return a & b;
     }
 
-    public int bitwiseComplement(int num){
-        return ~num;
-    }
-
 
     // Unary Operators
     // ----------------------------------------------------
     public int unaryPlus(int num){
         return +num;
+    }
+
+    public int bitwiseComplement(int num) {
+        return ~num;
     }
 }

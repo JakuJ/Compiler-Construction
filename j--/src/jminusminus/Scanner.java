@@ -203,7 +203,7 @@ class Scanner {
                 return new TokenInfo(TILDE, line); // TILDE '~'
             case '^':
                 nextCh();
-                return new TokenInfo(BIT_XOR, line); // BIT_XOR '^'
+                return new TokenInfo(XOR, line); // XOR '^'
             case ',':
                 nextCh();
                 return new TokenInfo(COMMA, line);
@@ -262,8 +262,8 @@ class Scanner {
                     nextCh();
                     return new TokenInfo(LAND, line);
                 } else {
-                    // BIT_AND '&'
-                    return new TokenInfo(BIT_AND, line);
+                    // AND '&'
+                    return new TokenInfo(AND, line);
                 }
             case '|':
                 nextCh();
@@ -272,7 +272,7 @@ class Scanner {
                     return new TokenInfo(LOR, line);
                 } else {
                     nextCh();
-                    return new TokenInfo(BIT_OR, line); // BIT_OR '|'
+                    return new TokenInfo(OR, line); // OR '|'
                 }
             case '>':
 

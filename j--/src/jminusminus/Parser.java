@@ -1034,16 +1034,85 @@ public class Parser {
     private JExpression conditionalAndExpression() {
         int line = scanner.token().line();
         boolean more = true;
-        JExpression lhs = equalityExpression();
+        JExpression lhs = inclusiveOrExpression();
         while (more) {
             if (have(LAND)) {
-                lhs = new JLogicalAndOp(line, lhs, equalityExpression());
+                lhs = new JLogicalAndOp(line, lhs, inclusiveOrExpression());
             }else if(have(LOR)){
-                lhs = new JLogicalOrOp(line, lhs, equalityExpression());
+                lhs = new JLogicalOrOp(line, lhs, inclusiveOrExpression());
             } else {
                 more = false;
             }
         }
+        return lhs;
+    }
+
+    /**
+     * Parse an inclusiveOrExpression // level 9
+     * 
+     * inclusiveOrExpression ::= exclusiveOrExpression { OR exclusiveOrExpression }
+     * 
+     * @return returns either a inclusiveOrExpression or passes it on to look for an
+     *         exclusiveOrExpression
+     */
+    private JExpression inclusiveOrExpression(){
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = exclusiveOrExpression();
+        while(more) {
+            if(have(OR)){
+                lhs = new JInclusiveOrOp(line, lhs, exclusiveOrExpression()); // OR (|) 
+            } else {
+                more = false;
+            }
+        }
+
+        return lhs;
+    }
+
+    /**
+     * Parse an inclusiveOrExpression // level 8
+     * 
+     * exclusiveOrExpression ::= andExpression { XOR andExpression } // level 8
+     * 
+     * @return returns either a exclusiveOrExpression or passes it on to look for an
+     *         andExpression
+     */
+    private JExpression exclusiveOrExpression(){
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = andExpression();
+        while(more) {
+            if(have(XOR)){
+                lhs = new JExclusiveOrOp(line, lhs, andExpression()); // XOR (^) 
+            } else {
+                more = false;
+            }
+        }
+
+        return lhs;
+    }
+
+    /**
+     * Parse an inclusiveOrExpression // level 7
+     * 
+     * andExpression ::= equalityExpression { AND equalityExpression } // level 7
+     * 
+     * @return returns either a andExpression or passes it on to look for an
+     *         equalityExpression
+     */
+    private JExpression andExpression(){
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = equalityExpression();
+        while(more) {
+            if(have(AND)){
+                lhs = new JAndOp(line, lhs, equalityExpression()); // AND (&) 
+            } else {
+                more = false;
+            }
+        }
+
         return lhs;
     }
 

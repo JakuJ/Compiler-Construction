@@ -27,11 +27,13 @@ enum TokenKind {
     VOID("void"), WHILE("while"), 
 
     // Operators
-    ASSIGN("="), DEC("--"), EQ("=="), GT(">"), INC("++"), LAND("&&"), LOR("||"),
-    LE("<="), LNOT("!"), MINUS("-"), MINUS_ASSIGN("-="), PLUS("+"), PLUS_ASSIGN("+="), STAR("*"), STAR_ASSIGN("*="), DIV("/"), DIV_ASSIGN("/="),  MOD("%"), MOD_ASSIGN("%="), 
-    SHIFTR(">>"), 
-    USHIFTR(">>>"), 
-    SHIFTL("<<"), BIT_OR("|"), BIT_XOR("^"), BIT_AND("&"), TILDE("~"),	
+    ASSIGN("="), MINUS_ASSIGN("-="), PLUS_ASSIGN("+="), DIV_ASSIGN("/="), STAR_ASSIGN("*="), MOD_ASSIGN("%="),
+    EQ("=="), GT(">"),
+    LAND("&&"), LOR("||"), LE("<="), LNOT("!"),
+    DEC("--"), INC("++"),
+    MINUS("-"), PLUS("+"), STAR("*"), DIV("/"),  MOD("%"), 
+    SHIFTR(">>"), USHIFTR(">>>"), SHIFTL("<<"),
+    OR("|"), XOR("^"), AND("&"), TILDE("~"),	
 
     // Separators
     LPAREN("("), RPAREN(")"), LCURLY("{"), RCURLY("}"), LBRACK("["), 
