@@ -993,8 +993,8 @@ public class Parser {
      *       conditionalOrExpression // level 13
      *           [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN
      *           | DIV_ASSIGN | MOD_ASSIGN
-     *           | R_SH_ASSIGN | UN_R_SH_ASSI | L_SH_ASSIGN
-     *           | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
+     *           | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
+     *           | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
      * </pre>
      * 
      * @return an AST for an assignmentExpression.
