@@ -27,9 +27,8 @@ enum TokenKind {
     VOID("void"), WHILE("while"), 
 
     // Operators
-    ASSIGN("="), DEC("--"), EQUAL("=="), GT(">"), INC("++"), LAND("&&"), 
-    LE("<="), LNOT("!"), MINUS("-"), MINUS_ASSIGN("-="), PLUS("+"), PLUS_ASSIGN("+="), STAR("*"), DIV("/"), MOD("%"), SHIFT_R(">>"), SHIFT_RU(">>>"), SHIFT_L("<<"), BIT_OR("|"), BIT_XOR("^"), BIT_AND("&"), BIT_COM("~"),		
-
+    ASSIGN("="), DEC("--"), EQ("=="), GT(">"), INC("++"), LAND("&&"), LOR("||"),
+    LE("<="), LNOT("!"), MINUS("-"), MINUS_ASSIGN("-="), PLUS("+"), PLUS_ASSIGN("+="), STAR("*"), STAR_ASSIGN("*="), DIV("/"), DIV_ASSIGN("/="),  MOD("%"), MOD_ASSIGN("%="), SHIFT_R(">>"), SHIFT_RU(">>>"), SHIFT_L("<<"), BIT_OR("|"), BIT_XOR("^"), BIT_AND("&"), BIT_COM("~"),	
 
     // Separators
     LPAREN("("), RPAREN(")"), LCURLY("{"), RCURLY("}"), LBRACK("["), 

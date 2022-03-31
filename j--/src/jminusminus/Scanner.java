@@ -160,7 +160,11 @@ class Scanner {
                             }
                         }
                     }
-                } 
+                }
+                else if (ch == '=') {
+                    nextCh();
+                    return new TokenInfo(DIV_ASSIGN, line); 
+                }
                 else {
                     return new TokenInfo(DIV, line);
                 }
@@ -219,10 +223,20 @@ class Scanner {
             return new TokenInfo(LNOT, line);
         case '*':
             nextCh();
-            return new TokenInfo(STAR, line);
+            if (ch == '=') {
+                nextCh();
+                return new TokenInfo(STAR_ASSIGN, line);
+            } else {
+                return new TokenInfo(STAR, line);
+            }
         case '%':
             nextCh();
-            return new TokenInfo(MOD, line);
+            if (ch == '=') {
+                nextCh();
+                return new TokenInfo(MOD_ASSIGN, line);
+            } else {
+                return new TokenInfo(MOD, line);
+            }
         case '+':
             nextCh();
             if (ch == '=') {
