@@ -1,24 +1,22 @@
 package jminusminus;
 
-import static jminusminus.CLConstants.*;
-
 /**
  * The AST node for an {@code double} literal.
  */
 
 class JLiteralDouble extends JExpression {
 
-    /** String representation of the double. */
+    /**
+     * String representation of the double.
+     */
     private String text;
 
     /**
      * Constructs an AST node for an {@code double} literal given its line number
      * and string representation.
-     * 
-     * @param line
-     *             line in which the literal occurs in the source file.
-     * @param text
-     *             string representation of the literal.
+     *
+     * @param line line in which the literal occurs in the source file.
+     * @param text string representation of the literal.
      */
 
     public JLiteralDouble(int line, String text) {
@@ -27,10 +25,9 @@ class JLiteralDouble extends JExpression {
     }
 
     /**
-     * Analyzing a double literal is trivial.
-     * 
-     * @param context
-     *                context in which names are resolved (ignored here).
+     * Analyzing an double literal is trivial.
+     *
+     * @param context context in which names are resolved (ignored here).
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -40,16 +37,14 @@ class JLiteralDouble extends JExpression {
     }
 
     /**
-     * Generating code for a double literal means generating code to push it onto
+     * Generating code for an double literal means generating code to push it onto
      * the stack.
-     * 
-     * @param output
-     *               the code emitter (basically an abstraction for producing the
+     *
+     * @param output the code emitter (basically an abstraction for producing the
      *               .class file).
      */
 
     public void codegen(CLEmitter output) {
-        double d = Double.parseDouble(text);
         throw new UnsupportedOperationException("NOT IMPLEMENTED");
     }
 

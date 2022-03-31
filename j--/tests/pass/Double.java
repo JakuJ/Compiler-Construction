@@ -1,6 +1,7 @@
 package pass;
 
 public class Double {
+    private double field;
 
     public double method(double argument) {
         double a = 3.14;

@@ -23,10 +23,12 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(ClassesTest.class);
 
         // Start of the addition of new test cases
-        suite.addTestSuite(DivisionTest.class); // Lecture 1
+        suite.addTestSuite(DivisionTest.class);
         suite.addTestSuite(ModuloTest.class);
         suite.addTestSuite(SubtractionTest.class);
         suite.addTestSuite(LogicalOrTest.class);
+        suite.addTestSuite(Double.class);
+        suite.addTestSuite(StarTest.class);
         return suite;
     }
 

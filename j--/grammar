@@ -72,11 +72,11 @@ statementExpression ::= expression // but must have side-effect, eg i++
 
 expression ::= assignmentExpression
 
-assignmentExpression ::= conditionalOrExpression  // must be a valid lhs
+assignmentExpression ::= conditionalOrExpression  // level 13, conditionalOrExpression must be a valid lhs
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN
                            | DIV_ASSIGN | MOD_ASSIGN
-                           | R_SH_ASSIGN | UN_R_SH_ASSI | L_SH_ASSIGN
-                           | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
+                           | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
+                           | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
 
 // TODO: ternary operator
 
@@ -140,6 +140,5 @@ creator ::= (basicType | qualifiedIdentifier)
 newArrayDeclarator ::= LBRACK expression RBRACK
                          {LBRACK expression RBRACK} {LBRACK RBRACK}
 
-literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL | DOUBLE_LITERAL 
+literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL | DOUBLE_LITERAL
           | TRUE        | FALSE        | NULL
-          

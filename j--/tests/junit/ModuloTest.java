@@ -19,6 +19,8 @@ public class ModuloTest extends TestCase {
         assertEquals(2, modulo.mod(2, 5));
         assertEquals(0, modulo.mod(0, 42));
         assertEquals(0, modulo.mod(100, 2));
+        assertEquals(0, modulo.mod_assign(0, 42));
+        assertEquals(0, modulo.mod_assign(100, 2));
     }
-
+    
 }
