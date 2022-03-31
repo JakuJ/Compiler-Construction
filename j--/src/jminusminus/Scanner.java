@@ -200,7 +200,7 @@ class Scanner {
                 return new TokenInfo(COLON, line);
             case '~':
                 nextCh();
-                return new TokenInfo(BIT_COM, line); // BIT_COM '~'
+                return new TokenInfo(TILDE, line); // TILDE '~'
             case '^':
                 nextCh();
                 return new TokenInfo(BIT_XOR, line); // BIT_XOR '^'
@@ -280,13 +280,13 @@ class Scanner {
 
                 if (ch == '>') {
 
-                    // Needs to check for the SHIFT_R '>>' & SHIFT_RU '>>>'
+                    // Needs to check for the SHIFTR '>>' & USHIFTR '>>>'
                     nextCh();
                     if (ch == '>') {
                         nextCh();
-                        return new TokenInfo(SHIFT_RU, line); // the SHIFT_RU '>>>'
+                        return new TokenInfo(USHIFTR, line); // the USHIFTR '>>>'
                     } else {
-                        return new TokenInfo(SHIFT_R, line); // the SHIFT_R '>>'
+                        return new TokenInfo(SHIFTR, line); // the SHIFTR '>>'
                     }
 
                 } else {
@@ -300,7 +300,7 @@ class Scanner {
                     return new TokenInfo(LE, line);
                 } else if (ch == '<') {
                     nextCh();
-                    return new TokenInfo(SHIFT_L, line); // the SHIFT_L '<<'
+                    return new TokenInfo(SHIFTL, line); // the SHIFTL '<<'
 
                 } else {
                     reportScannerError("Operator < is not supported in j--.");

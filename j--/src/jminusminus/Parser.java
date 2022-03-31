@@ -1079,9 +1079,9 @@ public class Parser {
      * Parse a relational expression.
      * 
      * <pre>
-     *   relationalExpression ::= additiveExpression  // level 5
-     *                              [(GT | LE) additiveExpression 
-     *                              | INSTANCEOF referenceType]
+     *   relationalExpression ::= shiftExpression       // level 5
+     *                      [(LT | GT | LE | GE) shiftExpression
+     *                      | INSTANCEOF referenceType]
      * </pre>
      * 
      * @return an AST for a relationalExpression.
@@ -1089,16 +1089,48 @@ public class Parser {
 
     private JExpression relationalExpression() {
         int line = scanner.token().line();
-        JExpression lhs = additiveExpression();
+        JExpression lhs = shiftExpression();
         if (have(GT)) {
-            return new JGreaterThanOp(line, lhs, additiveExpression());
+            return new JGreaterThanOp(line, lhs, shiftExpression());
         } else if (have(LE)) {
-            return new JLessEqualOp(line, lhs, additiveExpression());
+            return new JLessEqualOp(line, lhs, shiftExpression());
         } else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
         } else {
             return lhs;
         }
+    }
+
+    /**
+     * Parse a shift expression (<< | >> | >>>) // level 4
+     * 
+     * shiftExpression ::= additiveExpression { ( SHIFTL | SHIFTR | USHIFTR )
+     * additiveExpression }
+     * 
+     * 
+     * @return returns either a shiftExpression or passes it on to look for an additiveExpression
+     */
+    private JExpression shiftExpression(){
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = additiveExpression();
+
+        while(more){
+            if(have(SHIFTL)){
+                lhs = new JShiftLeftOp(line, lhs, additiveExpression()); // SHIFTL (num << num)
+
+            } else if (have(SHIFTR)){
+                lhs = new JShiftRightOp(line, lhs, additiveExpression()); // SHIFTR (num >> num)
+
+            } else if (have(USHIFTR)){
+                lhs = new JShiftUOp(line, lhs, additiveExpression()); // USHIFTR (num >>> num)
+
+            } else {
+                more = false;
+            }
+        }
+
+        return lhs;
     }
 
     /**
@@ -1163,8 +1195,9 @@ public class Parser {
      * 
      * <pre>
      *   unaryExpression ::= INC unaryExpression // level 1
-     *                     | {(MINUS | PLUS) unaryExpression}
-     *                     | simpleUnaryExpression
+     *            | DEC unaryExpression
+     *            | (PLUS | MINUS | TILDE) unaryExpression
+     *            | simpleUnaryExpression
      * </pre>
      * 
      * @return an AST for an unaryExpression.
@@ -1172,14 +1205,23 @@ public class Parser {
 
     private JExpression unaryExpression() {
         int line = scanner.token().line();
+
         if (have(INC)) {
-            return new JPreIncrementOp(line, unaryExpression());
-        } else if (have(MINUS)) {
-            return new JNegateOp(line, unaryExpression());
-        } else if (have(PLUS)){
-            // Added the plus unary expression as seen in step 0
-            return new JUnaryPlusOp(line, unaryExpression());
-        } 
+            return new JPreIncrementOp(line, unaryExpression()); // INC unaryExpression (++num)
+
+        } else if (have(DEC)){
+            return new JPostDecrementOp(line, unaryExpression()); // DEC unaryExpression (--num)
+
+        } else if (have(PLUS)) {
+            return new JUnaryPlusOp(line, unaryExpression()); // PLUS unaryExpression (+num)
+
+        } else if (have(MINUS)){
+            return new JNegateOp(line, unaryExpression()); // MINUS unaryExpression (-num)
+            
+        } else if (have(TILDE)){
+            return new JTildeOp(line, unaryExpression()); // TILDE unaryExpression (~num)
+
+        }
         else {
             return simpleUnaryExpression();
         }

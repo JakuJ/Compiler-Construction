@@ -108,7 +108,7 @@ class JNegateOp extends JUnaryExpression {
 }
 
 /**
- * The AST node made for step 0 unary plus (+) expression.
+ * The AST node made for unary plus (+) expression.
  */
 class JUnaryPlusOp extends JUnaryExpression {
     /**
@@ -122,7 +122,11 @@ class JUnaryPlusOp extends JUnaryExpression {
     }
     
     /**
-     * To analyze simply check if the operand is working with an int or a string/char
+     * To analyze simply check if the operand is working with an int or a
+     * string/char
+     * 
+     * TODO: Add double support
+     * 
      */
     public JExpression analyze(Context context) {
         arg = arg.analyze(context);
@@ -136,11 +140,47 @@ class JUnaryPlusOp extends JUnaryExpression {
     }
 
     /**
-     * This might be wrong ask what the CLConstant value for a Unary Plus is.
+     * TODO: codegen
      */
     public void codegen(CLEmitter output) {
         arg.codegen(output);
-        output.addNoArgInstruction(INEG);
+    }
+}
+
+class JTildeOp extends JUnaryExpression {
+    /**
+     * Constructor for the AST using line number and operand
+     * 
+     * @param line line in which the operand occurs in source file
+     * @param arg operand (~)
+     */
+    public JTildeOp(int line, JExpression arg){
+        super(line, "~", arg);
+    }
+
+    /**
+     * Analyzing the negation operation involves analyzing its operand, checking
+     * its type and determining the result type.
+     * 
+     * TODO: Add double support
+     * 
+     * @param context
+     *                context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+
+    public JExpression analyze(Context context) {
+        arg = arg.analyze(context);
+        arg.type().mustMatchExpected(line(), Type.INT);
+        type = Type.INT;
+        return this;
+    }
+
+    /**
+     * TODO: codegen
+     */
+    public void codegen(CLEmitter output) {
+        arg.codegen(output);
     }
 }
 

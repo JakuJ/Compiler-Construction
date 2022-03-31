@@ -49,7 +49,6 @@ public class Operators {
 
     // Unary Operators
     // ----------------------------------------------------
-
     public int unaryPlus(int num){
         return +num;
     }
