@@ -633,11 +633,13 @@ public class Parser {
      * 
      * <pre>
      *   statement ::= block
-     *               | IF parExpression statement [ELSE statement]
-     *               | WHILE parExpression statement 
-     *               | RETURN [expression] SEMI
-     *               | SEMI 
-     *               | statementExpression SEMI
+     *       | IF parExpression statement [ELSE statement]
+     *       | WHILE parExpression statement
+     *       | FOR LPAREN [[type] expression] SEMI [expression] SEMI [expression] RPAREN statement
+     *       | FOR LPAREN type IDENTIFIER COLON IDENTIFIER RPAREN statement
+     *       | RETURN [expression] SEMI
+     *       | SEMI 
+     *       | statementExpression SEMI
      * </pre>
      * 
      * @return an AST for a statement.
@@ -656,6 +658,31 @@ public class Parser {
             JExpression test = parExpression();
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
+        } else if (have(FOR)) {
+            mustBe(LPAREN);
+            if(see(type)){
+                JVariableDeclarator initialization = JVariableDeclarator(type());
+                if(have(COLON)){
+                    mustBe(IDENTIFIER);
+                    String name = scanner.previousToken().image();
+                    JStatement statement = statement();
+                    return new JForStatement(line, initialization, name, statement);
+                }
+                mustBe(SEMI);
+                JExpression termination = expression();
+                mustBe(SEMI);
+                JExpression increment = expression();
+                JStatement statement = statement();
+                return new JForStatement(line, initialization, termination, increment, statement);
+            } else {
+                JExpression initialization = expression();
+                mustBe(SEMI);
+                JExpression termination = expression();
+                mustBe(SEMI);
+                JExpression increment = expression();
+                JStatement statement = statement();
+                return new JForStatement(line, initialization, termination, increment, statement);
+            }
         } else if (have(RETURN)) {
             if (have(SEMI)) {
                 return new JReturnStatement(line, null);

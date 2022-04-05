@@ -114,6 +114,7 @@ class Scanner {
         reserved.put(TRUE.image(), TRUE);
         reserved.put(VOID.image(), VOID);
         reserved.put(WHILE.image(), WHILE);
+        reserved.put(FOR.image(), FOR);
 
         // Prime the pump.
         nextCh();

@@ -33,7 +33,9 @@ blockStatement ::= localVariableDeclarationStatement
 
 statement ::= block
             | IF parExpression statement [ELSE statement]
-            | WHILE parExpression statement 
+            | WHILE parExpression statement
+            | FOR LPAREN [[type] expression] SEMI [expression] SEMI [expression] RPAREN statement
+            | FOR LPAREN type IDENTIFIER COLON IDENTIFIER RPAREN statement
             | RETURN [expression] SEMI
             | SEMI 
             | statementExpression SEMI
@@ -63,7 +65,7 @@ arguments ::= LPAREN [expression {COMMA expression}] RPAREN
 
 type ::= referenceType | basicType
 
-basicType ::= BOOLEAN | CHAR | INT | DOUBLE
+basicType ::= BOOLEAN | CHAR | INT | DOUBLE | FLOAT
 
 referenceType ::= basicType LBRACK RBRACK {LBRACK RBRACK}
                 | qualifiedIdentifier {LBRACK RBRACK}
