@@ -84,11 +84,11 @@ conditionalOrExpression ::= conditionalAndExpression { LOR conditionalAndExpress
 
 conditionalAndExpression ::= inclusiveOrExpression  { LAND inclusiveOrExpression} // level 10
 
-inclusiveOrExpression ::= exclusiveOrExpression { BIT_OR exclusiveOrExpression } // level 9
+inclusiveOrExpression ::= exclusiveOrExpression { OR exclusiveOrExpression } // level 9
 
 exclusiveOrExpression ::= andExpression { XOR andExpression } // level 8
 
-andExpression ::= equalityExpression { BIT_AND equalityExpression } // level 7
+andExpression ::= equalityExpression { AND equalityExpression } // level 7
 
 equalityExpression ::= relationalExpression  // level 6
                          {(EQ | NEQ) relationalExpression}

@@ -1,8 +1,5 @@
 // Copyright 2011 Bill Campbell, Swami Iyer and Bahar Akbal-Delibas
 
-// This file was modified for use in the DTU course 02247 Compiler Construction
-
-
 /**
  * This is the input file to JavaCC for generating a scanner and
  * a parser for j--. From the specification in this file, JavaCC,

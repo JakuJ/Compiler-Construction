@@ -1061,14 +1061,85 @@ public class Parser {
     private JExpression conditionalAndExpression() {
         int line = scanner.token().line();
         boolean more = true;
-        JExpression lhs = equalityExpression();
+        JExpression lhs = inclusiveOrExpression();
         while (more) {
             if (have(LAND)) {
-                lhs = new JLogicalAndOp(line, lhs, equalityExpression());
+                lhs = new JLogicalAndOp(line, lhs, inclusiveOrExpression());
+            }else if(have(LOR)){
+                lhs = new JLogicalOrOp(line, lhs, inclusiveOrExpression());
             } else {
                 more = false;
             }
         }
+        return lhs;
+    }
+
+    /**
+     * Parse an inclusiveOrExpression // level 9
+     * 
+     * inclusiveOrExpression ::= exclusiveOrExpression { OR exclusiveOrExpression }
+     * 
+     * @return returns either a inclusiveOrExpression or passes it on to look for an
+     *         exclusiveOrExpression
+     */
+    private JExpression inclusiveOrExpression(){
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = exclusiveOrExpression();
+        while(more) {
+            if(have(OR)){
+                lhs = new JInclusiveOrOp(line, lhs, exclusiveOrExpression()); // OR (|) 
+            } else {
+                more = false;
+            }
+        }
+
+        return lhs;
+    }
+
+    /**
+     * Parse an inclusiveOrExpression // level 8
+     * 
+     * exclusiveOrExpression ::= andExpression { XOR andExpression } // level 8
+     * 
+     * @return returns either a exclusiveOrExpression or passes it on to look for an
+     *         andExpression
+     */
+    private JExpression exclusiveOrExpression(){
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = andExpression();
+        while(more) {
+            if(have(XOR)){
+                lhs = new JExclusiveOrOp(line, lhs, andExpression()); // XOR (^) 
+            } else {
+                more = false;
+            }
+        }
+
+        return lhs;
+    }
+
+    /**
+     * Parse an inclusiveOrExpression // level 7
+     * 
+     * andExpression ::= equalityExpression { AND equalityExpression } // level 7
+     * 
+     * @return returns either a andExpression or passes it on to look for an
+     *         equalityExpression
+     */
+    private JExpression andExpression(){
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = equalityExpression();
+        while(more) {
+            if(have(AND)){
+                lhs = new JAndOp(line, lhs, equalityExpression()); // AND (&) 
+            } else {
+                more = false;
+            }
+        }
+
         return lhs;
     }
 
@@ -1104,9 +1175,9 @@ public class Parser {
      * Parse a relational expression.
      * 
      * <pre>
-     *   relationalExpression ::= additiveExpression  // level 5
-     *                              [(GT | LE) additiveExpression 
-     *                              | INSTANCEOF referenceType]
+     *   relationalExpression ::= shiftExpression       // level 5
+     *                      [(LT | GT | LE | GE) shiftExpression
+     *                      | INSTANCEOF referenceType]
      * </pre>
      * 
      * @return an AST for a relationalExpression.
@@ -1114,16 +1185,48 @@ public class Parser {
 
     private JExpression relationalExpression() {
         int line = scanner.token().line();
-        JExpression lhs = additiveExpression();
+        JExpression lhs = shiftExpression();
         if (have(GT)) {
-            return new JGreaterThanOp(line, lhs, additiveExpression());
+            return new JGreaterThanOp(line, lhs, shiftExpression());
         } else if (have(LE)) {
-            return new JLessEqualOp(line, lhs, additiveExpression());
+            return new JLessEqualOp(line, lhs, shiftExpression());
         } else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
         } else {
             return lhs;
         }
+    }
+
+    /**
+     * Parse a shift expression (<< | >> | >>>) // level 4
+     * 
+     * shiftExpression ::= additiveExpression { ( SHIFTL | SHIFTR | USHIFTR )
+     * additiveExpression }
+     * 
+     * 
+     * @return returns either a shiftExpression or passes it on to look for an additiveExpression
+     */
+    private JExpression shiftExpression(){
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = additiveExpression();
+
+        while(more){
+            if(have(SHIFTL)){
+                lhs = new JShiftLeftOp(line, lhs, additiveExpression()); // SHIFTL (num << num)
+
+            } else if (have(SHIFTR)){
+                lhs = new JShiftRightOp(line, lhs, additiveExpression()); // SHIFTR (num >> num)
+
+            } else if (have(USHIFTR)){
+                lhs = new JShiftUOp(line, lhs, additiveExpression()); // USHIFTR (num >>> num)
+
+            } else {
+                more = false;
+            }
+        }
+
+        return lhs;
     }
 
     /**
@@ -1188,8 +1291,9 @@ public class Parser {
      * 
      * <pre>
      *   unaryExpression ::= INC unaryExpression // level 1
-     *                     | MINUS unaryExpression
-     *                     | simpleUnaryExpression
+     *            | DEC unaryExpression
+     *            | (PLUS | MINUS | TILDE) unaryExpression
+     *            | simpleUnaryExpression
      * </pre>
      * 
      * @return an AST for an unaryExpression.
@@ -1197,11 +1301,24 @@ public class Parser {
 
     private JExpression unaryExpression() {
         int line = scanner.token().line();
+
         if (have(INC)) {
-            return new JPreIncrementOp(line, unaryExpression());
-        } else if (have(MINUS)) {
-            return new JNegateOp(line, unaryExpression());
-        } else {
+            return new JPreIncrementOp(line, unaryExpression()); // INC unaryExpression (++num)
+
+        } else if (have(DEC)){
+            return new JPostDecrementOp(line, unaryExpression()); // DEC unaryExpression (--num)
+
+        } else if (have(PLUS)) {
+            return new JUnaryPlusOp(line, unaryExpression()); // PLUS unaryExpression (+num)
+
+        } else if (have(MINUS)){
+            return new JNegateOp(line, unaryExpression()); // MINUS unaryExpression (-num)
+            
+        } else if (have(TILDE)){
+            return new JTildeOp(line, unaryExpression()); // TILDE unaryExpression (~num)
+
+        }
+        else {
             return simpleUnaryExpression();
         }
     }

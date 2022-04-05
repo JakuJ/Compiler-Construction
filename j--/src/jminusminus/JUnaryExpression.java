@@ -105,7 +105,83 @@ class JNegateOp extends JUnaryExpression {
         arg.codegen(output);
         output.addNoArgInstruction(INEG);
     }
+}
 
+/**
+ * The AST node made for unary plus (+) expression.
+ */
+class JUnaryPlusOp extends JUnaryExpression {
+    /**
+     * Constructor for the AST using line number and operand
+     * 
+     * @param line line in which the operand occurs in source file
+     * @param arg operand (+)
+     */
+    public JUnaryPlusOp(int line, JExpression arg){
+        super(line, "+", arg);
+    }
+    
+    /**
+     * To analyze simply check if the operand is working with an int or a
+     * string/char
+     * 
+     * TODO: Add double support
+     * 
+     */
+    public JExpression analyze(Context context) {
+        arg = arg.analyze(context);
+
+        // Creates the expected types string | int
+        Type[] types = {Type.INT, Type.STRING, Type.CHAR};
+
+        arg.type().mustMatchOneOf(line, types);
+        type = Type.INT;
+        return this;
+    }
+
+    /**
+     * TODO: codegen
+     */
+    public void codegen(CLEmitter output) {
+        arg.codegen(output);
+    }
+}
+
+class JTildeOp extends JUnaryExpression {
+    /**
+     * Constructor for the AST using line number and operand
+     * 
+     * @param line line in which the operand occurs in source file
+     * @param arg operand (~)
+     */
+    public JTildeOp(int line, JExpression arg){
+        super(line, "~", arg);
+    }
+
+    /**
+     * Analyzing the negation operation involves analyzing its operand, checking
+     * its type and determining the result type.
+     * 
+     * TODO: Add double support
+     * 
+     * @param context
+     *                context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+
+    public JExpression analyze(Context context) {
+        arg = arg.analyze(context);
+        arg.type().mustMatchExpected(line(), Type.INT);
+        type = Type.INT;
+        return this;
+    }
+
+    /**
+     * TODO: codegen
+     */
+    public void codegen(CLEmitter output) {
+        arg.codegen(output);
+    }
 }
 
 /**
