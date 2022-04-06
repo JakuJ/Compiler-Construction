@@ -992,12 +992,11 @@ public class Parser {
      * 
      * <pre>
      *   assignmentExpression ::= 
-     *       conditionalExpression // level 13
-     *           [( ASSIGN  // conditionalExpression
-     *            | PLUS_ASSIGN // must be valid lhs
-     *            )
-     *            assignmentExpression]
-     * </pre>
+     *       conditionalExpressions // level 13
+     *           [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN
+     *           | DIV_ASSIGN | MOD_ASSIGN
+     *           | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
+     *           | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression
      * 
      * @return an AST for an assignmentExpression.
      */
@@ -1072,19 +1071,6 @@ public class Parser {
         return lhs;
     }
 
-    private JExpression conditionalOrExpression() {
-        int line = scanner.token().line();
-        boolean more = true;
-        JExpression lhs = conditionalAndExpression();
-        while (more) {
-            if (have(LOR)) {
-                lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
-            } else {
-                more = false;
-            }
-        }
-        return lhs;
-    }
 
     private JExpression conditionalExpression(){
         int line = scanner.token().line();
