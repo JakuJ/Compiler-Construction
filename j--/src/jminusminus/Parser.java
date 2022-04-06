@@ -992,11 +992,11 @@ public class Parser {
      * 
      * <pre>
      *   assignmentExpression ::= 
-     *       conditionalOrExpression // level 13
-     *           [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN
-     *           | DIV_ASSIGN | MOD_ASSIGN
-     *           | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
-     *           | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
+     *       conditionalExpression // level 13
+     *           [( ASSIGN  // conditionalExpression
+     *            | PLUS_ASSIGN // must be valid lhs
+     *            )
+     *            assignmentExpression]
      * </pre>
      * 
      * @return an AST for an assignmentExpression.
@@ -1004,7 +1004,7 @@ public class Parser {
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
-        JExpression lhs = conditionalOrExpression();
+        JExpression lhs = conditionalExpression();
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
@@ -1064,15 +1064,41 @@ public class Parser {
         JExpression lhs = inclusiveOrExpression();
         while (more) {
             if (have(LAND)) {
-                lhs = new JLogicalAndOp(line, lhs, inclusiveOrExpression());
-            }else if(have(LOR)){
-                lhs = new JLogicalOrOp(line, lhs, inclusiveOrExpression());
+                lhs = new JLogicalAndOp(line, lhs, equalityExpression());
             } else {
                 more = false;
             }
         }
         return lhs;
     }
+
+    private JExpression conditionalOrExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = conditionalAndExpression();
+        while (more) {
+            if (have(LOR)) {
+                lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
+    }
+
+    private JExpression conditionalExpression(){
+        int line = scanner.token().line();
+        JExpression lhs = conditionalOrExpression();
+        if (have(TERNARY)){
+            JExpression thenBranch = conditionalOrExpression();
+            mustBe(COLON);
+            JExpression elseBranch = conditionalOrExpression();
+            return new JConditionalExpression(line, lhs, thenBranch, elseBranch);
+        }
+        return lhs;
+
+    }
+
 
     /**
      * Parse an inclusiveOrExpression // level 9
