@@ -2,7 +2,7 @@ package pass;
 
 public class Exceptions{
 
-    public string testTryCatch() {
+    public String testTryCatch() {
 
         StringBuilder message;
 

@@ -35,6 +35,9 @@ blockStatement ::= localVariableDeclarationStatement
 statement ::= block
             | IF parExpression statement [ELSE statement]
             | WHILE parExpression statement 
+            | TRY block
+                  {CATCH (formalParameter) block}
+                  [finally block]  // Mandatory if there is no CATCH 
             | RETURN [expression] SEMI
             | THROW expression SEMI
             | SEMI 

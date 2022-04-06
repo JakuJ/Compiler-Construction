@@ -674,6 +674,9 @@ public class Parser {
      *   statement ::= block
      *               | IF parExpression statement [ELSE statement]
      *               | WHILE parExpression statement 
+     *               | TRY block
+                            {CATCH (formalParameter) block}
+                            [finally block]  // Mandatory if there is no CATCH 
      *               | RETURN [expression] SEMI
      *               | THROW expression SEMI
      *               | SEMI 
@@ -699,6 +702,29 @@ public class Parser {
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
 
+        } else if (have(TRY)){
+            JBlock body_try = block();
+            JBlock body_catch = null;
+            JBlock body_finally = null;
+            JFormalParameter param = null;
+            
+            if(have(CATCH)){
+                mustBe(LPAREN); // Make sure to consume the parentheses
+                param = formalParameter();
+                mustBe(RPAREN);
+                body_catch = block();
+
+                if(have(FINALLY)){
+                    body_finally = block();
+                }
+
+            } else {
+                mustBe(FINALLY);
+                body_finally = block(); 
+            }
+
+            return new JTryCatchStatement(line, body_try, body_catch, body_finally, param);
+
         } else if (have(RETURN)) {
             if (have(SEMI)) {
                 return new JReturnStatement(line, null);
@@ -711,7 +737,7 @@ public class Parser {
         } else if (have(THROW)) {
             JExpression expression = expression();
             mustBe(SEMI);
-            return new JStatementExpression(line, expression);
+            return new JThrowStatement(line, expression);
 
         } else if (have(SEMI)) {
             return new JEmptyStatement(line);
