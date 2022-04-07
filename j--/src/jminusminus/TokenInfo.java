@@ -24,7 +24,7 @@ enum TokenKind {
     PRIVATE("private"), PROTECTED("protected"), PUBLIC("public"), 
     RETURN("return"), SHORT("short"), STRICTFP("strictfp"), SWITCH("switch"), SYNCHRONIZED("synchronized"),
     STATIC("static"), SUPER("super"), THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), THIS("this"), 
-    VOID("void"), WHILE("while"), FOR("for"),
+    VOID("void"), WHILE("while"),
 
     // Operators
     ASSIGN("="), MINUS_ASSIGN("-="), PLUS_ASSIGN("+="), DIV_ASSIGN("/="), STAR_ASSIGN("*="), MOD_ASSIGN("%="),
