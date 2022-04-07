@@ -397,7 +397,7 @@ private JAST typeDeclaration(): {
  * (public, protected, and private). Otherwise, no checks.
  *
  * <pre>
- *   modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT}
+ *   modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT | FINAL | VOLATILE | TRANSIENT}
  * </pre>
  * 
  * 
@@ -411,6 +411,9 @@ private ArrayList<String> modifiers(): {
     boolean scannedPRIVATE   = false;
     boolean scannedSTATIC    = false;
     boolean scannedABSTRACT  = false;
+    boolean scannedFINAL     = false;
+    boolean scannedVOLATILE  = false;
+    boolean scannedTRANSIENT = false;
 }
 {
     try {
@@ -463,7 +466,31 @@ private ArrayList<String> modifiers(): {
                     reportParserError("Repeated modifier: abstract");
                 }
                 scannedABSTRACT = true;
-            } 
+            } |
+            <FINAL>
+            {
+                mods.add("final");
+                if (scannedFINAL) {
+                    reportParserError("Repeated modifier: final");
+                }
+                scannedFINAL = true;
+            } |
+            <VOLATILE>
+            {
+                mods.add("volatile");
+                if (scannedVOLATILE) {
+                    reportParserError("Repeated modifier: volatile");
+                }
+                scannedVOLATILE = true;
+            } |
+            <TRANSIENT>
+            {
+                mods.add("transient");
+                if (scannedTRANSIENT) {
+                    reportParserError("Repeated modifier: transient");
+                }
+                scannedTRANSIENT = true;
+            }
         )*
     }
     catch (ParseException e) { 
@@ -479,6 +506,7 @@ private ArrayList<String> modifiers(): {
  * <pre>
  *   classDeclaration ::= CLASS IDENTIFIER
  *                        [EXTENDS qualifiedIdentifier]
+ *                        [IMPLEMENTS qualifiedIdentifier]
  *                        classBody
  * </pre>
  * 
@@ -492,6 +520,7 @@ private JClassDeclaration classDeclaration(ArrayList<String> mods): {
     int line = 0;
     String name = "";
     Type superClass = Type.OBJECT;
+    Type implementedInterface = Type.OBJECT;
     ArrayList<JMember> classBody = null;
 }
 {
@@ -500,6 +529,9 @@ private JClassDeclaration classDeclaration(ArrayList<String> mods): {
         <IDENTIFIER> { name = token.image; }
         [
             <EXTENDS> superClass = qualifiedIdentifier()
+        ]
+        [
+            <IMPLEMENTS> implementedInterface = qualifiedIdentifier()
         ]
         classBody = classBody()
     }
@@ -1052,7 +1084,7 @@ private Type type(): {
  * Parse a basic type.
  * 
  * <pre>
- *   basicType ::= BOOLEAN | CHAR | INT | DOUBLE
+ *   basicType ::= BOOLEAN | CHAR | INT | LONG | SHORT | BYTE | DOUBLE | FLOAT
  * </pre>
  * 
  * @return an instance of Type.
@@ -1066,7 +1098,11 @@ private Type basicType(): {
         <BOOLEAN> { type = Type.BOOLEAN; } |
         <CHAR> { type = Type.CHAR; } |
         <INT> { type = Type.INT; } |
-        <DOUBLE> { type = Type.DOUBLE; }
+        <LONG> { type = Type.INT; } |
+        <SHORT> { type = Type.INT; } |
+        <BYTE> { type = Type.INT; } |
+        <DOUBLE> { type = Type.DOUBLE; } |
+        <FLOAT> { type = Type.DOUBLE; }
     }
     catch (ParseException e) {
         recoverFromError(new int[] { SEMI, EOF }, e);
@@ -1178,7 +1214,7 @@ private JExpression expression(): {
  * 
  * <pre>
  *   assignmentExpression ::= 
- *       conditionalAndExpression                // level 13
+ *       conditionalOrExpression                // level 13
  *           [( ASSIGN       // must be valid lhs
  *            | PLUS_ASSIGN 
  *            )
@@ -1194,7 +1230,7 @@ private JExpression assignmentExpression(): {
 }
 {
     try {
-        lhs = conditionalAndExpression() { line = lhs.line(); }
+        lhs = conditionalOrExpression() { line = lhs.line(); }
         [
             <ASSIGN>
             rhs = assignmentExpression()
@@ -1204,6 +1240,36 @@ private JExpression assignmentExpression(): {
             rhs = assignmentExpression()
             { lhs = new JPlusAssignOp(line, lhs, rhs); }
         ]
+    }
+    catch (ParseException e) {
+        recoverFromError(new int[] { SEMI, EOF }, e);
+    }
+    { return lhs; }
+}
+
+/**
+ * Parse a conditional-or expression.
+ *
+ * <pre>
+ *   conditionalOrExpression ::= conditionalAndExpression        // level 11
+ *                                  {LOR conditionalAndExpression}
+ * </pre>
+ *
+ * @return an AST for a conditionalExpression.
+ */
+
+private JExpression conditionalOrExpression(): {
+    int line = 0;
+    JExpression lhs = null, rhs = null;
+}
+{
+    try {
+        lhs = conditionalAndExpression() { line = lhs.line(); }
+        (
+            <LOR>
+            rhs = conditionalAndExpression()
+            { lhs = new JLogicalOrOp(line, lhs, rhs); }
+        )*
     }
     catch (ParseException e) {
         recoverFromError(new int[] { SEMI, EOF }, e);
