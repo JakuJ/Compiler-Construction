@@ -2,6 +2,7 @@
 
 package jminusminus;
 
+import java.beans.Expression;
 import java.util.ArrayList;
 
 import static jminusminus.TokenKind.*;
@@ -659,30 +660,7 @@ public class Parser {
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
         } else if (have(FOR)) {
-            mustBe(LPAREN);
-            if(see(type)){
-                JVariableDeclarator initialization = JVariableDeclarator(type());
-                if(have(COLON)){
-                    mustBe(IDENTIFIER);
-                    String name = scanner.previousToken().image();
-                    JStatement statement = statement();
-                    return new JForStatement(line, initialization, name, statement);
-                }
-                mustBe(SEMI);
-                JExpression termination = expression();
-                mustBe(SEMI);
-                JExpression increment = expression();
-                JStatement statement = statement();
-                return new JForStatement(line, initialization, termination, increment, statement);
-            } else {
-                JExpression initialization = expression();
-                mustBe(SEMI);
-                JExpression termination = expression();
-                mustBe(SEMI);
-                JExpression increment = expression();
-                JStatement statement = statement();
-                return new JForStatement(line, initialization, termination, increment, statement);
-            }
+            return forStatement(line);
         } else if (have(RETURN)) {
             if (have(SEMI)) {
                 return new JReturnStatement(line, null);
@@ -741,6 +719,48 @@ public class Parser {
         mustBe(IDENTIFIER);
         String name = scanner.previousToken().image();
         return new JFormalParameter(line, name, type);
+    }
+
+    /**
+     * Parse a formal parameter.
+     * 
+     * <pre>
+     *   forStatement ::= LPAREN [statement] [expression] SEMI [expression] RPAREN
+                        | LPAREN variableDeclarator COLON expression RPAREN
+     * </pre>
+     * 
+     * @return an AST for a forStatement.
+     */
+    
+
+    private JForStatement forStatement(int line){
+        mustBe(LPAREN);
+        if(seeBasicType()){
+            JVariableDeclarator initialization = variableDeclarator(type());
+            if(have(COLON)){
+                JExpression arr = primary();
+                mustBe(RPAREN);
+                JStatement body = statement();
+                return new JForStatement(line, initialization, arr, body);
+            } else {
+                JStatement init = statement();
+                JExpression termination = expression();
+                mustBe(SEMI);
+                JExpression increment = expression();
+                mustBe(RPAREN);
+                JStatement body = statement();
+                return new JForStatement(line, init, termination, increment, body);
+            }
+        } else {
+            JStatement initialization = statement();
+            mustBe(SEMI);
+            JExpression termination = expression();
+            mustBe(SEMI);
+            JExpression increment = expression();
+            mustBe(RPAREN);
+            JStatement body = statement();
+            return new JForStatement(line, initialization, termination, increment, body);
+        }
     }
 
     /**

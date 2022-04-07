@@ -9,7 +9,10 @@ import static jminusminus.CLConstants.*;
 class JForStatement extends JStatement {
 
     /** Initialization of variable  */
-    private JExpression initialization;
+    private JStatement initialization;
+
+    /** Initialization of variable (used for enhanced for loop) */
+    private JVariableDeclarator init;
     
     /** Termination condition  */
     private JExpression termination;
@@ -17,15 +20,15 @@ class JForStatement extends JStatement {
     /** Incrementation statement  */
     private JExpression increment;
 
-    /** Identifier for collection (Only for enchanced for loop)  */
-    private String name;
+    /** Collection (Only for enchanced for loop)  */
+    private JExpression arr;
 
     /** The body. */
     private JStatement body;
 
     /**
-     * Constructs an AST node for a for-statement given its line number, the
-     * test expression, and the body.
+     * Constructs an AST node for a for-statement given its line number, the initialization expression, 
+     * termination condition, increment expression and the body
      * 
      * @param line
      *            line in which the while-statement occurs in the source file.
@@ -34,12 +37,12 @@ class JForStatement extends JStatement {
      * @param termination
      *            Termination condition
      * @param increment
-     *            Incrementation statement
+     *            Increment expression
      * @param body
      *            the body.
      */
 
-    public JForStatement(int line, JExpression initialization, JExpression termination, JExpression increment, JStatement body) {
+    public JForStatement(int line, JStatement initialization, JExpression termination, JExpression increment, JStatement body) {
         super(line);
         this.initialization = initialization;
         this.termination = termination;
@@ -47,10 +50,23 @@ class JForStatement extends JStatement {
         this.body = body;
     }
 
-    public JForStatement(int line, JExpression initialization, String name, JStatement body) {
+    /**
+     * Constructs an AST node for an enhanced for-statement given its line number, the initialization of a variable, 
+     * the collection to iterate over and the body.
+     * 
+     * @param line
+     *            line in which the for-statement occurs in the source file.
+     * @param init
+     *            Initialization of variable
+     * @param arr
+     *            Collection
+     * @param body
+     *            the body.
+     */
+    public JForStatement(int line, JVariableDeclarator init, JExpression arr, JStatement body) {
         super(line);
-        this.initialization = initialization;
-        this.name = name;
+        this.init = init;
+        this.arr = arr;
         this.body = body;
     }
 
@@ -63,9 +79,13 @@ class JForStatement extends JStatement {
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
-    public JWhileStatement analyze(Context context) {
-        condition = condition.analyze(context);
-        condition.type().mustMatchExpected(line(), Type.BOOLEAN);
+    public JForStatement analyze(Context context) {
+        
+
+        termination = termination.analyze(context);
+        termination.type().mustMatchExpected(line(), Type.BOOLEAN);
+
+        increment = increment.analyze(context);
         body = (JStatement) body.analyze(context);
         return this;
     }
@@ -79,23 +99,7 @@ class JForStatement extends JStatement {
      */
 
     public void codegen(CLEmitter output) {
-        // Need two labels
-        String test = output.createLabel();
-        String out = output.createLabel();
-
-        // Branch out of the loop on the test condition
-        // being false
-        output.addLabel(test);
-        condition.codegen(output, out, false);
-
-        // Codegen body
-        body.codegen(output);
-
-        // Unconditional jump back up to test
-        output.addBranchInstruction(GOTO, test);
-
-        // The label below and outside the loop
-        output.addLabel(out);
+        //TODO
     }
 
     /**
@@ -103,11 +107,11 @@ class JForStatement extends JStatement {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JWhileStatement line=\"%d\">\n", line());
+        p.printf("<JForStatement line=\"%d\">\n", line());
         p.indentRight();
         p.printf("<TestExpression>\n");
         p.indentRight();
-        condition.writeToStdOut(p);
+        //condition.writeToStdOut(p);
         p.indentLeft();
         p.printf("</TestExpression>\n");
         p.printf("<Body>\n");

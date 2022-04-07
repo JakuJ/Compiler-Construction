@@ -34,8 +34,7 @@ blockStatement ::= localVariableDeclarationStatement
 statement ::= block
             | IF parExpression statement [ELSE statement]
             | WHILE parExpression statement
-            | FOR LPAREN [[type] expression] SEMI [expression] SEMI [expression] RPAREN statement
-            | FOR LPAREN type IDENTIFIER COLON IDENTIFIER RPAREN statement
+            | FOR forStatement statement
             | RETURN [expression] SEMI
             | SEMI 
             | statementExpression SEMI
@@ -47,6 +46,9 @@ formalParameters ::= LPAREN
 formalParameter ::= type IDENTIFIER
 
 parExpression ::= LPAREN expression RPAREN
+
+forStatement ::= LPAREN [statement] [expression] SEMI [expression] RPAREN
+                | LPAREN variableDeclarator COLON expression RPAREN
 
 localVariableDeclarationStatement ::= type variableDeclarators SEMI
 

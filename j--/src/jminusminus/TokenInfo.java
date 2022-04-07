@@ -18,13 +18,13 @@ enum TokenKind {
     // Reserved words
     ABSTRACT("abstract"), BOOLEAN("boolean"), CHAR("char"), BREAK("break"), BYTE("byte"), CLASS("class"), 
     CASE("case"), CATCH("catch"), CONST("const"), CONTINUE("continue"), DEFAULT("default"), DO("do"), DOUBLE("double"),
-    ELSE("else"), EXTENDS("extends"), FINAL("final"), FINALLY("finally"), FLOAT("float"), GOTO("goto"), IMPLEMENTS("implements"),
+    ELSE("else"), EXTENDS("extends"), FINAL("final"), FINALLY("finally"), FLOAT("float"), FOR("for"), GOTO("goto"), IMPLEMENTS("implements"),
     INTERFACE("interface"), IF("if"), IMPORT("import"), 
     INSTANCEOF("instanceof"), INT("int"), LONG("long"), NATIVE("native"), NEW("new"), PACKAGE("package"), 
     PRIVATE("private"), PROTECTED("protected"), PUBLIC("public"), 
     RETURN("return"), SHORT("short"), STRICTFP("strictfp"), SWITCH("switch"), SYNCHRONIZED("synchronized"),
     STATIC("static"), SUPER("super"), THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), THIS("this"), 
-    VOID("void"), WHILE("while"), FOR("for"),
+    VOID("void"), WHILE("while"), 
 
     // Operators
     ASSIGN("="), MINUS_ASSIGN("-="), PLUS_ASSIGN("+="), DIV_ASSIGN("/="), STAR_ASSIGN("*="), MOD_ASSIGN("%="),
