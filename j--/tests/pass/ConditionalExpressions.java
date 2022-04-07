@@ -5,7 +5,7 @@ public class ConditionalExpressions {
         return cond ? input * 2 : input;
     }
 
-    public int ternaryAssignInputIfTrue(boolean cond, int input, int newValue){
-        return cond ? input = newValue : input;
+    public int ternaryAssignInputIfTrueElseDouble(boolean cond, int input, int newValue){
+        return cond ? input = newValue : input*2;
     }
 }
