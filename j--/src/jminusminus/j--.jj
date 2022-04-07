@@ -1331,8 +1331,8 @@ private JExpression conditionalOrExpression(): {
  * Parse a conditional-and expression.
  * 
  * <pre>
- *   conditionalAndExpression ::= equalityExpression        // level 10
- *                                  {LAND equalityExpression}
+ *   conditionalAndExpression ::= inclusiveOrExpression        // level 10
+ *                                  {LAND inclusiveOrExpression}
  * </pre>
  * 
  * @return an AST for a conditionalExpression.
@@ -1344,9 +1344,99 @@ private JExpression conditionalAndExpression(): {
 }
 {
     try {
-        lhs = equalityExpression() { line = lhs.line(); }
+        lhs = inclusiveOrExpression() { line = lhs.line(); }
         (
             <LAND>
+            rhs = inclusiveOrExpression()
+            { lhs = new JLogicalAndOp(line, lhs, rhs); }
+        )*
+    }
+    catch (ParseException e) {
+        recoverFromError(new int[] { SEMI, EOF }, e);
+    }
+    { return lhs; }
+}
+
+/**
+ * Parse a inclusive-or expression.
+ *
+ * <pre>
+ *   inclusiveOrExpression ::= exclusiveOrExpression        // level 9
+ *                                  {BIT_OR exclusiveOrExpression}
+ * </pre>
+ *
+ * @return an AST for a inclusiveOrExpression.
+ */
+
+private JExpression inclusiveOrExpression(): {
+    int line = 0;
+    JExpression lhs = null, rhs = null;
+}
+{
+    try {
+        lhs = exclusiveOrExpression() { line = lhs.line(); }
+        (
+            <BIT_OR>
+            rhs = exclusiveOrExpression()
+            { lhs = new JLogicalAndOp(line, lhs, rhs); }
+        )*
+    }
+    catch (ParseException e) {
+        recoverFromError(new int[] { SEMI, EOF }, e);
+    }
+    { return lhs; }
+}
+
+/**
+ * Parse a exclusive-or expression.
+ *
+ * <pre>
+ *   exclusiveOrExpression ::= andExpression        // level 8
+ *                                  {XOR andExpression}
+ * </pre>
+ *
+ * @return an AST for a exclusiveOrExpression.
+ */
+
+private JExpression exclusiveOrExpression(): {
+    int line = 0;
+    JExpression lhs = null, rhs = null;
+}
+{
+    try {
+        lhs = andExpression() { line = lhs.line(); }
+        (
+            <XOR>
+            rhs = andExpression()
+            { lhs = new JLogicalAndOp(line, lhs, rhs); }
+        )*
+    }
+    catch (ParseException e) {
+        recoverFromError(new int[] { SEMI, EOF }, e);
+    }
+    { return lhs; }
+}
+
+/**
+ * Parse an and expression.
+ *
+ * <pre>
+ *   andExpression ::= equalityExpression        // level 7
+ *                                  {BIT_AND equalityExpression}
+ * </pre>
+ *
+ * @return an AST for a andExpression.
+ */
+
+private JExpression andExpression(): {
+    int line = 0;
+    JExpression lhs = null, rhs = null;
+}
+{
+    try {
+        lhs = equalityExpression() { line = lhs.line(); }
+        (
+            <BIT_AND>
             rhs = equalityExpression()
             { lhs = new JLogicalAndOp(line, lhs, rhs); }
         )*
@@ -1378,7 +1468,11 @@ private JExpression equalityExpression(): {
         (
             <EQ>
             rhs = relationalExpression()
-            { lhs = new JEqualOp(line, lhs, rhs); }
+            { lhs = new JEqualOp(line, lhs, rhs); } |
+
+            <NEQ>
+            rhs = relationalExpression()
+            { lhs = new JNotEqualOp(line, lhs, rhs); }
         )*
     }
     catch (ParseException e) {
@@ -1391,8 +1485,8 @@ private JExpression equalityExpression(): {
  * Parse a relational expression.
  * 
  * <pre>
- *   relationalExpression ::= additiveExpression            // level 5
- *                              [(GT | LE) additiveExpression
+ *   relationalExpression ::= shiftExpression            // level 5
+ *                              [(GT | LT | GE | LE) shiftExpression
  *                              | INSTANCEOF referenceType]
  * </pre>
  * 
@@ -1406,15 +1500,23 @@ private JExpression relationalExpression(): {
 }
 {
     try {
-        lhs = additiveExpression() { line = lhs.line(); }
+        lhs = shiftExpression() { line = lhs.line(); }
         [
             <GT>
-            rhs = additiveExpression()
+            rhs = shiftExpression()
             { lhs = new JGreaterThanOp(line, lhs, rhs); } |
 
+            <LT>
+            rhs = shiftExpression()
+            { lhs = new JLessThanOp(line, lhs, rhs); } |
+
             <LE>
-            rhs = additiveExpression()
+            rhs = shiftExpression()
             { lhs = new JLessEqualOp(line, lhs, rhs); } |
+
+            <GE>
+            rhs = shiftExpression()
+            { lhs = new JGreaterEqualOp(line, lhs, rhs); } |
 
             <INSTANCEOF>
             type = referenceType()
@@ -1428,11 +1530,49 @@ private JExpression relationalExpression(): {
 }
 
 /**
+ * Parse an shift expression.
+ *
+ * <pre>
+ *   shiftExpression ::= additiveExpression         // level 4
+ *                            {(SHIFTR | USHIFTR | SHIFTL) additiveExpression}
+ * </pre>
+ *
+ * @return an AST for an shiftExpression.
+ */
+
+private JExpression shiftExpression(): {
+    int line = 0;
+    JExpression lhs = null, rhs = null;
+}
+{
+    try {
+        lhs = additiveExpression() { line = lhs.line(); }
+        (
+            <SHIFTL>
+            rhs = additiveExpression()
+            { lhs = new JShiftlOp(line, lhs, rhs); } |
+
+            <SHIFTR>
+            rhs = additiveExpression()
+            { lhs = new JShiftrOp(line, lhs, rhs); } |
+
+            <USHIFTR>
+            rhs = additiveExpression()
+            { lhs = new JUshiftrOp(line, lhs, rhs); }
+        )*
+    }
+    catch (ParseException e) {
+        recoverFromError(new int[] { SEMI, EOF }, e);
+    }
+    { return lhs; }
+}
+
+/**
  * Parse an additive expression.
  * 
  * <pre>
  *   additiveExpression ::= multiplicativeExpression         // level 3
- *                            {MINUS multiplicativeExpression}
+ *                            {(PLUS | MINUS) multiplicativeExpression}
  * </pre>
  * 
  * @return an AST for an additiveExpression.
@@ -1466,7 +1606,7 @@ private JExpression additiveExpression(): {
  * 
  * <pre>
  *   multiplicativeExpression ::= unaryExpression        // level 2
- *                                  {STAR unaryExpression}
+ *                                  {(STAR | DIV | MOD) unaryExpression}
  * </pre>
  * 
  * @return an AST for a multiplicativeExpression.
@@ -1508,6 +1648,7 @@ private JExpression multiplicativeExpression(): {
  * 
  * <pre>
  *   unaryExpression ::= INC unaryExpression // level 1
+ *                     | PLUS unaryExpression
  *                     | MINUS unaryExpression
  *                     | simpleUnaryExpression
  * </pre>
@@ -1529,6 +1670,10 @@ private JExpression unaryExpression(): {
         unaryExpr = unaryExpression()
         { expr = new JNegateOp(line, unaryExpr); } |
 
+        <PLUS> { line = token.beginLine; }
+        unaryExpr = unaryExpression()
+        { expr = new JUnaryPlusOp(line, unaryExpr); } |
+
         expr = simpleUnaryExpression()
     }
     catch (ParseException e) {
@@ -1542,7 +1687,8 @@ private JExpression unaryExpression(): {
  * 
  * <pre>
  *   simpleUnaryExpression ::= LNOT unaryExpression
- *                           | LPAREN basicType RPAREN 
+ *                           | TILDE unaryExpression
+ *                           | LPAREN basicType RPAREN
  *                               unaryExpression
  *                           | LPAREN
  *                               referenceType
@@ -1563,6 +1709,10 @@ private JExpression simpleUnaryExpression(): {
         <LNOT> { line = token.beginLine; }
         unaryExpr = unaryExpression()
         { expr = new JLogicalNotOp(line, unaryExpr); } |
+
+        <TILDE> { line = token.beginLine; }
+        unaryExpr = unaryExpression()
+        { expr = new JTildeOp(line, unaryExpr); } |
 
         LOOKAHEAD(<LPAREN> basicType() <RPAREN>)
         <LPAREN> { line = token.beginLine; }
