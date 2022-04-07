@@ -107,10 +107,11 @@ multiplicativeExpression ::= unaryExpression       // level 2
 
 unaryExpression ::= INC unaryExpression // level 1
                   | DEC unaryExpression
-                  | (PLUS | MINUS | TILDE) unaryExpression
+                  | (PLUS | MINUS) unaryExpression
                   | simpleUnaryExpression
 
 simpleUnaryExpression ::= LNOT unaryExpression
+                        | TILDE unaryExpression
                         | LPAREN basicType RPAREN unaryExpression // cast
                         | LPAREN // cast
                             referenceType
