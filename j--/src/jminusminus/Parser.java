@@ -1022,6 +1022,28 @@ public class Parser {
     }
 
     /**
+     * Parse a conditional expression.
+     *
+     * <pre>
+     * conditionalExpression ::= conditionalOrExpression
+     *                          [TERNARY assignmentExpression COLON conditionalExpression] // level 12
+     * </pre>
+     *
+     * @return an AST for a conditionalExpression.
+     */
+    private JExpression conditionalExpression(){
+        int line = scanner.token().line();
+        JExpression lhs = conditionalOrExpression();
+        if (have(TERNARY)){
+            JExpression thenBranch = assignmentExpression();
+            mustBe(COLON);
+            JExpression elseBranch = conditionalOrExpression();
+            return new JConditionalExpression(line, lhs, thenBranch, elseBranch);
+        }
+        return lhs;
+    }
+
+    /**
      * Parse a conditional-or expression.
      *
      * <pre>
@@ -1069,20 +1091,6 @@ public class Parser {
             }
         }
         return lhs;
-    }
-
-
-    private JExpression conditionalExpression(){
-        int line = scanner.token().line();
-        JExpression lhs = conditionalOrExpression();
-        if (have(TERNARY)){
-            JExpression thenBranch = conditionalOrExpression();
-            mustBe(COLON);
-            JExpression elseBranch = conditionalOrExpression();
-            return new JConditionalExpression(line, lhs, thenBranch, elseBranch);
-        }
-        return lhs;
-
     }
 
 

@@ -22,5 +22,6 @@ public class ConditionalExpressionTest extends TestCase{
         this.assertEquals(conditionalExpressions.ternaryDoubleInputIfTrue(9 > 6, 2), 4);
         this.assertEquals(conditionalExpressions.ternaryDoubleInputIfTrue(6 > 9, 3), 3);
         this.assertEquals(conditionalExpressions.ternaryDoubleInputIfTrue(false, 7), 7);
+        this.assertEquals(conditionalExpressions.ternaryAssignInputIfTrue(true, 7, 1), 1);
     }
 }

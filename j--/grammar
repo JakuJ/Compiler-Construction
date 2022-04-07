@@ -78,7 +78,7 @@ assignmentExpression ::= conditionalExpression  // must be a valid lhs
                            | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
                            | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
 
-conditionalExpression ::= conditionalOrExpression TERNARY conditionalOrExpression COLON conditionalOrExpression
+conditionalExpression ::= conditionalOrExpression [TERNARY assignmentExpression COLON conditionalExpression] // level 12
 
 conditionalOrExpression ::= conditionalAndExpression { LOR conditionalAndExpression } // level 11
 
