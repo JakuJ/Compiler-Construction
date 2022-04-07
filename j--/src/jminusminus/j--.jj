@@ -1217,6 +1217,16 @@ private JExpression expression(): {
  *       conditionalOrExpression                // level 13
  *           [( ASSIGN       // must be valid lhs
  *            | PLUS_ASSIGN 
+ *            | MINUS_ASSIGN
+ *            | STAR_ASSIGN
+ *            | DIV_ASSIGN
+ *            | MOD_ASSIGN
+ *            | SHIFTR_ASSIGN
+ *            | USHIFTR_ASSIGN
+ *            | SHIFTL_ASSIGN
+ *            | XOR_ASSIGN
+ *            | BIT_AND_ASSIGN
+ *            | BIT_OR_ASSIGN
  *            )
  *            assignmentExpression]
  * </pre>
@@ -1235,10 +1245,50 @@ private JExpression assignmentExpression(): {
             <ASSIGN>
             rhs = assignmentExpression()
             { lhs = new JAssignOp(line, lhs, rhs); } |
-            
+
             <PLUS_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JPlusAssignOp(line, lhs, rhs); }
+            { lhs = new JPlusAssignOp(line, lhs, rhs); } |
+
+            <MINUS_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JMinusAssignOp(line, lhs, rhs); } |
+
+            <STAR_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JStarAssignOp(line, lhs, rhs); } |
+
+            <DIV_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JDivAssignOp(line, lhs, rhs); } |
+
+            <MOD_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JModAssignOp(line, lhs, rhs); } |
+
+            <SHIFTR_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JShiftrAssignOp(line, lhs, rhs); } |
+
+            <USHIFTR_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JUshiftrAssignOp(line, lhs, rhs); } |
+
+            <SHIFTL_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JShiftlAssignOp(line, lhs, rhs); } |
+
+            <XOR_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JXorAssignOp(line, lhs, rhs); } |
+
+            <BIT_AND_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JBitAndAssignOp(line, lhs, rhs); } |
+
+            <BIT_OR_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JBitOrAssignOp(line, lhs, rhs); }
         ]
     }
     catch (ParseException e) {

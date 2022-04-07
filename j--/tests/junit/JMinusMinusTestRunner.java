@@ -2,8 +2,6 @@
 
 package junit;
 
-import java.io.File;
-import junit.framework.TestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import pass.*;
@@ -28,7 +26,6 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(SubtractionTest.class);
         suite.addTestSuite(LogicalOrTest.class);
         suite.addTestSuite(OperatorsTest.class); 
-        suite.addTestSuite(Double.class);
         suite.addTestSuite(StarTest.class);
         return suite;
     }
