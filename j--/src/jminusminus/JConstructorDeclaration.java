@@ -25,24 +25,18 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
      * number, modifiers, constructor name, formal parameters, and the
      * constructor body.
      * 
-     * @param line
-     *            line in which the constructor declaration occurs in the source
-     *            file.
-     * @param mods
-     *            modifiers.
-     * @param name
-     *            constructor name.
-     * @param params
-     *            the formal parameters.
-     * @param body
-     *            constructor body.
+     * @param line line in which the constructor declaration occurs in the source file.
+     * @param mods modifiers.
+     * @param name constructor name.
+     * @param params the formal parameters.
+     * @param exceptions the throws identifiers 
+     * @param body constructor body.
      */
 
     public JConstructorDeclaration(int line, ArrayList<String> mods,
-            String name, ArrayList<JFormalParameter> params, JBlock body)
-
+            String name, ArrayList<JFormalParameter> params, ArrayList<TypeName> exceptions, JBlock body)
     {
-        super(line, mods, name, Type.CONSTRUCTOR, params, body);
+        super(line, mods, name, Type.CONSTRUCTOR, params, exceptions, body);
     }
 
     /**
@@ -190,6 +184,14 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
                 p.indentLeft();
             }
             p.println("</FormalParameters>");
+        }if (exceptions != null){
+            p.println("<Throws>");
+            for(TypeName type: exceptions){
+                p.indentRight();
+                type.toString();
+                p.indentLeft();
+            }
+            p.println("</Throws>");
         }
         if (body != null) {
             p.println("<Body>");

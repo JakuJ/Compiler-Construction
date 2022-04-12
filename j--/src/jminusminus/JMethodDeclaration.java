@@ -23,6 +23,9 @@ class JMethodDeclaration extends JAST implements JMember {
     /** The formal parameters. */
     protected ArrayList<JFormalParameter> params;
 
+    /** The qualifiedIdentifiers */
+    protected ArrayList<TypeName> exceptions;
+
     /** Method body. */
     protected JBlock body;
 
@@ -46,24 +49,18 @@ class JMethodDeclaration extends JAST implements JMember {
      * line number, method name, return type, formal parameters,
      * and the method body.
      * 
-     * @param line
-     *                line in which the method declaration occurs
-     *                in the source file.
-     * @param mods
-     *                modifiers.
-     * @param name
-     *                method name.
-     * @param returnType
-     *                return type.
-     * @param params
-     *                the formal parameters.
-     * @param body
-     *                method body.
+     * @param line       line in which the constructor declaration occurs in the
+     *                   source file.
+     * @param mods       modifiers.
+     * @param name       constructor name.
+     * @param params     the formal parameters.
+     * @param exceptions the throws identifiers
+     * @param body       constructor body.
      */
 
     public JMethodDeclaration(int line, ArrayList<String> mods,
         String name, Type returnType,
-        ArrayList<JFormalParameter> params, JBlock body)
+        ArrayList<JFormalParameter> params, ArrayList<TypeName> exceptions, JBlock body)
 
     {
         super(line);
@@ -71,6 +68,7 @@ class JMethodDeclaration extends JAST implements JMember {
         this.name = name;
         this.returnType = returnType;
         this.params = params;
+        this.exceptions = exceptions;
         this.body = body;
         this.isAbstract = mods.contains("abstract");
         this.isStatic = mods.contains("static");
@@ -243,6 +241,15 @@ class JMethodDeclaration extends JAST implements JMember {
                 p.indentLeft();
             }
             p.println("</FormalParameters>");
+        }
+        if(exceptions != null){
+            p.println("<Throws>");
+            for (TypeName type : exceptions) {
+                p.indentRight();
+                type.toString();
+                p.indentLeft();
+            }
+            p.println("</Throws>");
         }
         if (body != null) {
             p.println("<Body>");
