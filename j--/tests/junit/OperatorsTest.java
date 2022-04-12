@@ -18,6 +18,12 @@ public class OperatorsTest extends TestCase {
 
     public void testOperators() {
 
+        // Prefix Operators
+        assertEquals(operators.prefixOperator(1), 0);
+        
+        // Postfix Operators
+        assertEquals(operators.postfixOperator(1), 1);
+
         // Shift-wise Operators 
         // ----------------------------------------------------
         assertEquals(operators.shiftLeft(5, 1), 2);

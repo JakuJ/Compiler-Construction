@@ -962,12 +962,14 @@ public class Parser {
         int line = scanner.token().line();
         JExpression expr = expression();
         if (expr instanceof JAssignment || expr instanceof JPreIncrementOp
-                                        || expr instanceof JPostDecrementOp
-                                        || expr instanceof JMessageExpression
-                                        || expr instanceof JSuperConstruction
-                                        || expr instanceof JThisConstruction 
-                                        || expr instanceof JNewOp
-                                        || expr instanceof JNewArrayOp) {
+                || expr instanceof JPreDecrementOp
+                || expr instanceof JPostDecrementOp
+                || expr instanceof JPostIncrementOp
+                || expr instanceof JMessageExpression
+                || expr instanceof JSuperConstruction
+                || expr instanceof JThisConstruction
+                || expr instanceof JNewOp
+                || expr instanceof JNewArrayOp) {
             // So as not to save on stack
             expr.isStatementExpression = true;
         } else {
@@ -1309,8 +1311,8 @@ public class Parser {
         if (have(INC)) {
             return new JPreIncrementOp(line, unaryExpression()); // INC unaryExpression (++num)
 
-        } else if (have(DEC)){
-            return new JPostDecrementOp(line, unaryExpression()); // DEC unaryExpression (--num)
+        } else if (have(DEC)) {
+            return new JPreDecrementOp(line, unaryExpression()); // DEC unaryExpression (--num)
 
         } else if (have(PLUS)) {
             return new JUnaryPlusOp(line, unaryExpression()); // PLUS unaryExpression (+num)
@@ -1376,8 +1378,13 @@ public class Parser {
         while (see(DOT) || see(LBRACK)) {
             primaryExpr = selector(primaryExpr);
         }
-        while (have(DEC)) {
-            primaryExpr = new JPostDecrementOp(line, primaryExpr);
+        while (see(DEC) || see(INC)) {
+            if(have(DEC)){
+
+                primaryExpr = new JPostDecrementOp(line, primaryExpr);
+            } else if (have(INC)){
+                primaryExpr = new JPostIncrementOp(line, primaryExpr);
+            }
         }
         return primaryExpr;
     }
