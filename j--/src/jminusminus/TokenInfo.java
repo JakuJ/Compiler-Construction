@@ -26,14 +26,20 @@ enum TokenKind {
     STATIC("static"), SUPER("super"), THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), THIS("this"), 
     VOID("void"), WHILE("while"), 
 
+    // Comparators
+    EQ("=="),
+    LNOT("!"), LAND("&&"), LOR("||"),
+    GT(">"), GE(">="),
+    LT("<"), LE("<="), 
+
     // Operators
-    ASSIGN("="), MINUS_ASSIGN("-="), PLUS_ASSIGN("+="), DIV_ASSIGN("/="), STAR_ASSIGN("*="), MOD_ASSIGN("%="),
-    EQ("=="), GT(">"),
-    LAND("&&"), LOR("||"), LE("<="), LNOT("!"),
     DEC("--"), INC("++"),
-    MINUS("-"), PLUS("+"), STAR("*"), DIV("/"),  MOD("%"), 
+    MINUS("-"), PLUS("+"), STAR("*"), DIV("/"), MOD("%"),
     SHIFTR(">>"), USHIFTR(">>>"), SHIFTL("<<"),
-    OR("|"), XOR("^"), AND("&"), TILDE("~"),	
+    OR("|"), XOR("^"), AND("&"), TILDE("~"), TERNARY("?"),
+
+    // Assign Operators
+    ASSIGN("="), MINUS_ASSIGN("-="), PLUS_ASSIGN("+="), DIV_ASSIGN("/="), STAR_ASSIGN("*="), MOD_ASSIGN("%="), AND_ASSIGN("&="), XOR_ASSIGN("^="), OR_ASSIGN("|="), USHIFTR_ASSIGN(">>>="), SHIFTR_ASSIGN(">>="), SHIFTL_ASSIGN("<<="),
 
     // Separators
     LPAREN("("), RPAREN(")"), LCURLY("{"), RCURLY("}"), LBRACK("["), 
@@ -43,9 +49,11 @@ enum TokenKind {
     IDENTIFIER("<IDENTIFIER>"), 
 
     // Literals
-    NULL("null"), FALSE("false"), TRUE("true"),
-    INT_LITERAL("<INT_LITERAL>"), DOUBLE_LITERAL("<DOUBLE_LITERAL>"), CHAR_LITERAL("<CHAR_LITERAL>"), 
-    STRING_LITERAL("<STRING_LITERAL>");
+    NULL("null"),
+    FALSE("false"), TRUE("true"),
+    INT_LITERAL("<INT_LITERAL>"), LONG_LITERAL("<LONG_LITERAL>"), 
+    DOUBLE_LITERAL("<DOUBLE_LITERAL>"), FLOAT_LITERAL("<FLOAT_LITERAL>"),
+    CHAR_LITERAL("<CHAR_LITERAL>"), STRING_LITERAL("<STRING_LITERAL>");
 
     /** The token's string representation. */
     private String image;

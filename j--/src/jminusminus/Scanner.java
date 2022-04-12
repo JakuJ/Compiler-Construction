@@ -11,6 +11,8 @@ import java.io.LineNumberReader;
 
 import java.util.Hashtable;
 
+import javax.lang.model.element.Element;
+
 import static jminusminus.TokenKind.*;
 
 /**
@@ -164,9 +166,9 @@ class Scanner {
                     }
                 } else if (ch == '=') {
                     nextCh();
-                    return new TokenInfo(DIV_ASSIGN, line);
+                    return new TokenInfo(DIV_ASSIGN, line); // Token: '/='
                 } else {
-                    return new TokenInfo(DIV, line);
+                    return new TokenInfo(DIV, line); // Token: '/'
                 }
             } else {
                 moreWhiteSpace = false;
@@ -176,135 +178,155 @@ class Scanner {
         switch (ch) {
             case '(':
                 nextCh();
-                return new TokenInfo(LPAREN, line);
+                return new TokenInfo(LPAREN, line); // Token: '('
             case ')':
                 nextCh();
-                return new TokenInfo(RPAREN, line);
+                return new TokenInfo(RPAREN, line); // Token: ')'
             case '{':
                 nextCh();
-                return new TokenInfo(LCURLY, line);
+                return new TokenInfo(LCURLY, line); // Token: '{'
             case '}':
                 nextCh();
-                return new TokenInfo(RCURLY, line);
+                return new TokenInfo(RCURLY, line); // Token: '}'
             case '[':
                 nextCh();
-                return new TokenInfo(LBRACK, line);
+                return new TokenInfo(LBRACK, line); // Token: '['
             case ']':
                 nextCh();
-                return new TokenInfo(RBRACK, line);
+                return new TokenInfo(RBRACK, line); // Token: ']'
             case ';':
                 nextCh();
-                return new TokenInfo(SEMI, line);
+                return new TokenInfo(SEMI, line); // Token: ';'
             case ':':
                 nextCh();
-                return new TokenInfo(COLON, line);
+                return new TokenInfo(COLON, line); // Token: ':'
             case '~':
                 nextCh();
-                return new TokenInfo(TILDE, line); // TILDE '~'
-            case '^':
-                nextCh();
-                return new TokenInfo(XOR, line); // XOR '^'
+                return new TokenInfo(TILDE, line); // Token: '~'
             case ',':
                 nextCh();
-                return new TokenInfo(COMMA, line);
+                return new TokenInfo(COMMA, line); // Token: ','
             case '=':
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    return new TokenInfo(EQ, line);
+                    return new TokenInfo(EQ, line); // Token: '=='
                 } else {
-                    return new TokenInfo(ASSIGN, line);
+                    return new TokenInfo(ASSIGN, line); // Token: '='
                 }
             case '!':
                 nextCh();
-                return new TokenInfo(LNOT, line);
+                return new TokenInfo(LNOT, line); // Token: '!'
+            case '?':
+                nextCh();
+                return new TokenInfo(TERNARY, line); // Token: '?'
             case '*':
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    return new TokenInfo(STAR_ASSIGN, line);
+                    return new TokenInfo(STAR_ASSIGN, line); // Token: '*='
                 } else {
-                    return new TokenInfo(STAR, line);
+                    return new TokenInfo(STAR, line); // Token: '*'
                 }
             case '%':
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    return new TokenInfo(MOD_ASSIGN, line);
+                    return new TokenInfo(MOD_ASSIGN, line); // Token: '%='
                 } else {
-                    return new TokenInfo(MOD, line);
+                    return new TokenInfo(MOD, line); // Token: '%'
                 }
             case '+':
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    return new TokenInfo(PLUS_ASSIGN, line);
+                    return new TokenInfo(PLUS_ASSIGN, line); // Token: '+='
                 } else if (ch == '+') {
                     nextCh();
-                    return new TokenInfo(INC, line);
+                    return new TokenInfo(INC, line); // Token: '++'
                 } else {
-                    return new TokenInfo(PLUS, line);
+                    return new TokenInfo(PLUS, line); // Token: '+'
                 }
             case '-':
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    return new TokenInfo(MINUS_ASSIGN, line);
+                    return new TokenInfo(MINUS_ASSIGN, line); // Token: '-='
                 } else if (ch == '-') {
                     nextCh();
-                    return new TokenInfo(DEC, line);
+                    return new TokenInfo(DEC, line); // Token: '--'
                 } else {
-                    return new TokenInfo(MINUS, line);
+                    return new TokenInfo(MINUS, line); // Token: '-='
                 }
             case '&':
                 nextCh();
-                if (ch == '&') {
+                if (ch == '=') {
                     nextCh();
-                    return new TokenInfo(LAND, line);
+                    return new TokenInfo(AND_ASSIGN, line); // Token: '&='
+                } else if (ch == '&') {
+                    nextCh();
+                    return new TokenInfo(LAND, line); // Token: '&&'
                 } else {
-                    // AND '&'
-                    return new TokenInfo(AND, line);
+                    return new TokenInfo(AND, line); // Token: '&'
+                }
+            case '^':
+                nextCh();
+                if (ch == '=') {
+                    nextCh();
+                    return new TokenInfo(XOR_ASSIGN, line); // Token: '^='
+                } else {
+                    return new TokenInfo(XOR, line); // Token: '^'
                 }
             case '|':
                 nextCh();
-                if (ch == '|') {
+                if (ch == '=') {
                     nextCh();
-                    return new TokenInfo(LOR, line);
+                    return new TokenInfo(OR_ASSIGN, line); // Token: '|='
+                } else if (ch == '|') {
+                    nextCh();
+                    return new TokenInfo(LOR, line); // Token: '||'
                 } else {
-                    nextCh();
-                    return new TokenInfo(OR, line); // OR '|'
+                    return new TokenInfo(OR, line); // Token: '|'
                 }
             case '>':
-
                 nextCh();
-
-                if (ch == '>') {
-
-                    // Needs to check for the SHIFTR '>>' & USHIFTR '>>>'
+                if (ch == '=') {
+                    nextCh();
+                    return new TokenInfo(GE, line); // Token: '>='
+                } else if (ch == '>') {
                     nextCh();
                     if (ch == '>') {
                         nextCh();
-                        return new TokenInfo(USHIFTR, line); // the USHIFTR '>>>'
+                        if (ch == '=') {
+                            nextCh();
+                            return new TokenInfo(USHIFTR_ASSIGN, line); // Token: '>>>='
+                        } else {
+                            return new TokenInfo(USHIFTR, line); // Token: '>>>'
+                        }
+                    } else if (ch == '=') {
+                        nextCh();
+                        return new TokenInfo(SHIFTR_ASSIGN, line); // Token: '>>='
                     } else {
-                        return new TokenInfo(SHIFTR, line); // the SHIFTR '>>'
+                        nextCh();
+                        return new TokenInfo(SHIFTR, line); // Token: '>>'
                     }
-
                 } else {
-                    return new TokenInfo(GT, line);
+                    return new TokenInfo(GT, line); // Token: '>'
                 }
-
             case '<':
                 nextCh();
                 if (ch == '=') {
                     nextCh();
-                    return new TokenInfo(LE, line);
+                    return new TokenInfo(LE, line); // Token: '<='
                 } else if (ch == '<') {
                     nextCh();
-                    return new TokenInfo(SHIFTL, line); // the SHIFTL '<<'
-
+                    if (ch == '=') {
+                        return new TokenInfo(SHIFTL_ASSIGN, line); // Token: '<<='
+                    } else {
+                        return new TokenInfo(SHIFTL, line); // Token: '<<'
+                    }
                 } else {
-                    reportScannerError("Operator < is not supported in j--.");
-                    return getNextToken();
+                    return new TokenInfo(LT, line); // Token: '<'
                 }
             case '\'':
                 buffer = new StringBuffer();
@@ -353,16 +375,94 @@ class Scanner {
                     nextCh();
                     buffer.append("\"");
                 }
-                return new TokenInfo(STRING_LITERAL, buffer.toString(), line);
+                return new TokenInfo(STRING_LITERAL, buffer.toString(), line); // Token: 'string'
             case '.':
                 nextCh();
-                return new TokenInfo(DOT, line);
+                return new TokenInfo(DOT, line); // Token: '.'
             case EOFCH:
-                return new TokenInfo(EOF, line);
+                return new TokenInfo(EOF, line); // Token: 'End of File'
             case '0':
-                // Handle only simple decimal integers for now.
+                /**
+                 * There are a couple ways in Java to declare a number
+                 * since there are multiple number systems in Java
+                 * 
+                 * binary: base-2 01
+                 * octal: base-8 01234567
+                 * decimal: base-10 0123456789
+                 * hex: base-16 0123456789ABCDEF
+                 * 
+                 * Declarations are handled by Java in the following manner:
+                 * decimal: [0-9]
+                 * octal: '0' [0-7]
+                 * hex: '0x' || '0X' [0-9] [a-f] [A-F]
+                 * binary: '0b' || '0B' [0-1]
+                 * 
+                 * a decimal point also separates an integer from a double or float
+                 * float: 0 . [0-9] [f || F]
+                 * double: 0 . [0-9] [d || D]
+                 */
+                buffer = new StringBuffer();
+                buffer.append('0');
                 nextCh();
-                return new TokenInfo(INT_LITERAL, "0", line);
+
+                // check for euler '0e' and decimal '0.' notations
+                if(ch == '.'){
+                    checkDecimalPoint(buffer);
+                } else if (ch == 'e' || ch == 'E'){
+                    checkEuler(buffer);
+                }
+
+                // check for number systems
+                if (ch == 'b' || ch == 'B') {
+                    // Binary Declaration '0[b || B]'
+                    buffer.append('b');
+                    nextCh();
+                    // only '1' || '0' should follow
+                    if (isBinary(ch)) {
+                        while (isBinary(ch)) {
+                            buffer.append(ch);
+                            nextCh();
+                        }
+                    } else {
+                        reportScannerError("Binary Declaration error, expected [0-1] received: '%c'", ch);
+                    }
+
+                } else if (ch == 'x' || ch == 'X') {
+                    // Hex Declaration '0[x || X]'
+                    buffer.append('x');
+                    nextCh();
+                    // Must have at least one of: [0-9] [a-f] [A-F]
+                    if (isHex(ch)) {
+                        while (isHex(ch)) {
+                            buffer.append(ch);
+                            nextCh();
+                        }
+                    } else {
+                        reportScannerError("Hex Declaration error, expected [0-9] || [a-f] || [A-F] received: '%c'",
+                                ch);
+                    }
+                } else if (isOctal(ch)) {
+                    // Octal Declaration '0[0-7]'
+                    while (isOctal(ch)) {
+                        buffer.append(ch);
+                        nextCh();
+                    }
+                }
+
+                // check for literal type declarations
+                if (ch == 'f' || ch == 'F') {
+                    nextCh();
+                    return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
+                } else if (ch == 'd' || ch == 'D') {
+                    nextCh();
+                    return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line); // Token: 'DOUBLE_LITERAL'
+                } else if (ch == 'l' || ch == 'L') {
+                    nextCh();
+                    return new TokenInfo(LONG_LITERAL, buffer.toString(), line); // Token: 'LONG_LITERAL'
+                } else {
+                    return new TokenInfo(INT_LITERAL, buffer.toString(), line); // Token: 'INT_LITERAL'
+                }
+
             case '1':
             case '2':
             case '3':
@@ -377,7 +477,35 @@ class Scanner {
                     buffer.append(ch);
                     nextCh();
                 }
-                return new TokenInfo(INT_LITERAL, buffer.toString(), line);
+
+                /**
+                 * From having '[0-9]' the following are possible:
+                 * '.' indicates decimal expression
+                 * 'e' || 'E' indicating euler expression
+                 * 'f || F || d || D || l || L' type declaration
+                 */
+
+                 // check for euler '[0-9]e' and decimal '[0-9].' notations
+                if (ch == '.') {
+                    checkDecimalPoint(buffer);
+                } else if (ch == 'e' || ch == 'E') {
+                    checkEuler(buffer);
+                }
+
+                // check for literal type declarations
+                if (ch == 'f' || ch == 'F') {
+                    nextCh();
+                    return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
+                } else if (ch == 'd' || ch == 'D') {
+                    nextCh();
+                    return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line); // Token: 'DOUBLE_LITERAL'
+                } else if (ch == 'l' || ch == 'L') {
+                    nextCh();
+                    return new TokenInfo(LONG_LITERAL, buffer.toString(), line); // Token: 'LONG_LITERAL'
+                } else {
+                    return new TokenInfo(INT_LITERAL, buffer.toString(), line); // Token: 'INT_LITERAL'
+                }
+
             default:
                 if (isIdentifierStart(ch)) {
                     buffer = new StringBuffer();
@@ -483,6 +611,37 @@ class Scanner {
     }
 
     /**
+     * Checks if the char is part of the accepted hex characters [0-9] || [a-f] ||
+     * [A-F]
+     * 
+     * @param c char, usually scanned ch
+     * @return true || false
+     */
+    private boolean isHex(char c) {
+        return isDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+    }
+
+    /**
+     * Checks if the char is part of the accepted binary characters [0-1]
+     * 
+     * @param c char, usually scanned ch
+     * @return true || false
+     */
+    private boolean isBinary(char c) {
+        return (ch == '1' || ch == '0');
+    }
+
+    /**
+     * Checks if the char is part of the accepted octal characters [0-7]
+     * 
+     * @param c char, usually scanned ch
+     * @return true || false
+     */
+    private boolean isOctal(char c) {
+        return (ch >= '0' && ch <= '7');
+    }
+
+    /**
      * Returns true if the specified character is a whitespace; false otherwise.
      * 
      * @param c
@@ -540,6 +699,73 @@ class Scanner {
         return fileName;
     }
 
+    private TokenInfo checkDecimalPoint(StringBuffer buffer) {
+        // '0.' can be [0-9]
+        while (isDigit(ch)) {
+            buffer.append(ch);
+            nextCh();
+        }
+
+        /**
+         * If we have '0.[0-9]'
+         * 
+         * the possibilities to what could follow are:
+         * float declaration [f || F]
+         * double declaration [d || D]
+         * euler declaration [e || E]
+         */
+        if (ch == 'f' || ch == 'F') {
+            nextCh();
+            return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
+        } else if (ch == 'e' || ch == 'E') {
+            return checkEuler(buffer);
+        }
+
+        // The default is double 
+
+        if (ch == 'd' || ch == 'D') {
+            nextCh();
+        }
+        
+        return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line); // Token: 'DOUBLE_LITERAL'
+    }
+
+    private TokenInfo checkEuler(StringBuffer buffer) {
+        buffer.append('e');
+        nextCh();
+
+        /**
+         * An exponent of base 10 is declared by:
+         * 'e' || 'E' followed by
+         * optional sign [+ || -] followed by
+         * mandatory [0-9] followed by
+         * optional [double declaration || float declaration]
+         */
+        if (ch == '+' || ch == '-') {
+            buffer.append(ch);
+            nextCh();
+        }
+
+        if (isDigit(ch)) {
+            while (isDigit(ch)) {
+                buffer.append(ch);
+                nextCh();
+            }
+        } else {
+            reportScannerError("Euler declaration error, expected [0-9] received: '%c'", ch);
+        }
+
+        if (ch == 'd' || ch == 'D') {
+            nextCh();
+            return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line); // Token: 'DOUBLE_LITERAL'
+        } else if (ch == 'f' || ch == 'F') {
+            nextCh();
+            return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
+        }
+
+        // The default is Token: 'FLOAT_LITERAL' for euler declarations
+        return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
+    }
 }
 
 /**

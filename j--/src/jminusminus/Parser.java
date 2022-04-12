@@ -277,14 +277,14 @@ public class Parser {
      * Are we looking at a basic type? ie.
      * 
      * <pre>
-     * BOOLEAN | CHAR | INT | DOUBLE
+     * BOOLEAN | CHAR | INT | DOUBLE | FLOAT | LONG
      * </pre>
      * 
-     * @return true iff we're looking at a basic type; false otherwise.
+     * @return true if we're looking at a basic type; false otherwise.
      */
 
     private boolean seeBasicType() {
-        return (see(BOOLEAN) || see(CHAR) || see(INT)) || see(DOUBLE);
+        return (see(BOOLEAN) || see(CHAR) || see(INT)) || see(DOUBLE) || see(LONG) || see(FLOAT);
     }
 
     /**
@@ -303,7 +303,7 @@ public class Parser {
             return true;
         } else {
             scanner.recordPosition();
-            if (have(BOOLEAN) || have(CHAR) || have(INT)) {
+            if (have(BOOLEAN) || have(CHAR) || have(INT) || have(DOUBLE) || have(FLOAT) || have(LONG)) {
                 if (have(LBRACK) && see(RBRACK)) {
                     scanner.returnToPosition();
                     return true;
@@ -892,7 +892,7 @@ public class Parser {
      * Parse a basic type.
      * 
      * <pre>
-     *   basicType ::= BOOLEAN | CHAR | INT
+     *   basicType ::= BOOLEAN | CHAR | INT | FLOAT | LONG
      * </pre>
      * 
      * @return an instance of Type.
@@ -907,6 +907,10 @@ public class Parser {
             return Type.INT;
         } else if (have(DOUBLE)) {
             return Type.DOUBLE;
+        } else if (have(LONG)){
+            return Type.LONG;
+        } else if (have(FLOAT)){
+            return Type.FLOAT;
         } else {
             reportParserError("Type sought where %s found", scanner.token()
                     .image());
@@ -1555,19 +1559,23 @@ public class Parser {
      * 
      * <pre>
      *   literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL | DOUBLE_LITERAL
-     *             | TRUE        | FALSE        | NULL
+     *             | TRUE        | FALSE        | NULL           | FLOAT_LITERAL
+     *             | LONG_LITERAL
      * </pre>
      * 
      * @return an AST for a literal.
      */
-
     private JExpression literal() {
         int line = scanner.token().line();
 
         if (have(INT_LITERAL)) {
             return new JLiteralInt(line, scanner.previousToken().image());
+        } else if(have(LONG_LITERAL)){
+            return new JLiteralLong(line, scanner.previousToken().image());
         } else if (have(DOUBLE_LITERAL)){
             return new JLiteralDouble(line, scanner.previousToken().image());
+        } else if (have(FLOAT_LITERAL)){
+            return new JLiteralFloat(line, scanner.previousToken().image());
         } else if (have(CHAR_LITERAL)) {
             return new JLiteralChar(line, scanner.previousToken().image());
         } else if (have(STRING_LITERAL)) {

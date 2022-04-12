@@ -141,4 +141,5 @@ newArrayDeclarator ::= LBRACK expression RBRACK
                          {LBRACK expression RBRACK} {LBRACK RBRACK}
 
 literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL | DOUBLE_LITERAL
-          | TRUE        | FALSE        | NULL
+          | TRUE        | FALSE        | NULL           | FLOAT_LITERAL
+          | LONG_LITERAL
