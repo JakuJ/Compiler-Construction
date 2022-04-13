@@ -365,6 +365,59 @@ public class Parser {
                 see(THREADSAFE) || see(SYNCHRONIZED) || see(CONST) || see(VOLATILE) || see(STRICTFP));
     }
 
+    /**
+     * Are we looking inside the parentheses of a traditional for loop declaration?
+     * ie.
+     * 
+     * <pre>
+     *      for( [forInit] ; [expression] ; [forUpdate])
+     * </pre>
+     * 
+     * @return
+     */
+    private boolean seeTraditional() {
+        boolean result = false;
+        scanner.recordPosition();
+        if (have(SEMI)) {
+            result = true;
+        } else {
+            while (!see(RPAREN)) {
+                scanner.next();
+                if (have(SEMI)) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        scanner.returnToPosition();
+        return result;
+    }
+
+    /**
+     * Are we looking at any of the relational tokens? ie.
+     * 
+     * <pre>
+     *  LT, GT, LE, GE
+     * </pre>
+     * 
+     * @return
+     */
+    private boolean seeRelational(){
+        boolean result = false;
+        scanner.recordPosition();
+        if (have(LT)) {
+            result = true;
+        } else if (have(GT)) {
+            result = true;
+        } else if (have(LE)) {
+            result = true;
+        } else if (have(GE)) {
+            result = true;
+        }
+        scanner.returnToPosition();
+        return result;
+    }
+
     // ////////////////////////////////////////////////
     // Parser Proper /////////////////////////////////
     // ////////////////////////////////////////////////
@@ -1055,6 +1108,7 @@ public class Parser {
      * <pre>
      *   statement ::= block
      *               | IF parExpression statement [ELSE statement]
+     *               | FOR LPAREN [forInit] SEMI [expression] SEMI [forUpdate] RPAREN statement
      *               | WHILE parExpression statement 
      *               | TRY block
                             {CATCH (formalParameter) block}
@@ -1067,7 +1121,6 @@ public class Parser {
      * 
      * @return an AST for a statement.
      */
-
     private JStatement statement() {
         int line = scanner.token().line();
         if (see(LCURLY)) {
@@ -1078,6 +1131,39 @@ public class Parser {
             JStatement consequent = statement();
             JStatement alternate = have(ELSE) ? statement() : null;
             return new JIfStatement(line, test, consequent, alternate);
+
+        } else if (have(FOR)) {
+            boolean isEnhanced = false;
+            JForInit forInit;
+            ArrayList<JStatement> forUpdate;
+            JExpression expression;
+
+            mustBe(LPAREN);
+            if (seeTraditional()) {
+                // Traditional for([forInit]; [expression]; [forUpdate])
+                forInit = see(SEMI) ? null : forInit();
+                mustBe(SEMI);
+                expression = see(SEMI) ? null : expression();
+                mustBe(SEMI);
+                forUpdate = see(RPAREN) ? null : forUpdate();
+
+            } else {
+                // enhanced for(forInit : forUpdate)
+                isEnhanced = true;
+                expression = null;
+                forInit = forInit();
+                mustBe(COLON);
+                forUpdate = forUpdate();
+            }
+
+            mustBe(RPAREN);
+            JStatement statement = statement();
+
+            if (isEnhanced) {
+                return new JForEnhancedStatement(line, forInit, forUpdate, statement);
+            } else {
+                return new JForStatement(line, forInit, expression, forUpdate, statement);
+            }
 
         } else if (have(WHILE)) {
             JExpression test = parExpression();
@@ -1168,6 +1254,12 @@ public class Parser {
 
     private JFormalParameter formalParameter() {
         int line = scanner.token().line();
+
+        if(have(FINAL)){
+            // optional TODO: implement optional final
+            reportParserError("Found final in formalParameter but ignore it!");
+        }
+
         Type type = type();
         mustBe(IDENTIFIER);
         String name = scanner.previousToken().image();
@@ -1192,6 +1284,62 @@ public class Parser {
     }
 
     /**
+     * Parse a for loop initialization section inside the declaration.
+     * 
+     * 
+     * <pre>
+     *      forInit ::= statementExpression {COMMA statementExpression}
+     *                  | [FINAL] type variableDeclarators
+     * </pre>
+     * 
+     * @return
+     */
+    private JForInit forInit() {
+        if (!seeLocalVariableDeclaration()) {
+            ArrayList<JStatement> statements = new ArrayList<JStatement>();
+            statements.add(statementExpression());
+
+            while (have(COMMA)) {
+                statements.add(statementExpression());
+            }
+
+            return new JForInit(null, statements);
+            
+        } else {
+            ArrayList<JVariableDeclarator> variableDeclarators = new ArrayList<JVariableDeclarator>();
+
+            if (have(FINAL)) {
+                // optional TODO: implement optional final
+                reportParserError("Found final in formalParameter but ignore it!");
+            }
+
+            Type type = type();
+            variableDeclarators = variableDeclarators(type);
+            return new JForInit(variableDeclarators, null);
+        }
+    }
+
+    /**
+     * Parse a for loop update section inside the declaration.
+     * 
+     * <pre>
+     *     forUpdate ::= statementExpression {COMMA statementExpression}
+     * </pre>
+     * @return
+     */
+    private ArrayList<JStatement> forUpdate(){
+        ArrayList<JStatement> statements = new ArrayList<JStatement>();
+
+        statements.add(statementExpression());
+
+        while (have(COMMA)) {
+            statements.add(statementExpression());
+        }
+
+        return statements;
+    }
+
+    /**
      * Parse a local variable declaration statement.
      * 
      * <pre>
@@ -1202,7 +1350,6 @@ public class Parser {
      * 
      * @return an AST for a variableDeclaration.
      */
-
     private JVariableDeclaration localVariableDeclarationStatement() {
         int line = scanner.token().line();
         ArrayList<String> mods = new ArrayList<String>();
@@ -1223,7 +1370,6 @@ public class Parser {
      *             type of the variables.
      * @return a list of variable declarators.
      */
-
     private ArrayList<JVariableDeclarator> variableDeclarators(Type type) {
         ArrayList<JVariableDeclarator> variableDeclarators = new ArrayList<JVariableDeclarator>();
         do {
@@ -1244,7 +1390,6 @@ public class Parser {
      *             type of the variable.
      * @return an AST for a variableDeclarator.
      */
-
     private JVariableDeclarator variableDeclarator(Type type) {
         int line = scanner.token().line();
         mustBe(IDENTIFIER);
@@ -1265,7 +1410,6 @@ public class Parser {
      *             type of the variable.
      * @return an AST for a variableInitializer.
      */
-
     private JExpression variableInitializer(Type type) {
         if (see(LCURLY)) {
             return arrayInitializer(type);
@@ -1287,7 +1431,6 @@ public class Parser {
      *             type of the array.
      * @return an AST for an arrayInitializer.
      */
-
     private JArrayInitializer arrayInitializer(Type type) {
         int line = scanner.token().line();
         ArrayList<JExpression> initials = new ArrayList<JExpression>();
@@ -1419,7 +1562,8 @@ public class Parser {
     private JStatement statementExpression() {
         int line = scanner.token().line();
         JExpression expr = expression();
-        if (expr instanceof JAssignment || expr instanceof JPreIncrementOp
+        if (expr instanceof JAssignment 
+                || expr instanceof JPreIncrementOp
                 || expr instanceof JPreDecrementOp
                 || expr instanceof JPostDecrementOp
                 || expr instanceof JPostIncrementOp
@@ -1427,11 +1571,12 @@ public class Parser {
                 || expr instanceof JSuperConstruction
                 || expr instanceof JThisConstruction
                 || expr instanceof JNewOp
+                || expr instanceof JVariable
                 || expr instanceof JNewArrayOp) {
             // So as not to save on stack
             expr.isStatementExpression = true;
         } else {
-            reportParserError("Invalid statement expression; "
+            reportParserError("Invalid statement expression " + expr.type() + "; "
                     + "it does not have a side-effect");
         }
         return new JStatementExpression(line, expr);
@@ -1672,20 +1817,31 @@ public class Parser {
      * 
      * <pre>
      *   relationalExpression ::= shiftExpression       // level 5
-     *                      [(LT | GT | LE | GE) shiftExpression
-     *                      | INSTANCEOF referenceType]
+     *                      ({ (LT | GT | LE | GE) shiftExpression } | INSTANCEOF referenceType)
      * </pre>
      * 
      * @return an AST for a relationalExpression.
      */
-
     private JExpression relationalExpression() {
         int line = scanner.token().line();
         JExpression lhs = shiftExpression();
-        if (have(GT)) {
-            return new JGreaterThanOp(line, lhs, shiftExpression());
-        } else if (have(LE)) {
-            return new JLessEqualOp(line, lhs, shiftExpression());
+
+        if(seeRelational()){
+            do{
+                if (have(LT)) {
+                    return new JLessThanOp(line, lhs, shiftExpression());
+                } else if (have(GT)) {
+                    return new JGreaterThanOp(line, lhs, shiftExpression());
+                } else if (have(LE)) {
+                    return new JLessEqualOp(line, lhs, shiftExpression());
+                } else if (have(GE)) {
+                    return new JGreaterEqualOp(line, lhs, shiftExpression());
+                }
+            }
+            while((see(LAND) || see(LOR)));
+
+            return lhs;
+
         } else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
         } else {
@@ -1855,7 +2011,7 @@ public class Parser {
      * Parse a postfix expression.
      * 
      * <pre>
-     *   postfixExpression ::= primary {selector} {DEC}
+     *   postfixExpression ::= primary {selector} {DEC | INC}
      * </pre>
      * 
      * @return an AST for a postfixExpression.
@@ -1869,7 +2025,6 @@ public class Parser {
         }
         while (see(DEC) || see(INC)) {
             if (have(DEC)) {
-
                 primaryExpr = new JPostDecrementOp(line, primaryExpr);
             } else if (have(INC)) {
                 primaryExpr = new JPostIncrementOp(line, primaryExpr);

@@ -73,28 +73,29 @@ class Scanner {
         reserved.put(BYTE.image(), BYTE);
         reserved.put(CASE.image(), CASE);
         reserved.put(CATCH.image(), CATCH);
-        reserved.put(CONST.image(), CONST);
-        reserved.put(CONTINUE.image(), CONTINUE);
         reserved.put(CHAR.image(), CHAR);
         reserved.put(CLASS.image(), CLASS);
+        reserved.put(CONST.image(), CONST);
+        reserved.put(CONTINUE.image(), CONTINUE);
         reserved.put(DEFAULT.image(), DEFAULT);
         reserved.put(DO.image(), DO);
         reserved.put(DOUBLE.image(), DOUBLE);
         reserved.put(ELSE.image(), ELSE);
         reserved.put(EXTENDS.image(), EXTENDS);
-        reserved.put(FALSE.image(), FALSE);
         reserved.put(FINAL.image(), FINAL);
         reserved.put(FINALLY.image(), FINALLY);
         reserved.put(FLOAT.image(), FLOAT);
+        reserved.put(FOR.image(), FOR);
+        reserved.put(FALSE.image(), FALSE);
         reserved.put(GOTO.image(), GOTO);
-        reserved.put(IMPLEMENTS.image(), IMPLEMENTS);
-        reserved.put(INTERFACE.image(), INTERFACE);
         reserved.put(IF.image(), IF);
+        reserved.put(IMPLEMENTS.image(), IMPLEMENTS);
         reserved.put(IMPORT.image(), IMPORT);
-        reserved.put(LONG.image(), LONG);
-        reserved.put(NATIVE.image(), NATIVE);
         reserved.put(INSTANCEOF.image(), INSTANCEOF);
         reserved.put(INT.image(), INT);
+        reserved.put(INTERFACE.image(), INTERFACE);
+        reserved.put(LONG.image(), LONG);
+        reserved.put(NATIVE.image(), NATIVE);
         reserved.put(NEW.image(), NEW);
         reserved.put(NULL.image(), NULL);
         reserved.put(PACKAGE.image(), PACKAGE);
@@ -103,16 +104,16 @@ class Scanner {
         reserved.put(PUBLIC.image(), PUBLIC);
         reserved.put(RETURN.image(), RETURN);
         reserved.put(SHORT.image(), SHORT);
+        reserved.put(STATIC.image(), STATIC);
         reserved.put(STRICTFP.image(), STRICTFP);
+        reserved.put(SUPER.image(), SUPER);
         reserved.put(SWITCH.image(), SWITCH);
         reserved.put(SYNCHRONIZED.image(), SYNCHRONIZED);
-        reserved.put(STATIC.image(), STATIC);
-        reserved.put(SUPER.image(), SUPER);
+        reserved.put(THIS.image(), THIS);
         reserved.put(THROW.image(), THROW);
         reserved.put(THROWS.image(), THROWS);
         reserved.put(TRANSIENT.image(), TRANSIENT);
         reserved.put(TRY.image(), TRY);
-        reserved.put(THIS.image(), THIS);
         reserved.put(TRUE.image(), TRUE);
         reserved.put(VOID.image(), VOID);
         reserved.put(WHILE.image(), WHILE);
@@ -412,9 +413,13 @@ class Scanner {
 
                 // check for euler '0e' and decimal '0.' notations
                 if(ch == '.'){
-                    checkDecimalPoint(buffer);
+                    buffer.append(ch);
+                    nextCh();
+                    return checkDecimalPoint(buffer);
                 } else if (ch == 'e' || ch == 'E'){
-                    checkEuler(buffer);
+                    buffer.append('e');
+                    nextCh();
+                    return checkEuler(buffer);
                 }
 
                 // check for number systems
@@ -492,13 +497,17 @@ class Scanner {
 
                  // check for euler '[0-9]e' and decimal '[0-9].' notations
                 if (ch == '.') {
-                    checkDecimalPoint(buffer);
+                    buffer.append(ch);
+                    nextCh();
+                    return checkDecimalPoint(buffer);
                 } else if (ch == 'e' || ch == 'E') {
-                    checkEuler(buffer);
+                    buffer.append('e');
+                    nextCh();
+                    return checkEuler(buffer);
                 }
 
                 // check for literal type declarations
-                if (ch == 'f' || ch == 'F') {
+                else if (ch == 'f' || ch == 'F') {
                     nextCh();
                     return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
                 } else if (ch == 'd' || ch == 'D') {
@@ -727,7 +736,6 @@ class Scanner {
         }
 
         // The default is double 
-
         if (ch == 'd' || ch == 'D') {
             nextCh();
         }

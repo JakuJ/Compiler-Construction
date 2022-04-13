@@ -18,7 +18,7 @@ modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT | TRANSIENT | FI
               THREADSAFE | SYNCHRONIZED | CONST | VOLATILE | STRICTFP}
 
 classDeclaration ::= CLASS IDENTIFIER [EXTENDS qualifiedIdentifier] 
-                        [IMPLEMENTS qualifiedIdentifier {, qualifiedIdentifier}]
+                        [IMPLEMENTS qualifiedIdentifier {COMMA qualifiedIdentifier}]
                           classBody
 
 classBody ::= LCURLY SEMI 
@@ -28,7 +28,7 @@ classBody ::= LCURLY SEMI
               RCURLY
 
 interfaceDeclaration ::= INTERFACE IDENTIFIER // cannot be final
-                              [EXTENDS qualifiedIdentifier { ,qualifiedIdentifier}]
+                              [EXTENDS qualifiedIdentifier {COMMA qualifiedIdentifier}]
                                 interfaceBody
 
 interfaceBody ::= LCURLY 
@@ -39,17 +39,17 @@ memberDecl ::= memberDecl ::= classDeclaration        // inner class
                             | interfaceDeclaration   // inner interface
                             | IDENTIFIER            // constructor
                                formalParameters
-                                 [throws qualifiedIdentifier { , qualifiedIdentifier}] block
+                                 [throws qualifiedIdentifier {COMMA qualifiedIdentifier}] block
                             | (VOID | type) IDENTIFIER  // method
                                formalParameters 
-                                 [throws qualifiedIdentifier { , qualifiedIdentifier}] (block | ;)
+                                 [throws qualifiedIdentifier {COMMA qualifiedIdentifier}] (block | SEMI)
                             | type variableDeclarators SEMI
 
 interfaceMemberDecl ::= classDeclaration // inner class 
                       | interfaceDeclaration // inner interface 
                       | (VOID | type) IDENTIFIER // method
                           formalParameters { [ ] }
-                              [throws qualifiedIdentifier {, qualifiedIdentifier}] SEMI
+                              [throws qualifiedIdentifier {COMMA qualifiedIdentifier}] SEMI
                       | type variableDeclarators SEMI // must have inits
 
 block ::= LCURLY {blockStatement} RCURLY 
@@ -59,6 +59,7 @@ blockStatement ::= localVariableDeclarationStatement
 
 statement ::= block
             | IF parExpression statement [ELSE statement]
+            | FOR LPAREN [forInit] SEMI [expression] SEMI [forUpdate] RPAREN statement
             | WHILE parExpression statement 
             | TRY block
                   {CATCH (formalParameter) block}
@@ -75,6 +76,11 @@ formalParameters ::= LPAREN
 formalParameter ::= type IDENTIFIER
 
 parExpression ::= LPAREN expression RPAREN
+
+forInit ::= statementExpression {COMMA statementExpression}
+          | [FINAL] type variableDeclarators
+
+forUpdate ::= statementExpression {COMMA statementExpression}
 
 localVariableDeclarationStatement ::= type variableDeclarators SEMI
 
@@ -124,8 +130,7 @@ equalityExpression ::= relationalExpression  // level 6
                          {(EQ | NEQ) relationalExpression}
 
 relationalExpression ::= shiftExpression       // level 5
-                           [(LT | GT | LE | GE) shiftExpression
-                           | INSTANCEOF referenceType]
+                          ({ (LT | GT | LE | GE) shiftExpression } | INSTANCEOF referenceType)
 
 shiftExpression ::= additiveExpression { ( SHIFTL | SHIFTR | USHIFTR ) additiveExpression } // level 4
 
