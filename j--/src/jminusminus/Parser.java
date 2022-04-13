@@ -4,6 +4,9 @@ package jminusminus;
 
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.naming.spi.DirStateFactory.Result;
+
 import static jminusminus.TokenKind.*;
 
 /**
@@ -166,7 +169,7 @@ public class Parser {
      * Are we looking at an IDENTIFIER followed by a LPAREN? Look ahead to find
      * out.
      * 
-     * @return true iff we're looking at IDENTIFIER LPAREN; false otherwise.
+     * @return true if we're looking at IDENTIFIER LPAREN; false otherwise.
      */
 
     private boolean seeIdentLParen() {
@@ -328,6 +331,23 @@ public class Parser {
         return result;
     }
 
+    /**
+     * Are we looking at a typeDeclarationModifier? ie.
+     * 
+     * <pre>
+     * PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT | FINAL | SCRIPTFP
+     * </pre>
+     * 
+     * This is mostly used to check if there is a class/interface declaration
+     * coming.
+     * 
+     * @return
+     */
+    private boolean seeTypeDeclModifiers() {
+        return (see(PUBLIC) || see(PROTECTED) || see(PRIVATE) || see(STATIC) || see(ABSTRACT) || see(FINAL)
+                || see(STRICTFP));
+    }
+
     // ////////////////////////////////////////////////
     // Parser Proper /////////////////////////////////
     // ////////////////////////////////////////////////
@@ -396,15 +416,109 @@ public class Parser {
      * Parse a type declaration.
      * 
      * <pre>
-     *   typeDeclaration ::= modifiers classDeclaration
+     *   typeDeclaration ::= typeDeclarationModifiers (classDeclaration | interfaceDeclaration)
      * </pre>
      * 
      * @return an AST for a typeDeclaration.
      */
 
     private JAST typeDeclaration() {
-        ArrayList<String> mods = modifiers();
-        return classDeclaration(mods);
+        ArrayList<String> mods = typeDeclarationModifiers();
+
+        if (see(CLASS)) {
+            return classDeclaration(mods);
+        } else if (see(INTERFACE)) {
+            return interfaceDeclaration(mods);
+
+        } else {
+            // This should not happen but in case it does
+            reportParserError("Expected either CLASS or INTERFACE received: " + scanner.token().kind());
+            have(scanner.token().kind());
+            return null;
+        }
+    }
+
+    /**
+     * Parse class or interface modifiers.
+     * 
+     * <pre>
+     *   typeDeclarationModifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | 
+     *                  ABSTRACT | FINAL | STRICTFP}
+     * </pre>
+     * 
+     * Check for duplicates, and conflicts among access modifiers (public,
+     * protected, and private). Otherwise, no checks.
+     * 
+     * @return a list of modifiers.
+     */
+    private ArrayList<String> typeDeclarationModifiers() {
+        ArrayList<String> mods = new ArrayList<String>();
+        boolean scannedPUBLIC = false;
+        boolean scannedPROTECTED = false;
+        boolean scannedPRIVATE = false;
+        boolean scannedSTATIC = false;
+        boolean scannedABSTRACT = false;
+        boolean scannedFINAL = false;
+        boolean scannedSTRICTFP = false;
+        boolean more = true;
+        while (more) {
+            if (have(PUBLIC)) {
+                mods.add("public");
+                if (scannedPUBLIC) {
+                    reportParserError("Repeated modifier: public");
+                }
+                if (scannedPROTECTED || scannedPRIVATE) {
+                    reportParserError("Access conflict in modifiers");
+                }
+                scannedPUBLIC = true;
+            } else if (have(PROTECTED)) {
+                mods.add("protected");
+                if (scannedPROTECTED) {
+                    reportParserError("Repeated modifier: protected");
+                }
+                if (scannedPUBLIC || scannedPRIVATE) {
+                    reportParserError("Access conflict in modifiers");
+                }
+                scannedPROTECTED = true;
+            } else if (have(PRIVATE)) {
+                mods.add("private");
+                if (scannedPRIVATE) {
+                    reportParserError("Repeated modifier: private");
+                }
+                if (scannedPUBLIC || scannedPROTECTED) {
+                    reportParserError("Access conflict in modifiers");
+                }
+                scannedPRIVATE = true;
+            } else if (have(STATIC)) {
+                mods.add("static");
+                if (scannedSTATIC) {
+                    reportParserError("Repeated modifier: static");
+                }
+                scannedSTATIC = true;
+            } else if (have(ABSTRACT)) {
+                mods.add("abstract");
+                if (scannedABSTRACT) {
+                    reportParserError("Repeated modifier: abstract");
+                }
+                scannedABSTRACT = true;
+            } else if (have(FINAL)) {
+                mods.add("final");
+                if (scannedFINAL) {
+                    reportParserError("Repeated modifier: final");
+                }
+                scannedFINAL = true;
+            } else if (have(STRICTFP)) {
+                mods.add("strictfp");
+                if (scannedSTRICTFP) {
+                    reportParserError("Repeated modifier: strictfp");
+                }
+                scannedSTRICTFP = true;
+            } else {
+                more = false;
+            }
+        }
+
+        return mods;
     }
 
     /**
@@ -412,7 +526,8 @@ public class Parser {
      * 
      * <pre>
      *   modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | 
-     *                  ABSTRACT}
+     *                  ABSTRACT | TRANSIENT | FINAL | NATIVE | THREADSAFE | 
+     *                  SYNCHRONIZED | CONST | VOLATILE | STRICTFP }
      * </pre>
      * 
      * Check for duplicates, and conflicts among access modifiers (public,
@@ -428,6 +543,14 @@ public class Parser {
         boolean scannedPRIVATE = false;
         boolean scannedSTATIC = false;
         boolean scannedABSTRACT = false;
+        boolean scannedTRANSIENT = false;
+        boolean scannedFINAL = false;
+        boolean scannedNATIVE = false;
+        boolean scannedTHREADSAFE = false;
+        boolean scannedSYNCHRONIZED = false;
+        boolean scannedCONST = false;
+        boolean scannedVOLATILE = false;
+        boolean scannedSTRICTFP = false;
         boolean more = true;
         while (more)
             if (have(PUBLIC)) {
@@ -469,6 +592,55 @@ public class Parser {
                     reportParserError("Repeated modifier: abstract");
                 }
                 scannedABSTRACT = true;
+            } else if (have(FINAL)) {
+                mods.add("final");
+                if (scannedFINAL) {
+                    reportParserError("Repeated modifier: final");
+                }
+                scannedFINAL = true;
+            } else if (have(TRANSIENT)) {
+                mods.add("transient");
+                if (scannedTRANSIENT) {
+                    reportParserError("Repeated modifier: transient");
+                }
+                scannedTRANSIENT = true;
+            } else if (have(NATIVE)) {
+                mods.add("native");
+                if (scannedNATIVE) {
+                    reportParserError("Repeated modifier: native");
+                }
+                scannedNATIVE = true;
+            } else if (have(THREADSAFE)) {
+                mods.add("threadsafe");
+                if (scannedTHREADSAFE) {
+                    reportParserError("Repeated modifier: threadsafe");
+                }
+                scannedTHREADSAFE = true;
+            } else if (have(SYNCHRONIZED)) {
+                mods.add("synchronized");
+                if (scannedSYNCHRONIZED) {
+                    reportParserError("Repeated modifier: synchronized");
+                }
+                scannedSYNCHRONIZED = true;
+            } else if (have(CONST)) {
+                // Const is reserved but not valid so check in the analysis
+                mods.add("const");
+                if (scannedCONST) {
+                    reportParserError("Repeated modifier: const");
+                }
+                scannedCONST = true;
+            } else if (have(VOLATILE)) {
+                mods.add("volatile");
+                if (scannedVOLATILE) {
+                    reportParserError("Repeated modifier: volatile");
+                }
+                scannedVOLATILE = true;
+            } else if (have(STRICTFP)) {
+                mods.add("strictfp");
+                if (scannedSTRICTFP) {
+                    reportParserError("Repeated modifier: strictfp");
+                }
+                scannedSTRICTFP = true;
             } else {
                 more = false;
             }
@@ -479,9 +651,9 @@ public class Parser {
      * Parse a class declaration.
      * 
      * <pre>
-     *   classDeclaration ::= CLASS IDENTIFIER 
-     *                        [EXTENDS qualifiedIdentifier] 
-     *                        classBody
+     *   classDeclaration ::= CLASS IDENTIFIER [EXTENDS qualifiedIdentifier] 
+     *                          [implements qualifiedIdentifier {, qualifiedIdentifier}]
+     *                              classBody
      * </pre>
      * 
      * A class which doesn't explicitly extend another (super) class implicitly
@@ -498,12 +670,53 @@ public class Parser {
         mustBe(IDENTIFIER);
         String name = scanner.previousToken().image();
         Type superClass;
+        ArrayList<TypeName> implementations = new ArrayList<>();
+
         if (have(EXTENDS)) {
             superClass = qualifiedIdentifier();
         } else {
             superClass = Type.OBJECT;
         }
-        return new JClassDeclaration(line, mods, name, superClass, classBody());
+
+        if (have(IMPLEMENTS)) {
+            implementations.add(qualifiedIdentifier()); // (Exception, NullPointerException, etc.)
+
+            // Needs to check for more identifiers
+            while (have(COMMA)) {
+                implementations.add(qualifiedIdentifier());
+            }
+        }
+
+        return new JClassDeclaration(line, mods, name, superClass, implementations, classBody());
+    }
+
+    /**
+     * Parse an interface declaration
+     * 
+     * interfaceDeclaration ::= INTERFACE IDENTIFIER // cannot be final
+     * [EXTENDS qualifiedIdentifier { ,qualifiedIdentifier}]
+     * interfaceBody
+     * 
+     * @param mods the interface modifiers
+     * @return an AST for a interfaceDeclaration
+     */
+    private JInterfaceDeclaration interfaceDeclaration(ArrayList<String> mods) {
+        int line = scanner.token().line();
+        mustBe(INTERFACE);
+        mustBe(IDENTIFIER);
+        String name = scanner.previousToken().image();
+        ArrayList<TypeName> superClasses = new ArrayList<>(); // in an interface it can be more than one
+
+        if (have(EXTENDS)) {
+            superClasses.add(qualifiedIdentifier());
+            while (have(COMMA)) {
+                superClasses.add(qualifiedIdentifier());
+            }
+        } else {
+            superClasses = null;
+        }
+
+        return new JInterfaceDeclaration(line, mods, name, superClasses, interfaceBody());
     }
 
     /**
@@ -529,41 +742,78 @@ public class Parser {
     }
 
     /**
+     * Parse an interfaceBody
+     * 
+     * interfaceBody ::= LCURLY
+     * modifiers memberDecl
+     * RCURLY
+     * 
+     * @return
+     */
+    private ArrayList<JMember> interfaceBody() {
+        ArrayList<JMember> members = new ArrayList<JMember>();
+
+        mustBe(LCURLY);
+        while (!see(RCURLY) && !see(EOF)) {
+            members.add(interfaceMemberDecl(modifiers()));
+        }
+        mustBe(RCURLY);
+
+        return members;
+    }
+
+    /**
      * Parse a member declaration.
      * 
      * <pre>
-     *   memberDecl ::= IDENTIFIER            // constructor
+     *   memberDecl ::= classDeclaration        // inner class
+     *                 | interfaceDeclaration   // inner interface
+     *                 | IDENTIFIER            // constructor
      *                    formalParameters
      *                    [throws qualifiedIdentifier { , qualifiedIdentifier}] block
-     *                | (VOID | type) IDENTIFIER  // method
+     *                 | (VOID | type) IDENTIFIER  // method
      *                    formalParameters 
      *                      [throws qualifiedIdentifier { , qualifiedIdentifier}] (block | ;)
      *                | type variableDeclarators SEMI
      * </pre>
      * 
      * @param mods
-     *            the class member modifiers.
+     *             the class member modifiers.
      * @return an AST for a memberDecl.
      */
 
     private JMember memberDecl(ArrayList<String> mods) {
         int line = scanner.token().line();
         JMember memberDecl = null;
-        if (seeIdentLParen()) {
+
+        // Needs to check for inner classes and interfaces
+        if (see(CLASS)) {
+            ArrayList<String> subMods = new ArrayList<>();
+            subMods.add(scanner.previousToken().toString());
+            memberDecl = classDeclaration(subMods);
+
+        } else if (see(INTERFACE)) {
+            ArrayList<String> subMods = new ArrayList<>();
+            subMods.add(scanner.previousToken().toString());
+            memberDecl = interfaceDeclaration(subMods);
+        }
+
+        // Check for constructor or methods 
+        else if (seeIdentLParen()) {
             // A constructor
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();
             ArrayList<JFormalParameter> params = formalParameters();
-            ArrayList<TypeName> exceptions = new ArrayList<>(); // holds all qualifiedIdentifiers 
+            ArrayList<TypeName> exceptions = new ArrayList<>(); // holds all qualifiedIdentifiers
 
-            // optional 'throws' 
-            if(have(THROWS)){
-                exceptions.add(qualifiedIdentifier());  // (Exception, NullPointerException, etc.)
+            // optional 'throws'
+            if (have(THROWS)) {
+                exceptions.add(qualifiedIdentifier()); // (Exception, NullPointerException, etc.)
 
                 // Needs to check for more identifiers
-                if(see(COMMA)) {
-                    while(have(COMMA)){
-                        exceptions.add(qualifiedIdentifier()); 
+                if (see(COMMA)) {
+                    while (have(COMMA)) {
+                        exceptions.add(qualifiedIdentifier());
                     }
                 }
             }
@@ -577,18 +827,17 @@ public class Parser {
                 mustBe(IDENTIFIER);
                 String name = scanner.previousToken().image();
                 ArrayList<JFormalParameter> params = formalParameters();
-                ArrayList<TypeName> exceptions = new ArrayList<>(); // holds all qualifiedIdentifiers 
+                ArrayList<TypeName> exceptions = new ArrayList<>(); // holds all qualifiedIdentifiers
 
                 // optional 'throws'
                 if (have(THROWS)) {
                     exceptions.add(qualifiedIdentifier()); // (Exception, NullPointerException, etc.)
 
                     // Needs to check for more identifiers
-                    if (see(COMMA)) {
-                        while (have(COMMA)) {
-                            exceptions.add(qualifiedIdentifier());
-                        }
+                    while (have(COMMA)) {
+                        exceptions.add(qualifiedIdentifier());
                     }
+
                 }
                 JBlock body = have(SEMI) ? null : block();
                 memberDecl = new JMethodDeclaration(line, mods, name, type,
@@ -607,10 +856,8 @@ public class Parser {
                         exceptions.add(qualifiedIdentifier()); // (Exception, NullPointerException, etc.)
 
                         // Needs to check for more identifiers
-                        if (see(COMMA)) {
-                            while (have(COMMA)) {
-                                exceptions.add(qualifiedIdentifier());
-                            }
+                        while (have(COMMA)) {
+                            exceptions.add(qualifiedIdentifier());
                         }
                     }
                     JBlock body = have(SEMI) ? null : block();
@@ -624,6 +871,94 @@ public class Parser {
                 }
             }
         }
+        return memberDecl;
+    }
+
+    /**
+     * Parse a interfaceMemberDecl
+     * 
+     * interfaceMemberDecl ::= classDeclaration // inner class
+     * | interfaceDeclaration // inner interface
+     * | (VOID | type) IDENTIFIER // method
+     * formalParameters { [ ] }
+     * [throws qualifiedIdentifier {, qualifiedIdentifier}] SEMI
+     * | type variableDeclarators SEMI // must have inits
+     * 
+     * @see memberDecl
+     * @param mods interface member modifiers
+     * @return an AST for a interfaceMemberDecl
+     */
+    private JMember interfaceMemberDecl(ArrayList<String> mods) {
+        int line = scanner.token().line();
+        JMember memberDecl = null;
+        Type type = null;
+
+        // Needs to check for inner classes and interfaces
+       if (see(CLASS)) {
+            ArrayList<String> subMods = new ArrayList<>();
+            subMods.add(scanner.previousToken().toString());
+            memberDecl = classDeclaration(subMods);
+
+        } else if (see(INTERFACE)){
+            ArrayList<String> subMods = new ArrayList<>();
+            subMods.add(scanner.previousToken().toString());
+            memberDecl = interfaceDeclaration(subMods);
+        }
+
+        // Checking of methods: (VOID | type) IDENTIFIER
+        else if (have(VOID)) {
+            type = Type.VOID;
+            mustBe(IDENTIFIER);
+            String name = scanner.previousToken().image();
+            ArrayList<JFormalParameter> params = formalParameters(); // formalParameters { [ ] }
+            ArrayList<TypeName> exceptions = new ArrayList<>(); // holds all qualifiedIdentifiers
+
+            // optional 'throws' [throws qualifiedIdentifier {, qualifiedIdentifier}] SEMI
+            if (have(THROWS)) {
+                exceptions.add(qualifiedIdentifier()); // (Exception, NullPointerException, etc.)
+
+                // Needs to check for more identifiers
+                while (have(COMMA)) {
+                    exceptions.add(qualifiedIdentifier());
+                }
+            }
+
+            mustBe(SEMI);
+            
+            // methods in interfaces don't have a body
+            memberDecl = new JMethodDeclaration(line, mods, name, type, params, exceptions, null);
+
+        } else {
+            type = type();
+
+            // Check if it is a method declaration or a variable declaration
+            if (seeIdentLParen()) {
+                mustBe(IDENTIFIER);
+                String name = scanner.previousToken().image();
+                ArrayList<JFormalParameter> params = formalParameters(); // formalParameters { [ ] }
+                ArrayList<TypeName> exceptions = new ArrayList<>(); // holds all qualifiedIdentifiers
+
+                // optional 'throws' [throws qualifiedIdentifier {, qualifiedIdentifier}] SEMI
+                if (have(THROWS)) {
+                    exceptions.add(qualifiedIdentifier()); // (Exception, NullPointerException, etc.)
+
+                    // Needs to check for more identifiers
+                    while (have(COMMA)) {
+                        exceptions.add(qualifiedIdentifier());
+                    }
+                }
+
+                // methods in interfaces don't have a body
+                memberDecl = new JMethodDeclaration(line, mods, name, type, params, exceptions, null);
+
+            } else {
+                // type variableDeclarators SEMI 
+                memberDecl = new JFieldDeclaration(line, mods, variableDeclarators(type));
+            }
+
+            mustBe(SEMI);
+        }
+
         return memberDecl;
     }
 
@@ -702,25 +1037,25 @@ public class Parser {
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
 
-        } else if (have(TRY)){
+        } else if (have(TRY)) {
             JBlock body_try = block();
             JBlock body_catch = null;
             JBlock body_finally = null;
             JFormalParameter param = null;
-            
-            if(have(CATCH)){
+
+            if (have(CATCH)) {
                 mustBe(LPAREN); // Make sure to consume the parentheses
                 param = formalParameter();
                 mustBe(RPAREN);
                 body_catch = block();
 
-                if(have(FINALLY)){
+                if (have(FINALLY)) {
                     body_finally = block();
                 }
 
             } else {
                 mustBe(FINALLY);
-                body_finally = block(); 
+                body_finally = block();
             }
 
             return new JTryCatchStatement(line, body_try, body_catch, body_finally, param);
@@ -983,9 +1318,9 @@ public class Parser {
             return Type.INT;
         } else if (have(DOUBLE)) {
             return Type.DOUBLE;
-        } else if (have(LONG)){
+        } else if (have(LONG)) {
             return Type.LONG;
-        } else if (have(FLOAT)){
+        } else if (have(FLOAT)) {
             return Type.FLOAT;
         } else {
             reportParserError("Type sought where %s found", scanner.token()
@@ -1073,12 +1408,12 @@ public class Parser {
      * Parse an assignment expression.
      * 
      * <pre>
-     *   assignmentExpression ::= 
-     *       conditionalExpressions // level 13
-     *           [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN
-     *           | DIV_ASSIGN | MOD_ASSIGN
-     *           | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
-     *           | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression
+     * assignmentExpression ::=
+     * conditionalExpressions // level 13
+     * [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN
+     * | DIV_ASSIGN | MOD_ASSIGN
+     * | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
+     * | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression
      * 
      * @return an AST for an assignmentExpression.
      */
@@ -1098,6 +1433,18 @@ public class Parser {
             return new JDivAssignOp(line, lhs, assignmentExpression());
         } else if (have(MOD_ASSIGN)) {
             return new JModAssignOp(line, lhs, assignmentExpression());
+        } else if (have(SHIFTR_ASSIGN)) {
+            return new JShiftRAssign(line, lhs, assignmentExpression());
+        } else if (have(USHIFTR_ASSIGN)) {
+            return new JUShiftRAssign(line, lhs, assignmentExpression());
+        } else if (have(SHIFTL_ASSIGN)) {
+            return new JShiftLAssign(line, lhs, assignmentExpression());
+        } else if (have(AND_ASSIGN)) {
+            return new JANDAssign(line, lhs, assignmentExpression());
+        } else if (have(OR_ASSIGN)) {
+            return new JORAssign(line, lhs, assignmentExpression());
+        } else if (have(XOR_ASSIGN)) {
+            return new JXORAssign(line, lhs, assignmentExpression());
         } else {
             return lhs;
         }
@@ -1113,13 +1460,13 @@ public class Parser {
      *
      * @return an AST for a conditionalExpression.
      */
-    private JExpression conditionalExpression(){
+    private JExpression conditionalExpression() {
         int line = scanner.token().line();
         JExpression lhs = conditionalOrExpression();
-        if (have(TERNARY)){
+        if (have(TERNARY)) {
             JExpression thenBranch = assignmentExpression();
             mustBe(COLON);
-            JExpression elseBranch = conditionalOrExpression();
+            JExpression elseBranch = conditionalExpression();
             return new JConditionalExpression(line, lhs, thenBranch, elseBranch);
         }
         return lhs;
@@ -1176,7 +1523,6 @@ public class Parser {
         }
         return lhs;
     }
-
 
     /**
      * Parse an inclusiveOrExpression // level 9
@@ -1476,10 +1822,10 @@ public class Parser {
             primaryExpr = selector(primaryExpr);
         }
         while (see(DEC) || see(INC)) {
-            if(have(DEC)){
+            if (have(DEC)) {
 
                 primaryExpr = new JPostDecrementOp(line, primaryExpr);
-            } else if (have(INC)){
+            } else if (have(INC)) {
                 primaryExpr = new JPostIncrementOp(line, primaryExpr);
             }
         }
@@ -1674,11 +2020,11 @@ public class Parser {
 
         if (have(INT_LITERAL)) {
             return new JLiteralInt(line, scanner.previousToken().image());
-        } else if(have(LONG_LITERAL)){
+        } else if (have(LONG_LITERAL)) {
             return new JLiteralLong(line, scanner.previousToken().image());
-        } else if (have(DOUBLE_LITERAL)){
+        } else if (have(DOUBLE_LITERAL)) {
             return new JLiteralDouble(line, scanner.previousToken().image());
-        } else if (have(FLOAT_LITERAL)){
+        } else if (have(FLOAT_LITERAL)) {
             return new JLiteralFloat(line, scanner.previousToken().image());
         } else if (have(CHAR_LITERAL)) {
             return new JLiteralChar(line, scanner.previousToken().image());

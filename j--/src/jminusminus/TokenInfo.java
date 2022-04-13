@@ -23,8 +23,8 @@ enum TokenKind {
     INSTANCEOF("instanceof"), INT("int"), LONG("long"), NATIVE("native"), NEW("new"), PACKAGE("package"), 
     PRIVATE("private"), PROTECTED("protected"), PUBLIC("public"), 
     RETURN("return"), SHORT("short"), STRICTFP("strictfp"), SWITCH("switch"), SYNCHRONIZED("synchronized"),
-    STATIC("static"), SUPER("super"), THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), THIS("this"), 
-    VOID("void"), WHILE("while"), 
+    STATIC("static"), SUPER("super"), THREADSAFE("threadsafe"), THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), THIS("this"), 
+    VOID("void"), VOLATILE("volatile"), WHILE("while"), 
 
     // Comparators
     EQ("=="),

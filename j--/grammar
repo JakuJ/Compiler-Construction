@@ -9,23 +9,44 @@ compilationUnit ::= [PACKAGE qualifiedIdentifier SEMI]
 
 qualifiedIdentifier ::= IDENTIFIER {DOT IDENTIFIER}
 
-typeDeclaration ::= modifiers classDeclaration
+typeDeclaration ::= typeDeclarationModifiers (classDeclaration | interfaceDeclaration)
 
-modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT}
+typeDeclarationModifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | 
+                                ABSTRACT | FINAL | STRICTFP}
 
-classDeclaration ::= CLASS IDENTIFIER 
-                       [EXTENDS qualifiedIdentifier] 
-                       classBody
+modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT | TRANSIENT | FINAL | NATIVE
+              THREADSAFE | SYNCHRONIZED | CONST | VOLATILE | STRICTFP}
+
+classDeclaration ::= CLASS IDENTIFIER [EXTENDS qualifiedIdentifier] 
+                        [IMPLEMENTS qualifiedIdentifier {, qualifiedIdentifier}]
+                          classBody
 
 classBody ::= LCURLY {modifiers memberDecl} RCURLY
 
-memberDecl ::= IDENTIFIER            // constructor
-                 formalParameters block
-                  [throws qualifiedIdentifier { , qualifiedIdentifier}] (block | SEMI)
-             | (VOID | type) IDENTIFIER  // method
-                 formalParameters { (block | SEMI) }
-                    [throws qualifiedIdentifier { , qualifiedIdentifier}
-             | type variableDeclarators SEMI // field
+interfaceDeclaration ::= INTERFACE IDENTIFIER // cannot be final
+                              [EXTENDS qualifiedIdentifier { ,qualifiedIdentifier}]
+                                interfaceBody
+
+interfaceBody ::= LCURLY 
+                        modifiers interfaceMemberDecl
+                  RCURLY
+
+memberDecl ::= memberDecl ::= classDeclaration        // inner class
+                            | interfaceDeclaration   // inner interface
+                            | IDENTIFIER            // constructor
+                               formalParameters
+                                 [throws qualifiedIdentifier { , qualifiedIdentifier}] block
+                            | (VOID | type) IDENTIFIER  // method
+                               formalParameters 
+                                 [throws qualifiedIdentifier { , qualifiedIdentifier}] (block | ;)
+                            | type variableDeclarators SEMI
+
+interfaceMemberDecl ::= classDeclaration // inner class 
+                      | interfaceDeclaration // inner interface 
+                      | (VOID | type) IDENTIFIER // method
+                          formalParameters { [ ] }
+                              [throws qualifiedIdentifier {, qualifiedIdentifier}] SEMI
+                      | type variableDeclarators SEMI // must have inits
 
 block ::= LCURLY {blockStatement} RCURLY 
 

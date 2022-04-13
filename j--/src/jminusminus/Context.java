@@ -41,6 +41,9 @@ class Context {
     /** The surrounding class context. */
     protected ClassContext classContext;
 
+    /** The surrounding interface context */
+    protected InterfaceContext interfaceContext;
+
     /**
      * The compilation unit context (for the whole source program or file).
      */
@@ -294,7 +297,44 @@ class ClassContext extends Context {
     public JAST definition() {
         return definition;
     }
+}
 
+/**
+ * Represents the context (scope, environment, symbol table) for a type, for
+ * example an interface, in j--. It also keeps track of its surrounding context(s)
+ * and the type whose context it represents.
+ */
+
+class InterfaceContext extends Context {
+
+    /** AST node of the type that this class represents. */
+    private JAST definition;
+
+    /**
+     * Constructs a class context.
+     * 
+     * @param definition
+     *                    the AST node of the type that this class represents.
+     * @param surrounding
+     *                    the surrounding context(s).
+     */
+
+    public InterfaceContext(JAST definition, Context surrounding) {
+        super(surrounding, null, surrounding.compilationUnitContext());
+        interfaceContext = this;
+        this.definition = definition;
+
+    }
+
+    /**
+     * Returns the AST node of the type defined by this class.
+     * 
+     * @return the AST of the type defined by this class.
+     */
+
+    public JAST definition() {
+        return definition;
+    }
 }
 
 /**

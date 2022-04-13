@@ -6,14 +6,41 @@ import java.lang.System;
 
 public class Classes {
 
+    int x = 10;
+
     public static String message() {
         return A.a + ", " + (new B()).b;
     }
 
     public static void main(String[] args) {
-        System.out.println(Classes.message());
+        System.out.println(Classes.message()); // Expect: "Hello, World!"
+        
+        Classes mClasses = new Classes();
+        Classes.InnerClass innerClass = mClasses.new InnerClass();
+        System.out.println(innerClass.y + mClasses.x); // Expect: '15'
+
+        Car car = new Car();
+        car.honk();
+
+        System.out.println(car.brand + " " + car.model); // Expect: 'Ford Mustang'
     }
 
+    class InnerClass {
+        int y = 5;
+    }
+
+}
+
+class Vehicle {
+    protected String brand = "Ford";
+
+    public void honk(){
+        System.out.println("HONK!");
+    }
+}
+
+class Car extends Vehicle {
+    public String model = "Mustang";
 }
 
 class A {
