@@ -216,7 +216,12 @@ class Scanner {
                 }
             case '!':
                 nextCh();
-                return new TokenInfo(LNOT, line); // Token: '!'
+                if(ch == '='){
+                    nextCh();
+                    return new TokenInfo(NEQ, line); // Token: '!='
+                } else {
+                    return new TokenInfo(LNOT, line); // Token: '!'
+                }
             case '?':
                 nextCh();
                 return new TokenInfo(TERNARY, line); // Token: '?'

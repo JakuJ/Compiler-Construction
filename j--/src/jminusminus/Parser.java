@@ -796,30 +796,27 @@ public class Parser {
             ArrayList<String> subMods = new ArrayList<>();
             subMods.add(scanner.previousToken().toString());
             memberDecl = interfaceDeclaration(subMods);
-        }
 
-        // Check for constructor or methods 
-        else if (seeIdentLParen()) {
+        } else if (seeIdentLParen()) {
             // A constructor
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();
             ArrayList<JFormalParameter> params = formalParameters();
-            ArrayList<TypeName> exceptions = new ArrayList<>(); // holds all qualifiedIdentifiers
+            ArrayList<TypeName> exceptions = new ArrayList<>();
 
             // optional 'throws'
             if (have(THROWS)) {
-                exceptions.add(qualifiedIdentifier()); // (Exception, NullPointerException, etc.)
+                exceptions.add(qualifiedIdentifier());
 
                 // Needs to check for more identifiers
-                if (see(COMMA)) {
-                    while (have(COMMA)) {
-                        exceptions.add(qualifiedIdentifier());
-                    }
+                while (have(COMMA)) {
+                    exceptions.add(qualifiedIdentifier());
                 }
             }
             JBlock body = block();
             memberDecl = new JConstructorDeclaration(line, mods, name, params, exceptions, body);
         } else {
+            // A Method
             Type type = null;
             if (have(VOID)) {
                 // void method
@@ -827,18 +824,18 @@ public class Parser {
                 mustBe(IDENTIFIER);
                 String name = scanner.previousToken().image();
                 ArrayList<JFormalParameter> params = formalParameters();
-                ArrayList<TypeName> exceptions = new ArrayList<>(); // holds all qualifiedIdentifiers
+                ArrayList<TypeName> exceptions = new ArrayList<>();
 
                 // optional 'throws'
                 if (have(THROWS)) {
-                    exceptions.add(qualifiedIdentifier()); // (Exception, NullPointerException, etc.)
+                    exceptions.add(qualifiedIdentifier());
 
                     // Needs to check for more identifiers
                     while (have(COMMA)) {
                         exceptions.add(qualifiedIdentifier());
                     }
-
                 }
+
                 JBlock body = have(SEMI) ? null : block();
                 memberDecl = new JMethodDeclaration(line, mods, name, type,
                         params, exceptions, body);
@@ -894,12 +891,12 @@ public class Parser {
         Type type = null;
 
         // Needs to check for inner classes and interfaces
-       if (see(CLASS)) {
+        if (see(CLASS)) {
             ArrayList<String> subMods = new ArrayList<>();
             subMods.add(scanner.previousToken().toString());
             memberDecl = classDeclaration(subMods);
 
-        } else if (see(INTERFACE)){
+        } else if (see(INTERFACE)) {
             ArrayList<String> subMods = new ArrayList<>();
             subMods.add(scanner.previousToken().toString());
             memberDecl = interfaceDeclaration(subMods);
@@ -924,7 +921,7 @@ public class Parser {
             }
 
             mustBe(SEMI);
-            
+
             // methods in interfaces don't have a body
             memberDecl = new JMethodDeclaration(line, mods, name, type, params, exceptions, null);
 
@@ -952,7 +949,7 @@ public class Parser {
                 memberDecl = new JMethodDeclaration(line, mods, name, type, params, exceptions, null);
 
             } else {
-                // type variableDeclarators SEMI 
+                // type variableDeclarators SEMI
                 memberDecl = new JFieldDeclaration(line, mods, variableDeclarators(type));
             }
 
@@ -1598,7 +1595,7 @@ public class Parser {
      * 
      * <pre>
      *   equalityExpression ::= relationalExpression  // level 6
-     *                            {EQ relationalExpression}
+     *                            { ( EQ | NEQ) relationalExpression}
      * </pre>
      * 
      * @return an AST for an equalityExpression.
@@ -1611,11 +1608,10 @@ public class Parser {
         while (more) {
             if (have(EQ)) {
                 lhs = new JEqualOp(line, lhs, relationalExpression());
-            } else {
+            } else if (have(NEQ)){
+                lhs = new JNotEqualOp(line, lhs, relationalExpression());
+            }else {
                 more = false;
-                int x = 1;
-                x++;
-                ++x;
             }
         }
         return lhs;

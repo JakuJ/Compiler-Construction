@@ -1,5 +1,7 @@
 package pass;
 
+import java.util.ArrayList;
+
 public class Exceptions{
 
     public String testTryCatch() {
@@ -29,3 +31,24 @@ public class Exceptions{
         }
     }
 }
+
+public interface testInterface {
+    public void interfaceMethod() throws Exception;
+}
+
+public class testClass implements testInterface {
+    int[] list;
+
+    public testClass(int[] list) throws NullPointerException {
+        if(list != null){
+            this.list = list;
+        } else {
+            throw new NullPointerException();
+        }
+    }
+
+    public void interfaceMethod() throws Exception {
+        int i = 0;
+        throw new Exception();
+    }
+} 

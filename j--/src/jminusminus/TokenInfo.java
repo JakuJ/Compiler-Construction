@@ -27,7 +27,7 @@ enum TokenKind {
     VOID("void"), VOLATILE("volatile"), WHILE("while"), 
 
     // Comparators
-    EQ("=="),
+    EQ("=="), NEQ("!="),
     LNOT("!"), LAND("&&"), LOR("||"),
     GT(">"), GE(">="),
     LT("<"), LE("<="), 
