@@ -544,7 +544,7 @@ private JClassDeclaration classDeclaration(ArrayList<String> mods): {
  * 
  * <pre>
  *   classBody ::= LCURLY
- *                   {modifiers memberDecl}
+ *                   {STATIC block | block | modifiers memberDecl}
  *                 RCURLY
  * </pre>
  * 
@@ -554,14 +554,24 @@ private JClassDeclaration classDeclaration(ArrayList<String> mods): {
 private ArrayList<JMember> classBody(): {
     ArrayList<String> mods = null;
     JMember aMember        = null;
-    ArrayList<JMember> members = new ArrayList<JMember>();
+    JBlock aBlock        = null;
+    ArrayList<JMember> members = new ArrayList<>();
 }
 {
     try {
         <LCURLY>
         (
-            mods = modifiers()
-            aMember = memberDecl(mods) { members.add(aMember); }
+            (
+                <STATIC>
+                aBlock = block() { members.add(new JInitializationBlock(aBlock, true)); }
+            ) |
+            (
+                aBlock = block() { members.add(new JInitializationBlock(aBlock, false)); }
+            ) |
+            (
+                mods = modifiers()
+                aMember = memberDecl(mods) { members.add(aMember); }
+            )
         )*
         <RCURLY>
     }
