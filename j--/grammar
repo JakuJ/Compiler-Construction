@@ -21,7 +21,11 @@ classDeclaration ::= CLASS IDENTIFIER [EXTENDS qualifiedIdentifier]
                         [IMPLEMENTS qualifiedIdentifier {, qualifiedIdentifier}]
                           classBody
 
-classBody ::= LCURLY {modifiers memberDecl} RCURLY
+classBody ::= LCURLY SEMI 
+                      STATIC block
+                      block
+                      modifiers memberDecl
+              RCURLY
 
 interfaceDeclaration ::= INTERFACE IDENTIFIER // cannot be final
                               [EXTENDS qualifiedIdentifier { ,qualifiedIdentifier}]

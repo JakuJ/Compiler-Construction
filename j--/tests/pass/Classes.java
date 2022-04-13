@@ -6,6 +6,12 @@ import java.lang.System;
 
 public class Classes {
 
+    public void tryBlocks() {
+        Blocks a = new Blocks();
+        Blocks b = new Blocks();
+        Blocks c = new Blocks();
+    }
+
     int x = 10;
 
     public static String message() {
@@ -16,7 +22,7 @@ public class Classes {
         System.out.println(Classes.message()); // Expect: "Hello, World!"
         
         Classes mClasses = new Classes();
-        Classes.InnerClass innerClass = mClasses.new InnerClass();
+        Classes.InnerClass innerClass = mClasses.InnerClass();
         System.out.println(innerClass.y + mClasses.x); // Expect: '15'
 
         Car car = new Car();
@@ -53,4 +59,23 @@ class B {
 
     public String b = "World!";
 
+}
+
+class Blocks {
+    ;
+    ;
+
+    private int i;
+
+    public Blocks(int i) {
+        this.i = i;
+    }
+
+    static {
+        System.out.println("I only get called once");
+    }
+
+    {
+        System.out.println("I have been called multiple times!");
+    }
 }

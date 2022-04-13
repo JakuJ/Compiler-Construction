@@ -3,11 +3,24 @@ package fail;
 import java.lang.System;
 
 public class Classes {
-
    
    public static void main(String[] args) {
        Car car = new Car();
        car.honk();
+   }
+
+   class Blocks {
+       ;;
+
+       private int i;
+
+       public Blocks(int i) {
+           this.i = i;
+       }
+
+       static {
+           System.out.println("I only get called once");
+       }
    }
 
 }
@@ -23,3 +36,4 @@ final class Vehicle {
 class Car extends Vehicle {
     public String model = "Mustang";
 }
+

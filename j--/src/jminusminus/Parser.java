@@ -348,6 +348,23 @@ public class Parser {
                 || see(STRICTFP));
     }
 
+    /**
+     * Are we looking at a modifier? ie.
+     * 
+     * <pre>
+     * PUBLIC | PROTECTED | PRIVATE | STATIC |
+     *         ABSTRACT | TRANSIENT | FINAL | NATIVE |
+     *         THREADSAFE | SYNCHRONIZED | CONST | VOLATILE | STRICTFP
+     * </pre>
+     * 
+     * @return
+     */
+    private boolean seeModifiers() {
+        return (see(PUBLIC) || see(PROTECTED) || see(PRIVATE) || see(STATIC) ||
+                see(ABSTRACT) || see(TRANSIENT) || see(FINAL) || see(NATIVE) ||
+                see(THREADSAFE) || see(SYNCHRONIZED) || see(CONST) || see(VOLATILE) || see(STRICTFP));
+    }
+
     // ////////////////////////////////////////////////
     // Parser Proper /////////////////////////////////
     // ////////////////////////////////////////////////
@@ -431,10 +448,16 @@ public class Parser {
             return interfaceDeclaration(mods);
 
         } else {
-            // This should not happen but in case it does
-            reportParserError("Expected either CLASS or INTERFACE received: " + scanner.token().kind());
-            have(scanner.token().kind());
-            return null;
+
+            if (have(SEMI)) {
+                reportParserError("Warning: Ignored lone SEMI");
+                return null;
+            } else {
+                // This should not happen but in case it does
+                reportParserError("Expected either CLASS or INTERFACE received: " + scanner.token().kind());
+                have(scanner.token().kind());
+                return null;
+            }
         }
     }
 
@@ -693,9 +716,11 @@ public class Parser {
     /**
      * Parse an interface declaration
      * 
-     * interfaceDeclaration ::= INTERFACE IDENTIFIER // cannot be final
-     * [EXTENDS qualifiedIdentifier { ,qualifiedIdentifier}]
-     * interfaceBody
+     * <pre>
+     *  interfaceDeclaration ::= INTERFACE IDENTIFIER // cannot be final
+     *                              [EXTENDS qualifiedIdentifier { ,qualifiedIdentifier}]
+     *                                  interfaceBody
+     * </pre>
      * 
      * @param mods the interface modifiers
      * @return an AST for a interfaceDeclaration
@@ -724,7 +749,10 @@ public class Parser {
      * 
      * <pre>
      *   classBody ::= LCURLY
-     *                   {modifiers memberDecl}
+     *                      SEMI
+     *                      static block
+     *                      block
+     *                   modifiers memberDecl
      *                 RCURLY
      * </pre>
      * 
@@ -735,7 +763,20 @@ public class Parser {
         ArrayList<JMember> members = new ArrayList<JMember>();
         mustBe(LCURLY);
         while (!see(RCURLY) && !see(EOF)) {
-            members.add(memberDecl(modifiers()));
+            if (have(SEMI)) {
+                reportParserError("Warning: Ignored lone SEMI");
+
+            } else if (have(STATIC) && see(LCURLY)) {
+                JBlock block = block();
+                members.add(new JStaticBlock(block.line, block.statements()));
+
+            } else if (see(LCURLY)) {
+                JBlock block = block();
+                members.add(new JInitBlock(block.line, block.statements()));
+
+            } else {
+                members.add(memberDecl(modifiers()));
+            }
         }
         mustBe(RCURLY);
         return members;
@@ -744,7 +785,9 @@ public class Parser {
     /**
      * Parse an interfaceBody
      * 
+     * <pre>
      * interfaceBody ::= LCURLY
+     * SEMI
      * modifiers memberDecl
      * RCURLY
      * 
@@ -755,7 +798,12 @@ public class Parser {
 
         mustBe(LCURLY);
         while (!see(RCURLY) && !see(EOF)) {
-            members.add(interfaceMemberDecl(modifiers()));
+            if (have(SEMI)) {
+                reportParserError("Warning: Ignored lone SEMI");
+
+            } else {
+                members.add(interfaceMemberDecl(modifiers()));
+            }
         }
         mustBe(RCURLY);
 
@@ -874,12 +922,14 @@ public class Parser {
     /**
      * Parse a interfaceMemberDecl
      * 
-     * interfaceMemberDecl ::= classDeclaration // inner class
-     * | interfaceDeclaration // inner interface
-     * | (VOID | type) IDENTIFIER // method
-     * formalParameters { [ ] }
-     * [throws qualifiedIdentifier {, qualifiedIdentifier}] SEMI
-     * | type variableDeclarators SEMI // must have inits
+     * <pre>
+     *  interfaceMemberDecl ::= classDeclaration // inner class
+     *                      | interfaceDeclaration // inner interface
+     *                      | (VOID | type) IDENTIFIER // method
+     *                          formalParameters { [ ] }
+     *                              [throws qualifiedIdentifier {, qualifiedIdentifier}] SEMI
+     *                      | type variableDeclarators SEMI // must have inits
+     * </pre>
      * 
      * @see memberDecl
      * @param mods interface member modifiers
@@ -1608,9 +1658,9 @@ public class Parser {
         while (more) {
             if (have(EQ)) {
                 lhs = new JEqualOp(line, lhs, relationalExpression());
-            } else if (have(NEQ)){
+            } else if (have(NEQ)) {
                 lhs = new JNotEqualOp(line, lhs, relationalExpression());
-            }else {
+            } else {
                 more = false;
             }
         }
