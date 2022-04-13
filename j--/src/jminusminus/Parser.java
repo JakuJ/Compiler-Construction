@@ -281,14 +281,14 @@ public class Parser {
      * Are we looking at a basic type? ie.
      * 
      * <pre>
-     * BOOLEAN | CHAR | INT | DOUBLE | FLOAT | LONG
+     * BOOLEAN | CHAR | INT | DOUBLE | FLOAT | LONG | BYTE | SHORT
      * </pre>
      * 
      * @return true if we're looking at a basic type; false otherwise.
      */
 
     private boolean seeBasicType() {
-        return (see(BOOLEAN) || see(CHAR) || see(INT)) || see(DOUBLE) || see(LONG) || see(FLOAT);
+        return (see(BOOLEAN) || see(CHAR) || see(INT)) || see(DOUBLE) || see(LONG) || see(FLOAT) || see(BYTE) || see(SHORT);
     }
 
     /**
@@ -307,7 +307,7 @@ public class Parser {
             return true;
         } else {
             scanner.recordPosition();
-            if (have(BOOLEAN) || have(CHAR) || have(INT) || have(DOUBLE) || have(FLOAT) || have(LONG)) {
+            if (have(BOOLEAN) || have(CHAR) || have(INT) || have(DOUBLE) || have(FLOAT) || have(LONG) || have(BYTE) || have(SHORT)) {
                 if (have(LBRACK) && see(RBRACK)) {
                     scanner.returnToPosition();
                     return true;
@@ -1510,6 +1510,10 @@ public class Parser {
             return Type.DOUBLE;
         } else if (have(LONG)) {
             return Type.LONG;
+        } else if (have(BYTE)) {
+            return Type.INT;
+        } else if (have(SHORT)) {
+            return Type.INT;
         } else if (have(FLOAT)) {
             return Type.FLOAT;
         } else {
