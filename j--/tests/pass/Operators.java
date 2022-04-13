@@ -109,4 +109,22 @@ public class Operators {
     public int bitwiseComplement(int num) {
         return ~num;
     }
+
+    public int preIncrement(int num) {
+        return ++num;
+    }
+
+    public int preDecrement(int num) {
+        return --num;
+    }
+
+    public int postIncrement(int num) {
+        num++;
+        return num;
+    }
+
+    public int postDecrement(int num) {
+        num--;
+        return num;
+    }
 }

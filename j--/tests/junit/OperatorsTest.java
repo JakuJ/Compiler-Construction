@@ -65,6 +65,9 @@ public class OperatorsTest extends TestCase {
         // Unary Operators
         // ----------------------------------------------------
         assertEquals(operators.unaryPlus(5), 5);
-
+        assertEquals(operators.preIncrement(5), 6);
+        assertEquals(operators.postIncrement(5), 6);
+        assertEquals(operators.preDecrement(5), 4);
+        assertEquals(operators.postDecrement(5), 4);
     }
 }

@@ -1642,6 +1642,7 @@ private JExpression multiplicativeExpression(): {
  * 
  * <pre>
  *   unaryExpression ::= INC unaryExpression // level 1
+ *                     | DEC unaryExpression
  *                     | PLUS unaryExpression
  *                     | MINUS unaryExpression
  *                     | simpleUnaryExpression
@@ -1659,6 +1660,10 @@ private JExpression unaryExpression(): {
         <INC> { line = token.beginLine; }
         unaryExpr = unaryExpression()
         { expr = new JPreIncrementOp(line, unaryExpr); } |
+
+        <DEC> { line = token.beginLine; }
+        unaryExpr = unaryExpression()
+        { expr = new JPreDecrementOp(line, unaryExpr); } |
 
         <MINUS> { line = token.beginLine; }
         unaryExpr = unaryExpression()
@@ -1734,7 +1739,7 @@ private JExpression simpleUnaryExpression(): {
  * Parse a postfix expression.
  * 
  * <pre>
- *   postfixExpression ::= primary {selector} {DEC}
+ *   postfixExpression ::= primary {selector} {INC | DEC}
  * </pre>
  * 
  * @return an AST for a postfixExpression.
@@ -1752,7 +1757,10 @@ private JExpression postfixExpression(): {
         )*
         (
             <DEC>
-            { primaryExpr = new JPostDecrementOp(line, primaryExpr); }
+            { primaryExpr = new JPostDecrementOp(line, primaryExpr); } |
+
+            <INC>
+            { primaryExpr = new JPostIncrementOp(line, primaryExpr); }
         )*
     }
     catch (ParseException e) {
