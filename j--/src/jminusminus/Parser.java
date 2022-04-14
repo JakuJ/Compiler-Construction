@@ -1509,13 +1509,13 @@ public class Parser {
         } else if (have(DOUBLE)) {
             return Type.DOUBLE;
         } else if (have(LONG)) {
-            return Type.LONG;
+            return Type.INT;
         } else if (have(BYTE)) {
             return Type.INT;
         } else if (have(SHORT)) {
             return Type.INT;
         } else if (have(FLOAT)) {
-            return Type.FLOAT;
+            return Type.DOUBLE;
         } else {
             reportParserError("Type sought where %s found", scanner.token()
                     .image());
@@ -2225,12 +2225,8 @@ public class Parser {
 
         if (have(INT_LITERAL)) {
             return new JLiteralInt(line, scanner.previousToken().image());
-        } else if (have(LONG_LITERAL)) {
-            return new JLiteralLong(line, scanner.previousToken().image());
         } else if (have(DOUBLE_LITERAL)) {
             return new JLiteralDouble(line, scanner.previousToken().image());
-        } else if (have(FLOAT_LITERAL)) {
-            return new JLiteralFloat(line, scanner.previousToken().image());
         } else if (have(CHAR_LITERAL)) {
             return new JLiteralChar(line, scanner.previousToken().image());
         } else if (have(STRING_LITERAL)) {

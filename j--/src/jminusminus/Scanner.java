@@ -382,11 +382,9 @@ class Scanner {
                     buffer.append("\"");
                 }
                 return new TokenInfo(STRING_LITERAL, buffer.toString(), line); // Token: 'string'
-            case '.':
-                nextCh();
-                return new TokenInfo(DOT, line); // Token: '.'
             case EOFCH:
                 return new TokenInfo(EOF, line); // Token: 'End of File'
+            case '.':
             case '0':
                 /**
                  * There are a couple ways in Java to declare a number
@@ -407,9 +405,23 @@ class Scanner {
                  * float: 0 . [0-9] [f || F]
                  * double: 0 . [0-9] [d || D]
                  */
+
                 buffer = new StringBuffer();
-                buffer.append('0');
-                nextCh();
+                boolean hasDecimal = false;
+
+                // if there's leading DOT & next one is digit - parse numbers
+                // else - return DOT
+                if (ch == '.') {
+                    buffer.append('.');
+                    nextCh();
+                    if (!isDigit(ch)) {
+                        return new TokenInfo(DOT, line);
+                    }
+                    hasDecimal = true;
+                } else {
+                    buffer.append('0');
+                    nextCh();
+                }
 
                 // check for euler '0e' and decimal '0.' notations
                 if (ch == '.') {
@@ -460,15 +472,12 @@ class Scanner {
                 }
 
                 // check for literal type declarations
-                if (ch == 'f' || ch == 'F') {
+                if (ch == 'f' || ch == 'F' || ch == 'd' || ch == 'D') {
                     nextCh();
-                    return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
-                } else if (ch == 'd' || ch == 'D') {
-                    nextCh();
+                    hasDecimal = true;
+                }
+                if(hasDecimal) {
                     return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line); // Token: 'DOUBLE_LITERAL'
-                } else if (ch == 'l' || ch == 'L') {
-                    nextCh();
-                    return new TokenInfo(LONG_LITERAL, buffer.toString(), line); // Token: 'LONG_LITERAL'
                 } else {
                     return new TokenInfo(INT_LITERAL, buffer.toString(), line); // Token: 'INT_LITERAL'
                 }
@@ -495,8 +504,11 @@ class Scanner {
                  * 'f || F || d || D || l || L' type declaration
                  */
 
+                hasDecimal = false;
+
                  // check for euler '[0-9]e' and decimal '[0-9].' notations
                 if (ch == '.') {
+                    hasDecimal = true;
                     buffer.append(ch);
                     nextCh();
                     return checkDecimalPoint(buffer);
@@ -507,15 +519,12 @@ class Scanner {
                 }
 
                 // check for literal type declarations
-                if (ch == 'f' || ch == 'F') {
+                if (ch == 'f' || ch == 'F' || ch == 'd' || ch == 'D') {
                     nextCh();
-                    return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
-                } else if (ch == 'd' || ch == 'D') {
-                    nextCh();
+                    hasDecimal = true;
+                }
+                if(hasDecimal) {
                     return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line); // Token: 'DOUBLE_LITERAL'
-                } else if (ch == 'l' || ch == 'L') {
-                    nextCh();
-                    return new TokenInfo(LONG_LITERAL, buffer.toString(), line); // Token: 'LONG_LITERAL'
                 } else {
                     return new TokenInfo(INT_LITERAL, buffer.toString(), line); // Token: 'INT_LITERAL'
                 }
@@ -728,15 +737,12 @@ class Scanner {
          * double declaration [d || D]
          * euler declaration [e || E]
          */
-        if (ch == 'f' || ch == 'F') {
-            nextCh();
-            return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
-        } else if (ch == 'e' || ch == 'E') {
+        if (ch == 'e' || ch == 'E') {
             return checkEuler(buffer);
         }
 
-        // The default is double 
-        if (ch == 'd' || ch == 'D') {
+        // The default is double
+        if (ch == 'f' || ch == 'F' || ch == 'd' || ch == 'D') {
             nextCh();
         }
         
@@ -765,16 +771,11 @@ class Scanner {
             reportScannerError("Euler declaration error, expected [0-9] received: '%c'", ch);
         }
 
-        if (ch == 'd' || ch == 'D') {
+        if (ch == 'd' || ch == 'D' || ch == 'f' || ch == 'F') {
             nextCh();
-            return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line); // Token: 'DOUBLE_LITERAL'
-        } else if (ch == 'f' || ch == 'F') {
-            nextCh();
-            return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
         }
 
-        // The default is Token: 'FLOAT_LITERAL' for euler declarations
-        return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
+        return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line); // Token: 'DOUBLE_LITERAL'
     }
 }
 
