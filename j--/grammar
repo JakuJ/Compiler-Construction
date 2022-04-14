@@ -72,13 +72,13 @@ statementExpression ::= expression // but must have side-effect, eg i++
 
 expression ::= assignmentExpression
 
-assignmentExpression ::= conditionalOrExpression  // level 13, conditionalOrExpression must be a valid lhs
+assignmentExpression ::= conditionalExpression  // must be a valid lhs
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN
                            | DIV_ASSIGN | MOD_ASSIGN
                            | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
                            | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
 
-// TODO: ternary operator
+conditionalExpression ::= conditionalOrExpression [TERNARY assignmentExpression COLON conditionalExpression] // level 12
 
 conditionalOrExpression ::= conditionalAndExpression { LOR conditionalAndExpression } // level 11
 

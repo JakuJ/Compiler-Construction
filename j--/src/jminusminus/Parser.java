@@ -992,19 +992,18 @@ public class Parser {
      * 
      * <pre>
      *   assignmentExpression ::= 
-     *       conditionalOrExpression // level 13
+     *       conditionalExpressions // level 13
      *           [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN
      *           | DIV_ASSIGN | MOD_ASSIGN
      *           | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
-     *           | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
-     * </pre>
+     *           | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression
      * 
      * @return an AST for an assignmentExpression.
      */
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
-        JExpression lhs = conditionalOrExpression();
+        JExpression lhs = conditionalExpression();
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
@@ -1020,6 +1019,28 @@ public class Parser {
         } else {
             return lhs;
         }
+    }
+
+    /**
+     * Parse a conditional expression.
+     *
+     * <pre>
+     * conditionalExpression ::= conditionalOrExpression
+     *                          [TERNARY assignmentExpression COLON conditionalExpression] // level 12
+     * </pre>
+     *
+     * @return an AST for a conditionalExpression.
+     */
+    private JExpression conditionalExpression(){
+        int line = scanner.token().line();
+        JExpression lhs = conditionalOrExpression();
+        if (have(TERNARY)){
+            JExpression thenBranch = assignmentExpression();
+            mustBe(COLON);
+            JExpression elseBranch = conditionalOrExpression();
+            return new JConditionalExpression(line, lhs, thenBranch, elseBranch);
+        }
+        return lhs;
     }
 
     /**
@@ -1064,15 +1085,14 @@ public class Parser {
         JExpression lhs = inclusiveOrExpression();
         while (more) {
             if (have(LAND)) {
-                lhs = new JLogicalAndOp(line, lhs, inclusiveOrExpression());
-            }else if(have(LOR)){
-                lhs = new JLogicalOrOp(line, lhs, inclusiveOrExpression());
+                lhs = new JLogicalAndOp(line, lhs, equalityExpression());
             } else {
                 more = false;
             }
         }
         return lhs;
     }
+
 
     /**
      * Parse an inclusiveOrExpression // level 9

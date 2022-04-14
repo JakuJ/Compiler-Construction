@@ -21,7 +21,7 @@ public class JMinusMinusTestRunner {
 
         // Start of the addition of new test cases
         suite.addTestSuite(AssignmentsTest.class);
-        suite.addTestSuite(OperatorsTest.class);
+        suite.addTestSuite(OperatorsTest.class); 
         return suite;
     }
 

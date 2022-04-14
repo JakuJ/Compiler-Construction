@@ -33,7 +33,7 @@ enum TokenKind {
     DEC("--"), INC("++"),
     MINUS("-"), PLUS("+"), STAR("*"), DIV("/"),  MOD("%"), 
     SHIFTR(">>"), USHIFTR(">>>"), SHIFTL("<<"),
-    OR("|"), XOR("^"), AND("&"), TILDE("~"),	
+    OR("|"), XOR("^"), AND("&"), TILDE("~"),	TERNARY("?"),
 
     // Separators
     LPAREN("("), RPAREN(")"), LCURLY("{"), RCURLY("}"), LBRACK("["), 

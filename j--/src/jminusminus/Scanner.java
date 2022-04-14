@@ -198,6 +198,9 @@ class Scanner {
             case ':':
                 nextCh();
                 return new TokenInfo(COLON, line);
+            case '?':
+                nextCh();
+                return new TokenInfo(TERNARY, line);
             case '~':
                 nextCh();
                 return new TokenInfo(TILDE, line); // TILDE '~'
