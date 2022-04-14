@@ -124,6 +124,33 @@ class JEqualOp extends JBooleanBinaryExpression {
 
 }
 
+/** The AST node for a logical NOT (!) expression.  */
+class JNotEqualOp extends JBooleanBinaryExpression {
+    public JNotEqualOp(int line, JExpression lhs, JExpression rhs){
+        super(line, "!=", lhs, rhs);
+    }
+
+    public JExpression analyze(Context context) {
+        lhs = (JExpression) lhs.analyze(context);
+        rhs = (JExpression) rhs.analyze(context);
+        lhs.type().mustMatchExpected(line(), rhs.type());
+        type = Type.BOOLEAN;
+        return this;
+    }
+
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+        lhs.codegen(output);
+        rhs.codegen(output);
+        if (lhs.type().isReference()) {
+            output.addBranchInstruction(onTrue ? IF_ACMPEQ : IF_ACMPNE,
+                    targetLabel);
+        } else {
+            output.addBranchInstruction(onTrue ? IF_ICMPEQ : IF_ICMPNE,
+                    targetLabel);
+        }
+    }
+}
+
 /**
  * The AST node for a logical AND (&amp;&amp;) expression. Implements 
  * short-circuiting branching.
