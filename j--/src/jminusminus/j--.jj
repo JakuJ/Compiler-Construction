@@ -520,7 +520,6 @@ private JClassDeclaration classDeclaration(ArrayList<String> mods): {
     int line = 0;
     String name = "";
     Type superClass = Type.OBJECT;
-    Type implementedInterface = Type.OBJECT;
     ArrayList<JMember> classBody = null;
 }
 {
@@ -530,16 +529,13 @@ private JClassDeclaration classDeclaration(ArrayList<String> mods): {
         [
             <EXTENDS> superClass = qualifiedIdentifier()
         ]
-        [
-            <IMPLEMENTS> implementedInterface = qualifiedIdentifier()
-        ]
         classBody = classBody()
     }
     catch (ParseException e) {
         recoverFromError(new int[] { SEMI, EOF }, e);
     }
     {
-        return new JClassDeclaration(line, mods, name, superClass, classBody);
+        return new JClassDeclaration(line, mods, name, superClass, new ArrayList<>(), classBody);
     }
 }
 
@@ -614,8 +610,7 @@ private JMember memberDecl(ArrayList<String> mods): {
             params = formalParameters()
             body = block()
             {
-                memberDecl = new JConstructorDeclaration(line, mods,
-                                                         name, params, body);
+                memberDecl = new JConstructorDeclaration(line, mods, name, params, new ArrayList<>(), body);
             }
         ) |
         LOOKAHEAD((<VOID> | type()) <IDENTIFIER> <LPAREN>)
@@ -632,8 +627,7 @@ private JMember memberDecl(ArrayList<String> mods): {
                 <SEMI>
             )
             {
-                memberDecl = new JMethodDeclaration(line, mods, name,
-                                                    type, params, body);
+                memberDecl = new JMethodDeclaration(line, mods, name, type, params, new ArrayList<>(), body);
             }
         ) |
         (

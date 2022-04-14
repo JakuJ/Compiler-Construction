@@ -13,19 +13,15 @@ abstract class JAssignment extends JBinaryExpression {
     /**
      * Constructs an AST node for an assignment operation.
      *
-     * @param line
-     *                 line in which the assignment operation occurs in the source
+     * @param line     line in which the assignment operation occurs in the source
      *                 file.
-     * @param operator
-     *                 the actual assignment operator.
-     * @param lhs
-     *                 the lhs operand.
-     * @param rhs
-     *                 the rhs operand.
+     * @param operator the actual assignment operator.
+     * @param lhs      the lhs operand.
+     * @param rhs      the rhs operand.
      */
 
     public JAssignment(int line, String operator, JExpression lhs,
-            JExpression rhs) {
+                       JExpression rhs) {
         super(line, operator, lhs, rhs);
     }
 
@@ -42,13 +38,10 @@ class JAssignOp extends JAssignment {
      * Constructs the AST node for an assignment (=) expression given the lhs and
      * rhs operands.
      *
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             lhs operand.
-     * @param rhs
-     *             rhs operand.
+     * @param lhs  lhs operand.
+     * @param rhs  rhs operand.
      */
 
     public JAssignOp(int line, JExpression lhs, JExpression rhs) {
@@ -59,8 +52,7 @@ class JAssignOp extends JAssignment {
      * Analyzes the lhs and rhs, checking that types match, and sets the result
      * type.
      *
-     * @param context
-     *                context in which names are resolved.
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -69,9 +61,9 @@ class JAssignOp extends JAssignment {
             JAST.compilationUnit.reportSemanticError(line(),
                     "Illegal lhs for assignment");
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         rhs.type().mustMatchExpected(line(), lhs.type());
         type = rhs.type();
         if (lhs instanceof JVariable) {
@@ -90,8 +82,7 @@ class JAssignOp extends JAssignment {
      * a statement) copying the Rvalue to its proper place on the stack, and for
      * doing the store.
      *
-     * @param output
-     *               the code emitter (basically an abstraction for producing the
+     * @param output the code emitter (basically an abstraction for producing the
      *               .class file).
      */
 
@@ -118,13 +109,10 @@ class JPlusAssignOp extends JAssignment {
      * Constructs the AST node for a += expression given its lhs and rhs
      * operands.
      *
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JPlusAssignOp(int line, JExpression lhs, JExpression rhs) {
@@ -135,8 +123,7 @@ class JPlusAssignOp extends JAssignment {
      * Analyzes the lhs and rhs, rewrites rhs as lhs + rhs (string concatenation)
      * if lhs is of type {@code String}, and sets the result type.
      *
-     * @param context
-     *                context in which names are resolved.
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -146,9 +133,9 @@ class JPlusAssignOp extends JAssignment {
                     "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
             rhs.type().mustMatchExpected(line(), Type.INT);
             type = Type.INT;
@@ -168,8 +155,7 @@ class JPlusAssignOp extends JAssignment {
      * loading the r-value, for (unless a statement) copying the r-value to its
      * proper place on the stack, and for doing the store.
      *
-     * @param output
-     *               the code emitter (basically an abstraction for producing the
+     * @param output the code emitter (basically an abstraction for producing the
      *               .class file).
      */
 
@@ -202,13 +188,10 @@ class JMinusAssignOp extends JAssignment {
      * Constructs the AST node for a -= expression given its lhs and rhs
      * operands.
      *
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JMinusAssignOp(int line, JExpression lhs, JExpression rhs) {
@@ -218,39 +201,28 @@ class JMinusAssignOp extends JAssignment {
     /**
      * Analyzes the lhs and rhs and sets the result type.
      *
-     * @param context
-     *                context in which names are resolved.
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for -=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for -=: " + lhs.type());
         }
         return this;
     }
@@ -261,8 +233,7 @@ class JMinusAssignOp extends JAssignment {
      * statement) copying the r-value to its
      * proper place on the stack, and for doing the store.
      *
-     * @param output
-     *               the code emitter (basically an abstraction for producing the
+     * @param output the code emitter (basically an abstraction for producing the
      *               .class file).
      */
 
@@ -291,13 +262,10 @@ class JStarAssignOp extends JAssignment {
      * Constructs the AST node for a *= expression given its lhs and rhs
      * operands.
      *
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JStarAssignOp(int line, JExpression lhs, JExpression rhs) {
@@ -307,39 +275,28 @@ class JStarAssignOp extends JAssignment {
     /**
      * Analyzes the lhs and rhs and sets the result type.
      *
-     * @param context
-     *                context in which names are resolved.
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for *=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for *=: " + lhs.type());
         }
         return this;
     }
@@ -350,8 +307,7 @@ class JStarAssignOp extends JAssignment {
      * statement) copying the r-value to its
      * proper place on the stack, and for doing the store.
      *
-     * @param output
-     *               the code emitter (basically an abstraction for producing the
+     * @param output the code emitter (basically an abstraction for producing the
      *               .class file).
      */
 
@@ -380,13 +336,10 @@ class JDivAssignOp extends JAssignment {
      * Constructs the AST node for a /= expression given its lhs and rhs
      * operands.
      *
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JDivAssignOp(int line, JExpression lhs, JExpression rhs) {
@@ -396,8 +349,7 @@ class JDivAssignOp extends JAssignment {
     /**
      * Analyzes the lhs and rhs and sets the result type.
      *
-     * @param context
-     *                context in which names are resolved.
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -407,28 +359,19 @@ class JDivAssignOp extends JAssignment {
                     "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for /=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for /=: " + lhs.type());
         }
         return this;
     }
@@ -439,8 +382,7 @@ class JDivAssignOp extends JAssignment {
      * statement) copying the r-value to its
      * proper place on the stack, and for doing the store.
      *
-     * @param output
-     *               the code emitter (basically an abstraction for producing the
+     * @param output the code emitter (basically an abstraction for producing the
      *               .class file).
      */
 
@@ -470,13 +412,10 @@ class JModAssignOp extends JAssignment {
      * Constructs the AST node for a %= expression given its lhs and rhs
      * operands.
      *
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JModAssignOp(int line, JExpression lhs, JExpression rhs) {
@@ -489,28 +428,19 @@ class JModAssignOp extends JAssignment {
                     "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for %=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for %=: " + lhs.type());
         }
         return this;
     }
@@ -540,14 +470,11 @@ class JShiftRAssign extends JAssignment {
     /**
      * Constructs the AST node for a %= expression given its lhs and rhs
      * operands.
-     * 
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     *
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JShiftRAssign(int line, JExpression lhs, JExpression rhs) {
@@ -560,28 +487,19 @@ class JShiftRAssign extends JAssignment {
                     "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for >>=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for >>=: " + lhs.type());
         }
         return this;
     }
@@ -611,14 +529,11 @@ class JUShiftRAssign extends JAssignment {
     /**
      * Constructs the AST node for a >>>= expression given its lhs and rhs
      * operands.
-     * 
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     *
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JUShiftRAssign(int line, JExpression lhs, JExpression rhs) {
@@ -631,28 +546,19 @@ class JUShiftRAssign extends JAssignment {
                     "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for >>>=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for >>>=: " + lhs.type());
         }
         return this;
     }
@@ -682,14 +588,11 @@ class JShiftLAssign extends JAssignment {
     /**
      * Constructs the AST node for a <<= expression given its lhs and rhs
      * operands.
-     * 
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     *
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JShiftLAssign(int line, JExpression lhs, JExpression rhs) {
@@ -698,32 +601,22 @@ class JShiftLAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for <<=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for <<=: " + lhs.type());
         }
         return this;
     }
@@ -753,14 +646,11 @@ class JANDAssign extends JAssignment {
     /**
      * Constructs the AST node for a &= expression given its lhs and rhs
      * operands.
-     * 
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     *
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JANDAssign(int line, JExpression lhs, JExpression rhs) {
@@ -769,32 +659,22 @@ class JANDAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for &=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for &=: " + lhs.type());
         }
         return this;
     }
@@ -824,14 +704,11 @@ class JORAssign extends JAssignment {
     /**
      * Constructs the AST node for a |= expression given its lhs and rhs
      * operands.
-     * 
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     *
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JORAssign(int line, JExpression lhs, JExpression rhs) {
@@ -840,32 +717,22 @@ class JORAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for |=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for |=: " + lhs.type());
         }
         return this;
     }
@@ -895,14 +762,11 @@ class JXORAssign extends JAssignment {
     /**
      * Constructs the AST node for a ^= expression given its lhs and rhs
      * operands.
-     * 
-     * @param line
-     *             line in which the assignment expression occurs in the source
+     *
+     * @param line line in which the assignment expression occurs in the source
      *             file.
-     * @param lhs
-     *             the lhs operand.
-     * @param rhs
-     *             the rhs operand.
+     * @param lhs  the lhs operand.
+     * @param rhs  the rhs operand.
      */
 
     public JXORAssign(int line, JExpression lhs, JExpression rhs) {
@@ -911,32 +775,22 @@ class JXORAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
-            lhs = (JExpression) ((JLhs) lhs).analyzeLhs(context);
+            lhs = ((JLhs) lhs).analyzeLhs(context);
         }
-        rhs = (JExpression) rhs.analyze(context);
+        rhs = rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
 
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
-
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for ^=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for ^=: " + lhs.type());
         }
         return this;
     }
