@@ -88,12 +88,20 @@ class JForStatement extends JStatement {
      */
 
     public JForStatement analyze(Context context) {
-        
-
-        termination = termination.analyze(context);
-        termination.type().mustMatchExpected(line(), Type.BOOLEAN);
-
-        increment = increment.analyze(context);
+        if (initialization != null){
+            initialization = initialization.analyze(context);
+        } else {
+            init = (JStatement) init.analyze(context);
+        }
+        if (termination != null){
+            termination = termination.analyze(context);
+            termination.type().mustMatchExpected(line(), Type.BOOLEAN);
+        } else if (arr != null) {
+            arr = arr.analyze(context);
+        }
+        if (increment != null){
+            increment = increment.analyze(context);
+        }
         body = (JStatement) body.analyze(context);
         return this;
     }
