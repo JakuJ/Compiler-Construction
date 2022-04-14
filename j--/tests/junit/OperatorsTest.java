@@ -43,8 +43,13 @@ public class OperatorsTest extends TestCase {
         assertTrue(operators.logicalOr(true, true));
         assertFalse(operators.logicalOr(false, false));
 
+        // Prefix Operators
+        assertEquals(operators.prefixOperator(1), 0);
+        
+        // Postfix Operators
+        assertEquals(operators.postfixOperator(1), 1);
 
-        // Shift-wise Operators
+        // Shift-wise Operators 
         // ----------------------------------------------------
         assertEquals(operators.shiftLeft(5, 1), 2);
         assertEquals(operators.shiftRight(5, 1), 2);

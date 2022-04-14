@@ -14,7 +14,7 @@ import static jminusminus.CLConstants.*;
  * @see ClassContext
  */
 
-class JClassDeclaration extends JAST implements JTypeDecl {
+class JClassDeclaration extends JAST implements JTypeDecl, JMember {
 
     /** Class modifiers. */
     private ArrayList<String> mods;
@@ -43,6 +43,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
     /** Static (class) fields of this class. */
     private ArrayList<JFieldDeclaration> staticFieldInitializations;
 
+    /** holds all qualifiedIdentifiers found to be implemented */
+    private ArrayList<TypeName> implementations; 
+
     /**
      * Constructs an AST node for a class declaration given the line number, list
      * of class modifiers, name of the class, its super class type, and the
@@ -61,11 +64,12 @@ class JClassDeclaration extends JAST implements JTypeDecl {
      */
 
     public JClassDeclaration(int line, ArrayList<String> mods, String name,
-            Type superType, ArrayList<JMember> classBlock) {
+            Type superType, ArrayList<TypeName> implementations , ArrayList<JMember> classBlock) {
         super(line);
         this.mods = mods;
         this.name = name;
         this.superType = superType;
+        this.implementations = implementations;
         this.classBlock = classBlock;
         hasExplicitConstructor = false;
         instanceFieldInitializations = new ArrayList<JFieldDeclaration>();
@@ -131,12 +135,25 @@ class JClassDeclaration extends JAST implements JTypeDecl {
     }
 
     /**
+     * This is the pre analyze of a JMember meaning that the interface is the inner
+     * interface
+     */
+    @Override
+    public void preAnalyze(Context context, CLEmitter partial) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
      * Pre-analyzes the members of this declaration in the parent context.
      * Pre-analysis extends to the member headers (including method headers) but
      * not into the bodies.
      * 
+     * This is the pre analyze of a JTypeDecl meaning that the interface is the
+     * outer interface
+     * 
      * @param context
-     *            the parent (compilation unit) context.
+     *                the parent (compilation unit) context.
      */
 
     public void preAnalyze(Context context) {
@@ -279,6 +296,16 @@ class JClassDeclaration extends JAST implements JTypeDecl {
             }
             p.indentLeft();
             p.println("</Modifiers>");
+        }
+        if(implementations != null){
+            p.println("<Implementations>");
+            p.indentRight();
+            for (TypeName type : implementations) {
+                p.indentRight();
+                type.toString();
+                p.indentLeft();
+            }
+            p.println("</Implementations>");
         }
         if (classBlock != null) {
             p.println("<ClassBlock>");
