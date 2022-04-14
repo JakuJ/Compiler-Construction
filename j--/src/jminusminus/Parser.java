@@ -180,6 +180,33 @@ public class Parser {
     }
 
     /**
+     * Are we looking at a static initialization block ie.
+     *
+     * <pre>
+     *   STATIC block ...
+     * </pre>
+     *
+     * Look ahead to find out.
+     *
+     * @return true iff we're looking at a static initialization block; false otherwise.
+     */
+
+    private boolean seeStaticInitBlock() {
+        scanner.recordPosition();
+        if (!have(STATIC)) {
+            scanner.returnToPosition();
+            return false;
+        }
+        if (!have(LCURLY)) {
+            scanner.returnToPosition();
+            return false;
+        }
+
+        scanner.returnToPosition();
+        return true;
+    }
+
+    /**
      * Are we looking at a cast? ie.
      * 
      * <pre>
@@ -819,16 +846,13 @@ public class Parser {
         while (!see(RCURLY) && !see(EOF)) {
             if (have(SEMI)) {
                 reportParserError("Warning: Ignored lone SEMI");
-
-            } else if (see(STATIC) && see(LCURLY)) {
+            } else if (seeStaticInitBlock()) {
                 have(STATIC);
                 JBlock block = block();
                 members.add(new JStaticBlock(block.line, block.statements()));
-
             } else if (see(LCURLY)) {
                 JBlock block = block();
                 members.add(new JInitBlock(block.line, block.statements()));
-
             } else {
                 members.add(memberDecl(modifiers()));
             }
