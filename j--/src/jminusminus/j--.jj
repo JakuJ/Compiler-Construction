@@ -267,7 +267,7 @@ TOKEN: {
   <INT_LITERAL: ("0" | <NON_ZERO_DIGIT> (<DIGIT>)*) >
 | <CHAR_LITERAL: "'" (<ESC> | ~["'","\\","\n","\r"]) "'" >
 | <STRING_LITERAL: "\"" (<ESC> | ~["\"","\\","\n","\r"])* "\"" >
-| <DOUBLE_LITERAL: (<DIGIT>)* ((".")? (<DIGIT>)* (["e", "E"] (["+", "-"])? (<DIGIT>)+)? )? (["d", "D"])? >
+| <DOUBLE_LITERAL: ((<DIGIT>)* "." (<DIGIT>)+ | (<DIGIT>)+ (".")? (<DIGIT>)*) (["e", "E"] (["+", "-"])? (<DIGIT>)+)? (["f", "F", "d", "D"])? >
 | <#ESC: "\\" ["n","t","b","r","f","\\","'","\""] >
 }
 
@@ -1091,13 +1091,8 @@ private JForInit forInit(): {
 }
 {
     try {
+        LOOKAHEAD([<FINAL>] type() variableDeclarator(typ))
         (
-            statement = statementExpression() { statements.add(statement); }
-            (
-                <COMMA> statement = statementExpression() { statements.add(statement); }
-            )*
-            { return new JForInit(null, statements); }
-        ) | (
             [<FINAL> {isFinal = true;}] // TODO: IGNORED FOR NOW
             typ = type()
             declarator = variableDeclarator(typ) { variableDeclarators.add(declarator); }
@@ -1105,6 +1100,12 @@ private JForInit forInit(): {
                 <COMMA> declarator = variableDeclarator(typ) { variableDeclarators.add(declarator); }
             )*
             { return new JForInit(variableDeclarators, null); }
+        ) | (
+            statement = statementExpression() { statements.add(statement); }
+            (
+                <COMMA> statement = statementExpression() { statements.add(statement); }
+            )*
+            { return new JForInit(null, statements); }
         )
     }
     catch (ParseException e) {
@@ -1502,7 +1503,9 @@ private JStatement statementExpression(): {
             line = expr.line();
             if (expr instanceof JAssignment
              || expr instanceof JPreIncrementOp
+             || expr instanceof JPreDecrementOp
              || expr instanceof JPostDecrementOp
+             || expr instanceof JPostIncrementOp
              || expr instanceof JMessageExpression
              || expr instanceof JSuperConstruction
              || expr instanceof JThisConstruction 
@@ -2167,17 +2170,16 @@ private JExpression selector(JExpression target): {
     try {
         <DOT> { line = token.beginLine; }
         id = qualifiedIdentifier()
-        { expr = new JFieldSelection(line, ambiguousPart(id),
-                                     target, id.simpleName()); }
+        { expr = new JFieldSelection(line, ambiguousPart(id), target, id.simpleName()); System.out.println("AAAAAAAAAAAAAAAAAAA"); }
         [
             args = arguments()
-            { expr = new JMessageExpression(line, target,
-                                            ambiguousPart(id),
-                                            id.simpleName(), args);
-            }
-        ] |
-        <LBRACK> { line = token.beginLine; }
-        { expr = new JArrayExpression(line, target, expression()); }
+            { expr = new JMessageExpression(line, target, ambiguousPart(id), id.simpleName(), args); }
+        ]
+
+        |
+
+        <LBRACK>
+        { line = token.beginLine; expr = new JArrayExpression(line, target, expression()); }
         <RBRACK>
     }
     catch (ParseException e) {
