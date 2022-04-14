@@ -412,7 +412,7 @@ class Scanner {
                 nextCh();
 
                 // check for euler '0e' and decimal '0.' notations
-                if(ch == '.'){
+                if (ch == '.') {
                     buffer.append(ch);
                     nextCh();
                     return checkDecimalPoint(buffer);
@@ -507,7 +507,7 @@ class Scanner {
                 }
 
                 // check for literal type declarations
-                else if (ch == 'f' || ch == 'F') {
+                if (ch == 'f' || ch == 'F') {
                     nextCh();
                     return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line); // Token: 'FLOAT_LITERAL'
                 } else if (ch == 'd' || ch == 'D') {
@@ -744,9 +744,6 @@ class Scanner {
     }
 
     private TokenInfo checkEuler(StringBuffer buffer) {
-        buffer.append('e');
-        nextCh();
-
         /**
          * An exponent of base 10 is declared by:
          * 'e' || 'E' followed by
