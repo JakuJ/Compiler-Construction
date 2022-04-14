@@ -42,19 +42,21 @@ public abstract class ReservedWords extends Object implements someInterface {
     }
 
     public void typePrinter(String type) {
-        switch (type) {
-            case "boolean":
-                System.out.println(this.booleanField);
-                break;
-            case "byte":
-                System.out.println(this.byteField);
-            default:
-                System.out.println("Type does not exist");
-        }
+        // TODO: SUPPORT SWITCH STATEMENTS
+        // switch (type) {
+        //    case "boolean":
+        //        System.out.println(this.booleanField);
+        //        break;
+        //    case "byte":
+        //        System.out.println(this.byteField);
+        //    default:
+        //        System.out.println("Type does not exist");
+        // }
     }
 
     public void listPrinter() throws RuntimeException {
-        ArrayList<String> list = new ArrayList<>();
+        // WE DON'T HAVE GENERICS
+        // ArrayList<String> list = new ArrayList<>();
         for (String i : list) {
             if (i.equals("Break here")) {
                 break;

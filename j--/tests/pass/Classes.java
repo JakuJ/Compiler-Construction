@@ -60,8 +60,6 @@ class B {
 }
 
 class Blocks {
-    ;
-    ;
 
     private int i;
 

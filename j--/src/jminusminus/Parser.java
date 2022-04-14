@@ -628,7 +628,7 @@ public class Parser {
         boolean scannedVOLATILE = false;
         boolean scannedSTRICTFP = false;
         boolean more = true;
-        while (more)
+        while (more) {
             if (have(PUBLIC)) {
                 mods.add("public");
                 if (scannedPUBLIC) {
@@ -720,6 +720,7 @@ public class Parser {
             } else {
                 more = false;
             }
+        }
         return mods;
     }
 
@@ -819,7 +820,8 @@ public class Parser {
             if (have(SEMI)) {
                 reportParserError("Warning: Ignored lone SEMI");
 
-            } else if (have(STATIC) && see(LCURLY)) {
+            } else if (see(STATIC) && see(LCURLY)) {
+                have(STATIC);
                 JBlock block = block();
                 members.add(new JStaticBlock(block.line, block.statements()));
 
@@ -1109,13 +1111,16 @@ public class Parser {
      *   statement ::= block
      *               | IF parExpression statement [ELSE statement]
      *               | FOR LPAREN [forInit] SEMI [expression] SEMI [forUpdate] RPAREN statement
-     *               | WHILE parExpression statement 
+     *               | DO statement WHILE parExpression SEMI
+     *               | WHILE parExpression statement
      *               | TRY block
                             {CATCH (formalParameter) block}
                             [finally block]  // Mandatory if there is no CATCH 
      *               | RETURN [expression] SEMI
      *               | THROW expression SEMI
-     *               | SEMI 
+     *               | BREAK SEMI
+     *               | CONTINUE SEMI
+     *               | SEMI
      *               | statementExpression SEMI
      * </pre>
      * 
@@ -1123,9 +1128,15 @@ public class Parser {
      */
     private JStatement statement() {
         int line = scanner.token().line();
-        if (see(LCURLY)) {
+        if (have(BREAK)) {
+            // TODO: JBreakStatement
+            return new JEmptyStatement(line);
+        } else if (have(CONTINUE)) {
+            // TODO: JContinueStatement
+            return new JEmptyStatement(line);
+        }
+        else if (see(LCURLY)) {
             return block();
-
         } else if (have(IF)) {
             JExpression test = parExpression();
             JStatement consequent = statement();
@@ -1165,11 +1176,16 @@ public class Parser {
                 return new JForStatement(line, forInit, expression, forUpdate, statement);
             }
 
+        } else if (have(DO)) {
+            JStatement statement = statement();
+            mustBe(WHILE);
+            JExpression test = parExpression();
+            mustBe(SEMI);
+            return new JDoWhileStatement(line, test, statement);
         } else if (have(WHILE)) {
             JExpression test = parExpression();
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
-
         } else if (have(TRY)) {
             JBlock body_try = block();
             JBlock body_catch = null;

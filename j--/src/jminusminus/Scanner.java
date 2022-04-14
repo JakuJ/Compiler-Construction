@@ -116,6 +116,7 @@ class Scanner {
         reserved.put(TRY.image(), TRY);
         reserved.put(TRUE.image(), TRUE);
         reserved.put(VOID.image(), VOID);
+        reserved.put(VOLATILE.image(), VOLATILE);
         reserved.put(WHILE.image(), WHILE);
 
         // Prime the pump.
