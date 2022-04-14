@@ -328,6 +328,7 @@ class Scanner {
                 } else if (ch == '<') {
                     nextCh();
                     if (ch == '=') {
+                        nextCh();
                         return new TokenInfo(SHIFTL_ASSIGN, line); // Token: '<<='
                     } else {
                         return new TokenInfo(SHIFTL, line); // Token: '<<'

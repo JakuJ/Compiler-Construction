@@ -1169,9 +1169,10 @@ public class Parser {
 
         } else if (have(FOR)) {
             boolean isEnhanced = false;
-            JForInit forInit;
-            ArrayList<JStatement> forUpdate;
+            JForInit forInit = null;
+            ArrayList<JStatement> forUpdate = null;
             JExpression expression;
+            JFormalParameter formal = null;
 
             mustBe(LPAREN);
             if (seeTraditional()) {
@@ -1183,21 +1184,20 @@ public class Parser {
                 forUpdate = see(RPAREN) ? null : forUpdate();
 
             } else {
-                // enhanced for(forInit : forUpdate)
+                // enhanced for(formalParameter : expression)
                 isEnhanced = true;
-                expression = null;
-                forInit = forInit();
+                formal = formalParameter();
                 mustBe(COLON);
-                forUpdate = forUpdate();
+                expression = expression();
             }
 
             mustBe(RPAREN);
-            JStatement statement = statement();
+            JStatement body = statement();
 
             if (isEnhanced) {
-                return new JForEnhancedStatement(line, forInit, forUpdate, statement);
+                return new JForeachStatement(line, formal, expression, body);
             } else {
-                return new JForStatement(line, forInit, expression, forUpdate, statement);
+                return new JForStatement(line, forInit, expression, forUpdate, body);
             }
 
         } else if (have(DO)) {

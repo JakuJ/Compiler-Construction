@@ -867,6 +867,8 @@ private JStatement blockStatement(): {
  * <pre>
  *   statement ::= block
  *               | IF parExpression statement [ELSE statement]
+ *               | FOR LPAREN [forInit] SEMI [expression] SEMI [forUpdate] RPAREN statement
+ *               | FOR LPAREN formalParameter COLON qualifiedIdentifier RPAREN statement
  *               | WHILE parExpression statement
  *               | RETURN [expression] SEMI
  *               | SEMI
@@ -878,16 +880,22 @@ private JStatement blockStatement(): {
 
 private JStatement statement(): {
     int line = 0;
-    JStatement statement  = null;
-    JExpression test      = null;
-    JStatement consequent = null;
-    JStatement alternate  = null;
-    JStatement body       = null;
-    JExpression expr      = null;
+    JStatement statement                = null;
+    JExpression test                    = null;
+    JStatement consequent               = null;
+    JStatement alternate                = null;
+    JStatement body                     = null;
+    JExpression expr                    = null;
+    JForInit aForInit                   = null;
+    JStatement aForUpdate               = null;
+    ArrayList<JStatement> forUpdates    = new ArrayList<>();
+    JFormalParameter formal             = null;
 }
 {
     try {
-        statement = block() |
+        statement = block()
+
+        |
         
         <IF> { line = token.beginLine; }
         test = parExpression()
@@ -901,23 +909,60 @@ private JStatement statement(): {
             LOOKAHEAD(<ELSE>)
             <ELSE> alternate = statement()
         ]
-        { statement = new JIfStatement(line, test, consequent, alternate); } |
+        { statement = new JIfStatement(line, test, consequent, alternate); }
+
+        |
+
+        LOOKAHEAD(<FOR><LPAREN> formalParameter() <COLON>)
+        <FOR> { line = token.beginLine; }
+        <LPAREN>
+        formal = formalParameter()
+        <COLON>
+        expr = expression()
+        <RPAREN>
+        body = statement()
+        { statement = new JForeachStatement(line, formal, expr, body); }
+
+        |
+
+        <FOR> { line = token.beginLine; }
+        <LPAREN>
+        [ aForInit = forInit() ]
+        <SEMI>
+        [ expr = expression() ]
+        <SEMI>
+        [
+            aForUpdate = statementExpression() { forUpdates.add(aForUpdate); }
+            (
+                <COMMA> aForUpdate = statementExpression() { forUpdates.add(aForUpdate); }
+            )*
+        ]
+        <RPAREN>
+        body = statement()
+        { statement = new JForStatement(line, aForInit, expr, forUpdates, body); }
+
+        |
 
         <WHILE> { line = token.beginLine; }
         test = parExpression()
         body = statement()
-        { statement = new JWhileStatement(line, test, body); } |
+        { statement = new JWhileStatement(line, test, body); }
+
+        |
 
         <RETURN> { line = token.beginLine; }
         [
             expr = expression()
         ]
         <SEMI>
-        { statement = new JReturnStatement(line, expr); } |
+        { statement = new JReturnStatement(line, expr); }
+
+        |
 
         <SEMI>
-        { line = token.beginLine;
-          statement = new JEmptyStatement( line ); } |
+        { line = token.beginLine; statement = new JEmptyStatement( line ); }
+
+        |
 
         // Must be a statementExpression
         statement = statementExpression()
@@ -927,6 +972,38 @@ private JStatement statement(): {
         recoverFromError(new int[] { SEMI, EOF }, e);
     }
     { return statement; }
+}
+
+
+private JForInit forInit(): {
+    JStatement statement = null;
+    JVariableDeclarator declarator = null;
+    ArrayList<JVariableDeclarator> variableDeclarators = new ArrayList<>();
+    ArrayList<JStatement> statements = new ArrayList<>();
+    boolean isFinal = false;
+    Type typ = null;
+}
+{
+    try {
+        (
+            statement = statementExpression() { statements.add(statement); }
+            (
+                <COMMA> statement = statementExpression() { statements.add(statement); }
+            )*
+            { return new JForInit(null, statements); }
+        ) | (
+            [<FINAL> {isFinal = true;}] // TODO: IGNORED FOR NOW
+            typ = type()
+            declarator = variableDeclarator(typ) { variableDeclarators.add(declarator); }
+            (
+                <COMMA> declarator = variableDeclarator(typ) { variableDeclarators.add(declarator); }
+            )*
+            { return new JForInit(variableDeclarators, null); }
+        )
+    }
+    catch (ParseException e) {
+        recoverFromError(new int[] { SEMI, EOF }, e);
+    }
 }
 
 /**
