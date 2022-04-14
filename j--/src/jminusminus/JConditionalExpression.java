@@ -15,7 +15,17 @@ public class JConditionalExpression extends JExpression{
     }
 
     public JExpression analyze(Context context) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+        condition = (JExpression) condition.analyze(context);
+        condition.type().mustMatchExpected(line(), Type.BOOLEAN);
+        if(thenBranch != null){
+            thenBranch = (JExpression) thenBranch.analyze(context);
+            elseBranch = (JExpression) elseBranch.analyze(context);
+            thenBranch.type().mustMatchExpected(line(), elseBranch.type());
+            type = thenBranch.type();
+        } else {
+            type = condition.type();
+        }
+        return this;
     }
 
     public void codegen(CLEmitter output) {
