@@ -267,7 +267,7 @@ TOKEN: {
   <INT_LITERAL: ("0" | <NON_ZERO_DIGIT> (<DIGIT>)*) >
 | <CHAR_LITERAL: "'" (<ESC> | ~["'","\\","\n","\r"]) "'" >
 | <STRING_LITERAL: "\"" (<ESC> | ~["\"","\\","\n","\r"])* "\"" >
-| <DOUBLE_LITERAL: (<INT_LITERAL> "." (<DIGIT>)*) | ("." <DIGIT> (<DIGIT>)*) >
+| <DOUBLE_LITERAL: (<DIGIT>)* ((".")? (<DIGIT>)* (["e", "E"] (["+", "-"])? (<DIGIT>)+)? )? (["d", "D"])? >
 | <#ESC: "\\" ["n","t","b","r","f","\\","'","\""] >
 }
 
@@ -409,15 +409,18 @@ private JAST typeDeclaration(): {
  */
 
 private ArrayList<String> modifiers(): {
-    ArrayList<String> mods = new ArrayList<String>();
-    boolean scannedPUBLIC    = false;
-    boolean scannedPROTECTED = false;
-    boolean scannedPRIVATE   = false;
-    boolean scannedSTATIC    = false;
-    boolean scannedABSTRACT  = false;
-    boolean scannedFINAL     = false;
-    boolean scannedVOLATILE  = false;
-    boolean scannedTRANSIENT = false;
+    ArrayList<String> mods      = new ArrayList<>();
+    boolean scannedPUBLIC       = false;
+    boolean scannedPROTECTED    = false;
+    boolean scannedPRIVATE      = false;
+    boolean scannedSTATIC       = false;
+    boolean scannedABSTRACT     = false;
+    boolean scannedFINAL        = false;
+    boolean scannedVOLATILE     = false;
+    boolean scannedTRANSIENT    = false;
+    boolean scannedSYNCHRONIZED = false;
+    boolean scannedNATIVE       = false;
+    boolean scannedSTRICTFP     = false;
 }
 {
     try {
@@ -486,6 +489,30 @@ private ArrayList<String> modifiers(): {
                     reportParserError("Repeated modifier: volatile");
                 }
                 scannedVOLATILE = true;
+            } |
+            <SYNCHRONIZED>
+            {
+                mods.add("synchronized");
+                if (scannedSYNCHRONIZED) {
+                    reportParserError("Repeated modifier: synchronized");
+                }
+                scannedSYNCHRONIZED = true;
+            } |
+            <NATIVE>
+            {
+                mods.add("native");
+                if (scannedNATIVE) {
+                    reportParserError("Repeated modifier: native");
+                }
+                scannedNATIVE = true;
+            } |
+            <STRICTFP>
+            {
+                mods.add("strictfp");
+                if (scannedSTRICTFP) {
+                    reportParserError("Repeated modifier: strictfp");
+                }
+                scannedSTRICTFP = true;
             } |
             <TRANSIENT>
             {
@@ -669,7 +696,7 @@ private ArrayList<JMember> classBody(): {
  * Parse an interface member declaration.
  *
  * <pre>
- *   interfaceMemberDecl ::= (VOID | type) IDENTIFIER formalParameters SEMI // method
+ *   interfaceMemberDecl ::= (VOID | type) IDENTIFIER formalParameters [THROWS qualifiedIdentifier {COMMA qualifiedIdentifier}] SEMI // method
  *                          | type variableDeclarators SEMI // field
  *                          | classDeclaration
  *                          | interfaceDeclaration
@@ -687,6 +714,8 @@ private JMember interfaceMemberDecl(ArrayList<String> mods): {
     ArrayList<JFormalParameter> params = null;
     ArrayList<JVariableDeclarator> variableDeclarators = null;
     JMember memberDecl = null;
+    TypeName thrown;
+    ArrayList<TypeName> thrownList = new ArrayList<>();
 }
 {
     try {
@@ -699,9 +728,15 @@ private JMember interfaceMemberDecl(ArrayList<String> mods): {
             { line = token.beginLine; }
             <IDENTIFIER> { name = token.image; }
             params = formalParameters()
+            [
+                <THROWS> thrown = qualifiedIdentifier() { thrownList.add(thrown); }
+                (
+                    <COMMA> thrown = qualifiedIdentifier() { thrownList.add(thrown); }
+                )*
+            ]
             <SEMI>
             {
-                memberDecl = new JMethodDeclaration(line, mods, name, type, params, new ArrayList<>(), null);
+                memberDecl = new JMethodDeclaration(line, mods, name, type, params, thrownList, null);
             }
         ) |
         (
@@ -731,9 +766,11 @@ private JMember interfaceMemberDecl(ArrayList<String> mods): {
  * <pre>
  *   memberDecl ::= IDENTIFIER            // constructor
  *                    formalParameters
+ *                    [THROWS qualifiedIdentifier {COMMA qualifiedIdentifier}]
  *                    block
  *                | (VOID | type) IDENTIFIER  // method
  *                    formalParameters
+ *                    [THROWS qualifiedIdentifier {COMMA qualifiedIdentifier}]
  *                    (block | SEMI)
  *                | type variableDeclarators SEMI
  *                | classDeclaration
@@ -753,6 +790,8 @@ private JMember memberDecl(ArrayList<String> mods): {
     JBlock body = null;
     ArrayList<JVariableDeclarator> variableDeclarators = null;
     JMember memberDecl = null;
+    TypeName thrown = null;
+    ArrayList<TypeName> thrownList = new ArrayList<>();
 }
 {
     try {
@@ -764,9 +803,15 @@ private JMember memberDecl(ArrayList<String> mods): {
                 name = token.image;
             }
             params = formalParameters()
+            [
+                <THROWS> thrown = qualifiedIdentifier() { thrownList.add(thrown); }
+                (
+                    <COMMA> thrown = qualifiedIdentifier() { thrownList.add(thrown); }
+                )*
+            ]
             body = block()
             {
-                memberDecl = new JConstructorDeclaration(line, mods, name, params, new ArrayList<>(), body);
+                memberDecl = new JConstructorDeclaration(line, mods, name, params, thrownList, body);
             }
         ) |
         LOOKAHEAD((<VOID> | type()) <IDENTIFIER> <LPAREN>)
@@ -777,13 +822,19 @@ private JMember memberDecl(ArrayList<String> mods): {
             )
             { line = token.beginLine; }
             <IDENTIFIER> { name = token.image; }
-            params = formalParameters() 
+            params = formalParameters()
+            [
+                <THROWS> thrown = qualifiedIdentifier() { thrownList.add(thrown); }
+                (
+                    <COMMA> thrown = qualifiedIdentifier() { thrownList.add(thrown); }
+                )*
+            ]
             (
                 body = block() |
                 <SEMI>
             )
             {
-                memberDecl = new JMethodDeclaration(line, mods, name, type, params, new ArrayList<>(), body);
+                memberDecl = new JMethodDeclaration(line, mods, name, type, params, thrownList, body);
             }
         ) |
         (
@@ -870,7 +921,12 @@ private JStatement blockStatement(): {
  *               | FOR LPAREN [forInit] SEMI [expression] SEMI [forUpdate] RPAREN statement
  *               | FOR LPAREN formalParameter COLON qualifiedIdentifier RPAREN statement
  *               | WHILE parExpression statement
+ *               | DO statement WHILE LPAREN expression RPAREN SEMI
+ *               | TRY block {CATCH LPAREN formalParameter RPAREN block} [FINALLY block]
  *               | RETURN [expression] SEMI
+ *               | BREAK SEMI
+ *               | CONTINUE SEMI
+ *               | THROW expression SEMI
  *               | SEMI
  *               | statementExpression SEMI
  * </pre>
@@ -879,7 +935,8 @@ private JStatement blockStatement(): {
  */
 
 private JStatement statement(): {
-    int line = 0;
+    int line                            = 0;
+    int subline                         = 0;
     JStatement statement                = null;
     JExpression test                    = null;
     JStatement consequent               = null;
@@ -890,10 +947,31 @@ private JStatement statement(): {
     JStatement aForUpdate               = null;
     ArrayList<JStatement> forUpdates    = new ArrayList<>();
     JFormalParameter formal             = null;
+    ArrayList<JCatchClause> catches     = new ArrayList<>();
+    boolean hasCatch                    = false;
+    JBlock try_body                     = null;
+    JBlock catch_body                   = null;
+    JBlock finally_body                 = null;
 }
 {
     try {
         statement = block()
+
+        |
+
+        <BREAK> { line = token.beginLine; }
+        <SEMI> { statement = new JEmptyStatement(line); } // TODO: HANDLE BREAK
+
+        |
+
+        <CONTINUE> { line = token.beginLine; }
+        <SEMI> { statement = new JEmptyStatement(line); } // TODO: HANDLE CONTINUE
+
+        |
+
+        <THROW> { line = token.beginLine; }
+        expr = expression()
+        <SEMI> { statement = new JThrowStatement(line, expr); }
 
         |
         
@@ -947,6 +1025,34 @@ private JStatement statement(): {
         test = parExpression()
         body = statement()
         { statement = new JWhileStatement(line, test, body); }
+
+        |
+
+        <DO> { line = token.beginLine; }
+        body = statement()
+        <WHILE>
+        test = parExpression()
+        <SEMI>
+        { statement = new JDoWhileStatement(line, test, body); }
+
+        |
+
+        <TRY> { line = token.beginLine; }
+        try_body = block()
+        (
+            <CATCH> { subline = token.beginLine; }
+            <LPAREN> formal = formalParameter() <RPAREN>
+            catch_body = block()
+            { catches.add(new JCatchClause(subline, formal, catch_body)); hasCatch = true; }
+        )*
+        [
+            <FINALLY>
+            finally_body = block() { hasCatch = true; }
+        ]
+        {
+            if (!hasCatch) reportParserError("try block needs a catch clause or a finally block");
+            statement = new JTryCatchStatement(line, try_body, catches, finally_body);
+        }
 
         |
 

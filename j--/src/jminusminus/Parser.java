@@ -1212,27 +1212,27 @@ public class Parser {
             return new JWhileStatement(line, test, statement);
         } else if (have(TRY)) {
             JBlock body_try = block();
+            ArrayList<JCatchClause> clauses = new ArrayList<>();
             JBlock body_catch = null;
-            JBlock body_finally = null;
             JFormalParameter param = null;
+            JBlock body_finally = null;
 
-            if (have(CATCH)) {
+            while (have(CATCH)) {
+                int catchLine = scanner.token().line();
                 mustBe(LPAREN); // Make sure to consume the parentheses
                 param = formalParameter();
                 mustBe(RPAREN);
                 body_catch = block();
-
-                if (have(FINALLY)) {
-                    body_finally = block();
-                }
-
-            } else {
-                mustBe(FINALLY);
-                body_finally = block();
+                clauses.add(new JCatchClause(catchLine, param, body_catch));
             }
 
-            return new JTryCatchStatement(line, body_try, body_catch, body_finally, param);
-
+            if (clauses.isEmpty()) {
+                mustBe(FINALLY);
+                body_finally = block();
+            } else if (have(FINALLY)) {
+                body_finally = block();
+            }
+            return new JTryCatchStatement(line, body_try, clauses, body_finally);
         } else if (have(RETURN)) {
             if (have(SEMI)) {
                 return new JReturnStatement(line, null);
