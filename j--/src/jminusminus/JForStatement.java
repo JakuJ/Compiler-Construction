@@ -9,10 +9,10 @@ import static jminusminus.CLConstants.*;
 class JForStatement extends JStatement {
 
     /** Initialization of variable  */
-    private JStatement initialization;
+    private JVariableDeclarator initialization;
 
     /** Initialization of variable (used for enhanced for loop) */
-    private JVariableDeclarator init;
+    private JStatement init;
     
     /** Termination condition  */
     private JExpression termination;
@@ -42,9 +42,17 @@ class JForStatement extends JStatement {
      *            the body.
      */
 
-    public JForStatement(int line, JStatement initialization, JExpression termination, JExpression increment, JStatement body) {
+    public JForStatement(int line, JVariableDeclarator initialization, JExpression termination, JExpression increment, JStatement body) {
         super(line);
         this.initialization = initialization;
+        this.termination = termination;
+        this.increment = increment;
+        this.body = body;
+    }
+
+    public JForStatement(int line, JStatement init, JExpression termination, JExpression increment, JStatement body) {
+        super(line);
+        this.init = init;
         this.termination = termination;
         this.increment = increment;
         this.body = body;
@@ -63,9 +71,9 @@ class JForStatement extends JStatement {
      * @param body
      *            the body.
      */
-    public JForStatement(int line, JVariableDeclarator init, JExpression arr, JStatement body) {
+    public JForStatement(int line, JVariableDeclarator initialization, JExpression arr, JStatement body) {
         super(line);
-        this.init = init;
+        this.initialization = initialization;
         this.arr = arr;
         this.body = body;
     }
@@ -109,18 +117,54 @@ class JForStatement extends JStatement {
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JForStatement line=\"%d\">\n", line());
         p.indentRight();
-        p.printf("<TestExpression>\n");
+        p.printf("<Init>\n");
         p.indentRight();
-        //condition.writeToStdOut(p);
+        if(init != null){
+            init.writeToStdOut(p);
+        } else {
+            initialization.writeToStdOut(p);
+        }
         p.indentLeft();
-        p.printf("</TestExpression>\n");
+        p.printf("</Init>\n");
+        if (termination != null){
+            p.printf("<Termination>\n");
+            p.indentRight();
+            termination.writeToStdOut(p);
+            p.indentLeft();
+            p.printf("</Termination>\n");
+        } else if (arr != null) {
+            p.printf("<Collection>\n");
+            p.indentRight();
+            arr.writeToStdOut(p);
+            p.indentLeft();
+            p.printf("</Collection>\n");
+        } else {
+            p.printf("<Termination>\n");
+            p.indentRight();
+            p.printf("<No expression>\n");
+            p.indentLeft();
+            p.printf("</Termination>\n");
+        }
+        if (increment != null){
+            p.printf("<Increment>\n");
+            p.indentRight();
+            increment.writeToStdOut(p);
+            p.indentLeft();
+            p.printf("</Increment>\n");
+        } else if (arr == null){
+            p.printf("<Increment>\n");
+            p.indentRight();
+            p.printf("<No expression>\n");
+            p.indentLeft();
+            p.printf("</Increment>\n");
+        }
         p.printf("<Body>\n");
         p.indentRight();
         body.writeToStdOut(p);
         p.indentLeft();
         p.printf("</Body>\n");
         p.indentLeft();
-        p.printf("</JWhileStatement>\n");
+        p.printf("</JForStatement>\n");
     }
 
 }

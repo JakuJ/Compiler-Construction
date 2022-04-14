@@ -1,7 +1,7 @@
 package junit;
 
 import junit.framework.TestCase;
-import pass.Star;
+import pass.For;
 
 public class ForTest extends TestCase{
     private For f;

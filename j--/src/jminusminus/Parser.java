@@ -743,21 +743,32 @@ public class Parser {
                 JStatement body = statement();
                 return new JForStatement(line, initialization, arr, body);
             } else {
-                JStatement init = statement();
+                //JStatement init = statement();
+                mustBe(SEMI);
                 JExpression termination = expression();
                 mustBe(SEMI);
                 JExpression increment = expression();
                 mustBe(RPAREN);
                 JStatement body = statement();
-                return new JForStatement(line, init, termination, increment, body);
+                return new JForStatement(line, initialization, termination, increment, body);
             }
         } else {
             JStatement initialization = statement();
-            mustBe(SEMI);
-            JExpression termination = expression();
-            mustBe(SEMI);
-            JExpression increment = expression();
-            mustBe(RPAREN);
+            JExpression termination;
+            if(have(SEMI)){
+                termination = null;
+            } else {
+                termination = expression();
+                mustBe(SEMI);
+            }
+        
+            JExpression increment;
+            if(have(RPAREN)){
+                increment = null;
+            } else {
+                increment = expression();
+                mustBe(RPAREN);
+            }
             JStatement body = statement();
             return new JForStatement(line, initialization, termination, increment, body);
         }

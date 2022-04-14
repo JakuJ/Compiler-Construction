@@ -30,6 +30,7 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(OperatorsTest.class); 
         suite.addTestSuite(Double.class);
         suite.addTestSuite(StarTest.class);
+        suite.addTestSuite(ForTest.class);
         return suite;
     }
 
