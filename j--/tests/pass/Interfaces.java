@@ -2,7 +2,7 @@ package pass;
 
 public interface FirstInterface {
 
-    public void firstMethod() throws Exception;
+    public void firstMethod();
 
     public interface SubInterface{
         public void subMethod();
