@@ -233,20 +233,12 @@ class JMinusAssignOp extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -322,20 +314,12 @@ class JStarAssignOp extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -411,20 +395,12 @@ class JDivAssignOp extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -493,20 +469,12 @@ class JModAssignOp extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -564,20 +532,12 @@ class JShiftRAssign extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -635,20 +595,12 @@ class JUShiftRAssign extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -706,20 +658,12 @@ class JShiftLAssign extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -777,20 +721,12 @@ class JANDAssign extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -848,20 +784,12 @@ class JORAssign extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -919,20 +847,12 @@ class JXORAssign extends JAssignment {
         }
         rhs = (JExpression) rhs.analyze(context);
         if (lhs.type().equals(Type.INT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
 
-        } else if (lhs.type().equals(Type.LONG)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.LONG;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
+            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.DOUBLE;
-
-        } else if (lhs.type().equals(Type.FLOAT)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.LONG, Type.DOUBLE, Type.FLOAT);
-            type = Type.FLOAT;
 
         } else {
             JAST.compilationUnit.reportSemanticError(line(),
