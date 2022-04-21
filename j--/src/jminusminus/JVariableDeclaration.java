@@ -86,7 +86,7 @@ class JVariableDeclaration extends JStatement {
             // statements and analyzed
             if (decl.initializer() != null) {
                 defn.initialize();
-                JAssignOp assignOp = new JAssignOp(decl.line(), new JVariable(
+                JAssign assignOp = new JAssign(decl.line(), new JVariable(
                         decl.line(), decl.name()), decl.initializer());
                 assignOp.isStatementExpression = true;
                 initializations.add(new JStatementExpression(decl.line(),

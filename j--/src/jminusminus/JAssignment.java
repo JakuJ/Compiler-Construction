@@ -32,7 +32,7 @@ abstract class JAssignment extends JBinaryExpression {
  * operands: a lhs and a rhs.
  */
 
-class JAssignOp extends JAssignment {
+class JAssign extends JAssignment {
 
     /**
      * Constructs the AST node for an assignment (=) expression given the lhs and
@@ -44,7 +44,7 @@ class JAssignOp extends JAssignment {
      * @param rhs  rhs operand.
      */
 
-    public JAssignOp(int line, JExpression lhs, JExpression rhs) {
+    public JAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "=", lhs, rhs);
     }
 
@@ -103,7 +103,7 @@ class JAssignOp extends JAssignment {
  * a rhs.
  */
 
-class JPlusAssignOp extends JAssignment {
+class JPlusAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a += expression given its lhs and rhs
@@ -115,7 +115,7 @@ class JPlusAssignOp extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JPlusAssignOp(int line, JExpression lhs, JExpression rhs) {
+    public JPlusAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "+=", lhs, rhs);
     }
 
@@ -182,7 +182,7 @@ class JPlusAssignOp extends JAssignment {
  * a rhs.
  */
 
-class JMinusAssignOp extends JAssignment {
+class JMinusAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a -= expression given its lhs and rhs
@@ -194,7 +194,7 @@ class JMinusAssignOp extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JMinusAssignOp(int line, JExpression lhs, JExpression rhs) {
+    public JMinusAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "-=", lhs, rhs);
     }
 
@@ -256,7 +256,7 @@ class JMinusAssignOp extends JAssignment {
  * a rhs.
  */
 
-class JStarAssignOp extends JAssignment {
+class JStarAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a *= expression given its lhs and rhs
@@ -268,7 +268,7 @@ class JStarAssignOp extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JStarAssignOp(int line, JExpression lhs, JExpression rhs) {
+    public JStarAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "*=", lhs, rhs);
     }
 
@@ -330,7 +330,7 @@ class JStarAssignOp extends JAssignment {
  * A /= expression has two operands: a lhs and a rhs.
  */
 
-class JDivAssignOp extends JAssignment {
+class JDivAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a /= expression given its lhs and rhs
@@ -342,7 +342,7 @@ class JDivAssignOp extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JDivAssignOp(int line, JExpression lhs, JExpression rhs) {
+    public JDivAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "/=", lhs, rhs);
     }
 
@@ -406,7 +406,7 @@ class JDivAssignOp extends JAssignment {
  * a rhs.
  */
 
-class JModAssignOp extends JAssignment {
+class JModAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a %= expression given its lhs and rhs
@@ -418,7 +418,7 @@ class JModAssignOp extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JModAssignOp(int line, JExpression lhs, JExpression rhs) {
+    public JModAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "%=", lhs, rhs);
     }
 
@@ -465,7 +465,7 @@ class JModAssignOp extends JAssignment {
  * a rhs.
  */
 
-class JShiftRAssign extends JAssignment {
+class JShiftrAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a %= expression given its lhs and rhs
@@ -477,7 +477,7 @@ class JShiftRAssign extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JShiftRAssign(int line, JExpression lhs, JExpression rhs) {
+    public JShiftrAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, ">>=", lhs, rhs);
     }
 
@@ -524,7 +524,7 @@ class JShiftRAssign extends JAssignment {
  * a rhs.
  */
 
-class JUShiftRAssign extends JAssignment {
+class JUshiftrAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a >>>= expression given its lhs and rhs
@@ -536,7 +536,7 @@ class JUShiftRAssign extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JUShiftRAssign(int line, JExpression lhs, JExpression rhs) {
+    public JUshiftrAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, ">>>=", lhs, rhs);
     }
 
@@ -583,7 +583,7 @@ class JUShiftRAssign extends JAssignment {
  * a rhs.
  */
 
-class JShiftLAssign extends JAssignment {
+class JShiftlAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a <<= expression given its lhs and rhs
@@ -595,7 +595,7 @@ class JShiftLAssign extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JShiftLAssign(int line, JExpression lhs, JExpression rhs) {
+    public JShiftlAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "<<=", lhs, rhs);
     }
 
@@ -641,7 +641,7 @@ class JShiftLAssign extends JAssignment {
  * a rhs.
  */
 
-class JANDAssign extends JAssignment {
+class JBitAndAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a &= expression given its lhs and rhs
@@ -653,7 +653,7 @@ class JANDAssign extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JANDAssign(int line, JExpression lhs, JExpression rhs) {
+    public JBitAndAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "&=", lhs, rhs);
     }
 
@@ -699,7 +699,7 @@ class JANDAssign extends JAssignment {
  * a rhs.
  */
 
-class JORAssign extends JAssignment {
+class JBitOrAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a |= expression given its lhs and rhs
@@ -711,7 +711,7 @@ class JORAssign extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JORAssign(int line, JExpression lhs, JExpression rhs) {
+    public JBitOrAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "|=", lhs, rhs);
     }
 
@@ -757,7 +757,7 @@ class JORAssign extends JAssignment {
  * a rhs.
  */
 
-class JXORAssign extends JAssignment {
+class JXorAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a ^= expression given its lhs and rhs
@@ -769,7 +769,7 @@ class JXORAssign extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JXORAssign(int line, JExpression lhs, JExpression rhs) {
+    public JXorAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "^=", lhs, rhs);
     }
 

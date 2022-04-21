@@ -4,9 +4,6 @@ package jminusminus;
 
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-import javax.naming.spi.DirStateFactory.Result;
-
 import static jminusminus.TokenKind.*;
 
 /**
@@ -1658,29 +1655,29 @@ public class Parser {
         int line = scanner.token().line();
         JExpression lhs = conditionalExpression();
         if (have(ASSIGN)) {
-            return new JAssignOp(line, lhs, assignmentExpression());
+            return new JAssign(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
-            return new JPlusAssignOp(line, lhs, assignmentExpression());
+            return new JPlusAssign(line, lhs, assignmentExpression());
         } else if (have(MINUS_ASSIGN)) {
-            return new JMinusAssignOp(line, lhs, assignmentExpression());
+            return new JMinusAssign(line, lhs, assignmentExpression());
         } else if (have(STAR_ASSIGN)) {
-            return new JStarAssignOp(line, lhs, assignmentExpression());
+            return new JStarAssign(line, lhs, assignmentExpression());
         } else if (have(DIV_ASSIGN)) {
-            return new JDivAssignOp(line, lhs, assignmentExpression());
+            return new JDivAssign(line, lhs, assignmentExpression());
         } else if (have(MOD_ASSIGN)) {
-            return new JModAssignOp(line, lhs, assignmentExpression());
+            return new JModAssign(line, lhs, assignmentExpression());
         } else if (have(SHIFTR_ASSIGN)) {
-            return new JShiftRAssign(line, lhs, assignmentExpression());
+            return new JShiftrAssign(line, lhs, assignmentExpression());
         } else if (have(USHIFTR_ASSIGN)) {
-            return new JUShiftRAssign(line, lhs, assignmentExpression());
+            return new JUshiftrAssign(line, lhs, assignmentExpression());
         } else if (have(SHIFTL_ASSIGN)) {
-            return new JShiftLAssign(line, lhs, assignmentExpression());
+            return new JShiftlAssign(line, lhs, assignmentExpression());
         } else if (have(AND_ASSIGN)) {
-            return new JANDAssign(line, lhs, assignmentExpression());
+            return new JBitAndAssign(line, lhs, assignmentExpression());
         } else if (have(OR_ASSIGN)) {
-            return new JORAssign(line, lhs, assignmentExpression());
+            return new JBitOrAssign(line, lhs, assignmentExpression());
         } else if (have(XOR_ASSIGN)) {
-            return new JXORAssign(line, lhs, assignmentExpression());
+            return new JXorAssign(line, lhs, assignmentExpression());
         } else {
             return lhs;
         }

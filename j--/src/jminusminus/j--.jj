@@ -1583,51 +1583,51 @@ private JExpression assignmentExpression(): {
         [
             <ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JAssignOp(line, lhs, rhs); } |
+            { lhs = new JAssign(line, lhs, rhs); } |
 
             <PLUS_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JPlusAssignOp(line, lhs, rhs); } |
+            { lhs = new JPlusAssign(line, lhs, rhs); } |
 
             <MINUS_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JMinusAssignOp(line, lhs, rhs); } |
+            { lhs = new JMinusAssign(line, lhs, rhs); } |
 
             <STAR_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JStarAssignOp(line, lhs, rhs); } |
+            { lhs = new JStarAssign(line, lhs, rhs); } |
 
             <DIV_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JDivAssignOp(line, lhs, rhs); } |
+            { lhs = new JDivAssign(line, lhs, rhs); } |
 
             <MOD_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JModAssignOp(line, lhs, rhs); } |
+            { lhs = new JModAssign(line, lhs, rhs); } |
 
             <SHIFTR_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JShiftrAssignOp(line, lhs, rhs); } |
+            { lhs = new JShiftrAssign(line, lhs, rhs); } |
 
             <USHIFTR_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JUshiftrAssignOp(line, lhs, rhs); } |
+            { lhs = new JUshiftrAssign(line, lhs, rhs); } |
 
             <SHIFTL_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JShiftlAssignOp(line, lhs, rhs); } |
+            { lhs = new JShiftlAssign(line, lhs, rhs); } |
 
             <XOR_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JXorAssignOp(line, lhs, rhs); } |
+            { lhs = new JXorAssign(line, lhs, rhs); } |
 
             <BIT_AND_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JBitAndAssignOp(line, lhs, rhs); } |
+            { lhs = new JBitAndAssign(line, lhs, rhs); } |
 
             <BIT_OR_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JBitOrAssignOp(line, lhs, rhs); }
+            { lhs = new JBitOrAssign(line, lhs, rhs); }
         ]
     }
     catch (ParseException e) {
