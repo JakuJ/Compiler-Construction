@@ -18,22 +18,28 @@ enum TokenKind {
     // Reserved words
     ABSTRACT("abstract"), BOOLEAN("boolean"), CHAR("char"), BREAK("break"), BYTE("byte"), CLASS("class"), 
     CASE("case"), CATCH("catch"), CONST("const"), CONTINUE("continue"), DEFAULT("default"), DO("do"), DOUBLE("double"),
-    ELSE("else"), EXTENDS("extends"), FINAL("final"), FINALLY("finally"), FLOAT("float"), FOR("for"), GOTO("goto"), IMPLEMENTS("implements"),
+    ELSE("else"), EXTENDS("extends"), FINAL("final"), FINALLY("finally"), FLOAT("float"), GOTO("goto"), IMPLEMENTS("implements"),
     INTERFACE("interface"), IF("if"), IMPORT("import"), 
     INSTANCEOF("instanceof"), INT("int"), LONG("long"), NATIVE("native"), NEW("new"), PACKAGE("package"), 
     PRIVATE("private"), PROTECTED("protected"), PUBLIC("public"), 
     RETURN("return"), SHORT("short"), STRICTFP("strictfp"), SWITCH("switch"), SYNCHRONIZED("synchronized"),
-    STATIC("static"), SUPER("super"), THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), THIS("this"), 
-    VOID("void"), WHILE("while"),
+    STATIC("static"), SUPER("super"), THREADSAFE("threadsafe"), THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), THIS("this"), 
+    VOID("void"), VOLATILE("volatile"), FOR("for"), WHILE("while"), 
+
+    // Comparators
+    EQ("=="), NEQ("!="),
+    LNOT("!"), LAND("&&"), LOR("||"),
+    GT(">"), GE(">="),
+    LT("<"), LE("<="), 
 
     // Operators
-    ASSIGN("="), MINUS_ASSIGN("-="), PLUS_ASSIGN("+="), DIV_ASSIGN("/="), STAR_ASSIGN("*="), MOD_ASSIGN("%="),
-    EQ("=="), GT(">"),
-    LAND("&&"), LOR("||"), LE("<="), LNOT("!"),
     DEC("--"), INC("++"),
-    MINUS("-"), PLUS("+"), STAR("*"), DIV("/"),  MOD("%"), 
+    MINUS("-"), PLUS("+"), STAR("*"), DIV("/"), MOD("%"),
     SHIFTR(">>"), USHIFTR(">>>"), SHIFTL("<<"),
-    OR("|"), XOR("^"), AND("&"), TILDE("~"),	
+    OR("|"), XOR("^"), AND("&"), TILDE("~"), TERNARY("?"),
+
+    // Assign Operators
+    ASSIGN("="), MINUS_ASSIGN("-="), PLUS_ASSIGN("+="), DIV_ASSIGN("/="), STAR_ASSIGN("*="), MOD_ASSIGN("%="), AND_ASSIGN("&="), XOR_ASSIGN("^="), OR_ASSIGN("|="), USHIFTR_ASSIGN(">>>="), SHIFTR_ASSIGN(">>="), SHIFTL_ASSIGN("<<="),
 
     // Separators
     LPAREN("("), RPAREN(")"), LCURLY("{"), RCURLY("}"), LBRACK("["), 
@@ -43,9 +49,11 @@ enum TokenKind {
     IDENTIFIER("<IDENTIFIER>"), 
 
     // Literals
-    NULL("null"), FALSE("false"), TRUE("true"),
-    INT_LITERAL("<INT_LITERAL>"), DOUBLE_LITERAL("<DOUBLE_LITERAL>"), CHAR_LITERAL("<CHAR_LITERAL>"), 
-    STRING_LITERAL("<STRING_LITERAL>");
+    NULL("null"),
+    FALSE("false"), TRUE("true"),
+    INT_LITERAL("<INT_LITERAL>"),
+    DOUBLE_LITERAL("<DOUBLE_LITERAL>"),
+    CHAR_LITERAL("<CHAR_LITERAL>"), STRING_LITERAL("<STRING_LITERAL>");
 
     /** The token's string representation. */
     private String image;

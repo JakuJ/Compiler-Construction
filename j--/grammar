@@ -9,22 +9,48 @@ compilationUnit ::= [PACKAGE qualifiedIdentifier SEMI]
 
 qualifiedIdentifier ::= IDENTIFIER {DOT IDENTIFIER}
 
-typeDeclaration ::= modifiers classDeclaration
+typeDeclaration ::= typeDeclarationModifiers (classDeclaration | interfaceDeclaration)
 
-modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT}
+typeDeclarationModifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | 
+                                ABSTRACT | FINAL | STRICTFP}
 
-classDeclaration ::= CLASS IDENTIFIER 
-                       [EXTENDS qualifiedIdentifier] 
-                       classBody
+modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT | TRANSIENT | FINAL | NATIVE
+              THREADSAFE | SYNCHRONIZED | CONST | VOLATILE | STRICTFP}
 
-classBody ::= LCURLY {modifiers memberDecl} RCURLY
+classDeclaration ::= CLASS IDENTIFIER [EXTENDS qualifiedIdentifier] 
+                        [IMPLEMENTS qualifiedIdentifier {COMMA qualifiedIdentifier}]
+                          classBody
 
-memberDecl ::= IDENTIFIER            // constructor
-                 formalParameters block
-             | (VOID | type) IDENTIFIER  // method
-                 formalParameters
-                 (block | SEMI)
-             | type variableDeclarators SEMI // field
+classBody ::= LCURLY SEMI 
+                      STATIC block
+                      block
+                      modifiers memberDecl
+              RCURLY
+
+interfaceDeclaration ::= INTERFACE IDENTIFIER // cannot be final
+                              [EXTENDS qualifiedIdentifier {COMMA qualifiedIdentifier}]
+                                interfaceBody
+
+interfaceBody ::= LCURLY 
+                        modifiers interfaceMemberDecl
+                  RCURLY
+
+memberDecl ::= memberDecl ::= classDeclaration        // inner class
+                            | interfaceDeclaration   // inner interface
+                            | IDENTIFIER            // constructor
+                               formalParameters
+                                 [throws qualifiedIdentifier {COMMA qualifiedIdentifier}] block
+                            | (VOID | type) IDENTIFIER  // method
+                               formalParameters 
+                                 [throws qualifiedIdentifier {COMMA qualifiedIdentifier}] (block | SEMI)
+                            | type variableDeclarators SEMI
+
+interfaceMemberDecl ::= classDeclaration // inner class 
+                      | interfaceDeclaration // inner interface 
+                      | (VOID | type) IDENTIFIER // method
+                          formalParameters { [ ] }
+                              [throws qualifiedIdentifier {COMMA qualifiedIdentifier}] SEMI
+                      | type variableDeclarators SEMI // must have inits
 
 block ::= LCURLY {blockStatement} RCURLY 
 
@@ -33,9 +59,13 @@ blockStatement ::= localVariableDeclarationStatement
 
 statement ::= block
             | IF parExpression statement [ELSE statement]
-            | WHILE parExpression statement
-            | FOR forStatement statement
+            | FOR LPAREN [forInit] SEMI [expression] SEMI [forUpdate] RPAREN statement
+            | WHILE parExpression statement 
+            | TRY block
+                  {CATCH (formalParameter) block}
+                  [finally block]  // Mandatory if there is no CATCH 
             | RETURN [expression] SEMI
+            | THROW expression SEMI
             | SEMI 
             | statementExpression SEMI
 
@@ -47,8 +77,10 @@ formalParameter ::= type IDENTIFIER
 
 parExpression ::= LPAREN expression RPAREN
 
-forStatement ::= LPAREN [statement] [expression] SEMI [expression] RPAREN
-                | LPAREN variableDeclarator COLON expression RPAREN
+forInit ::= statementExpression {COMMA statementExpression}
+          | [FINAL] type variableDeclarators
+
+forUpdate ::= statementExpression {COMMA statementExpression}
 
 localVariableDeclarationStatement ::= type variableDeclarators SEMI
 
@@ -67,7 +99,7 @@ arguments ::= LPAREN [expression {COMMA expression}] RPAREN
 
 type ::= referenceType | basicType
 
-basicType ::= BOOLEAN | CHAR | INT | DOUBLE | FLOAT
+basicType ::= BOOLEAN | CHAR | INT | DOUBLE
 
 referenceType ::= basicType LBRACK RBRACK {LBRACK RBRACK}
                 | qualifiedIdentifier {LBRACK RBRACK}
@@ -76,13 +108,13 @@ statementExpression ::= expression // but must have side-effect, eg i++
 
 expression ::= assignmentExpression
 
-assignmentExpression ::= conditionalOrExpression  // level 13, conditionalOrExpression must be a valid lhs
+assignmentExpression ::= conditionalExpression  // must be a valid lhs
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN
                            | DIV_ASSIGN | MOD_ASSIGN
                            | SHIFTR_ASSIGN | USHIFTR_ASSIGN | SHIFTL_ASSIGN
                            | BIT_AND_ASSIGN | BIT_OR_ASSIGN | XOR_ASSIGN) assignmentExpression]
 
-// TODO: ternary operator
+conditionalExpression ::= conditionalOrExpression [TERNARY assignmentExpression COLON conditionalExpression] // level 12
 
 conditionalOrExpression ::= conditionalAndExpression { LOR conditionalAndExpression } // level 11
 
@@ -98,8 +130,7 @@ equalityExpression ::= relationalExpression  // level 6
                          {(EQ | NEQ) relationalExpression}
 
 relationalExpression ::= shiftExpression       // level 5
-                           [(LT | GT | LE | GE) shiftExpression
-                           | INSTANCEOF referenceType]
+                          ({ (LT | GT | LE | GE) shiftExpression } | INSTANCEOF referenceType)
 
 shiftExpression ::= additiveExpression { ( SHIFTL | SHIFTR | USHIFTR ) additiveExpression } // level 4
 
@@ -145,4 +176,5 @@ newArrayDeclarator ::= LBRACK expression RBRACK
                          {LBRACK expression RBRACK} {LBRACK RBRACK}
 
 literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL | DOUBLE_LITERAL
-          | TRUE        | FALSE        | NULL
+          | TRUE        | FALSE        | NULL           | FLOAT_LITERAL
+          | LONG_LITERAL
