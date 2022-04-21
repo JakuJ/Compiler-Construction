@@ -1,0 +1,81 @@
+package jminusminus;
+
+import java.util.ArrayList;
+
+public class JForEnhancedStatement extends JStatement {
+    /** The for loop initializer commonly follows format: int i=0 */
+    JForInit forInit;
+
+    /** The for loop update commonly follows format: i++ */
+    ArrayList<JStatement> forUpdate;
+
+    /** The body of the for loop statement */
+    JStatement body;
+
+    public JForEnhancedStatement(int line,
+            JForInit forInit, ArrayList<JStatement> forUpdate, JStatement body) {
+        super(line);
+        this.forInit=forInit;
+        this.forUpdate=forUpdate;
+        this.body= body;
+    }
+
+    public JWhileStatement analyze(Context context) {
+        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+    }
+
+    public void codegen(CLEmitter output) {
+        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    public void writeToStdOut(PrettyPrinter p) {
+        p.printf("<JForStatement line=\"%d\">\n", line());
+        
+        if (forInit != null) {
+            p.indentRight();
+            p.println("<JForInit>");
+
+            // Get what type of forInit it is
+            if (forInit.isStatementExpression) {
+                for (JStatement statement : forInit.statements) {
+                    p.indentRight();
+                    statement.writeToStdOut(p);
+                    p.indentLeft();
+                }
+            } else {
+                for (JVariableDeclarator variable : forInit.variableDeclarators) {
+                    p.indentRight();
+                    variable.writeToStdOut(p);
+                    p.indentLeft();
+                }
+            }
+
+            p.println("</JForInit>");
+            p.indentLeft();
+        }
+
+        if (forUpdate != null) {
+            p.indentRight();
+            p.println("<JForUpdate>");
+            p.indentRight();
+            for (JStatement statement : forUpdate) {
+                p.indentRight();
+                statement.writeToStdOut(p);
+                p.indentLeft();
+            }
+            p.indentLeft();
+            p.println("</JForUpdate>");
+            p.indentLeft();
+        }
+
+        p.printf("<Body>\n");
+        p.indentRight();
+        body.writeToStdOut(p);
+        p.indentLeft();
+        p.printf("</Body>\n");
+    }
+}

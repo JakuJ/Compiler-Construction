@@ -7,10 +7,21 @@ package pass;
  * shift-wise operators:    << >> >>>
  * bit-wise operators:      - | ^ &
  * unary operators          + ~
- * 
+ * Prefix operators:        -- 
+ * postfix operators:       ++  
  */
 public class Operators {
-    
+
+    // Prefix operator
+    public int prefixOperator(int num){
+        return --num;
+    }
+
+    // Postfix operator
+    public int postfixOperator(int num){
+        return num++;
+    }
+
     // Shift-wise Operators
     // ---------------------------------------------------- 
 
