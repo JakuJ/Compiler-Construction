@@ -22,6 +22,10 @@ public class JMinusMinusTestRunner {
         // Start of the addition of new test cases
         suite.addTestSuite(AssignmentsTest.class);
         suite.addTestSuite(OperatorsTest.class); 
+        suite.addTestSuite(StarTest.class);
+        suite.addTestSuite(ForTest.class);
+        suite.addTestSuite(ExceptionsTest.class);
+        suite.addTestSuite(ConditionalExpressionTest.class);
         return suite;
     }
 
