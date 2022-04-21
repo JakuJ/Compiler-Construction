@@ -257,53 +257,6 @@ class JLogicalNotOp extends JUnaryExpression {
 }
 
 /**
- * An AST Node for a post increment op (a++)
- */
-class JPostIncrementOp extends JUnaryExpression {
-
-    public JPostIncrementOp(int line, JExpression arg) {
-        super(line, "post++", arg);
-    }
-
-    public JExpression analyze(Context context) {
-        if (!(arg instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line,
-                    "Operand to expr++ must have an LValue.");
-            type = Type.ANY;
-        } else {
-            arg = (JExpression) arg.analyze(context);
-            arg.type().mustMatchExpected(line(), Type.INT);
-            type = Type.INT;
-        }
-        return this;
-    }
-
-    public void codegen(CLEmitter output) {
-        if (arg instanceof JVariable) {
-            // A local variable; otherwise analyze() would
-            // have replaced it with an explicit field selection.
-            int offset = ((LocalVariableDefn) ((JVariable) arg).iDefn())
-                    .offset();
-            if (!isStatementExpression) {
-                // Loading its original rvalue
-                arg.codegen(output);
-            }
-            output.addIINCInstruction(offset, 1);
-        } else {
-            ((JLhs) arg).codegenLoadLhsLvalue(output);
-            ((JLhs) arg).codegenLoadLhsRvalue(output);
-            if (!isStatementExpression) {
-                // Loading its original rvalue
-                ((JLhs) arg).codegenDuplicateRvalue(output);
-            }
-            output.addNoArgInstruction(ICONST_1);
-            output.addNoArgInstruction(IADD);
-            ((JLhs) arg).codegenStore(output);
-        }
-    }
-}
-
-/**
  * The AST node for an expr--.
  */
 
@@ -382,6 +335,65 @@ class JPostDecrementOp extends JUnaryExpression {
             output.addNoArgInstruction(ISUB);
             ((JLhs) arg).codegenStore(output);
         }
+    }
+
+}
+
+
+/**
+ * The AST node for an expr++.
+ */
+
+class JPostIncrementOp extends JUnaryExpression {
+
+    /**
+     * Constructs an AST node for an expr++ expression given its line number, and
+     * the operand.
+     *
+     * @param line line in which the expression occurs in the source file.
+     * @param arg  the operand.
+     */
+
+    public JPostIncrementOp(int line, JExpression arg) {
+        super(line, "post++", arg);
+    }
+
+    /**
+     * Analyzes the operand as a lhs (since there is a side effect), checks types
+     * and determines the type of the result.
+     *
+     * @param context context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+
+    public JExpression analyze(Context context) {
+        if (!(arg instanceof JLhs)) {
+            JAST.compilationUnit.reportSemanticError(line, "Operand to expr++ must have an LValue.");
+            type = Type.ANY;
+        } else {
+            arg = arg.analyze(context);
+            arg.type().mustMatchExpected(line(), Type.INT);
+            type = Type.INT;
+        }
+        return this;
+    }
+
+    /**
+     * In generating code for a post-increment operation, we treat simple
+     * variable ({@link JVariable}) operands specially since the JVM has an
+     * increment instruction.
+     * Otherwise, we rely on the {@link JLhs} code generation support for
+     * generating the proper code. Notice that we distinguish between
+     * expressions that are statement expressions and those that are not; we
+     * insure the proper value (before the increment) is left atop the stack in
+     * the latter case.
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
+     */
+
+    public void codegen(CLEmitter output) {
+        // TODO: CODEGEN
     }
 
 }

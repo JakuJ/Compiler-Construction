@@ -1,6 +1,6 @@
 package jminusminus;
 
-import static jminusminus.CLConstants.*;
+import java.util.ArrayList;
 
 /**
  * The AST node for a try-catch finally statement
@@ -8,7 +8,9 @@ import static jminusminus.CLConstants.*;
 
 class JTryCatchStatement extends JStatement {
 
-    private JBlock body_try, body_catch, body_finally;
+    private JBlock body_try, body_finally;
+
+    private ArrayList<JCatchClause> catches;
 
     private JFormalParameter param;
 
@@ -19,16 +21,14 @@ class JTryCatchStatement extends JStatement {
      * 
      * @param line the line at which the try is caught
      * @param body_try mandatory contains the body to the try
-     * @param body_catch optional contains the body to the catch
+     * @param catches mandatory contains the catch clauses
      * @param body_finally only optional if there is no catch body, contains the body to the finally
-     * @param param the parameters to the catch statement
      */
-    public JTryCatchStatement(int line, JBlock body_try, JBlock body_catch, JBlock body_finally, JFormalParameter param) {
+    public JTryCatchStatement(int line, JBlock body_try, ArrayList<JCatchClause> catches, JBlock body_finally) {
         super(line);
         this.body_try = body_try;
-        this.body_catch = body_catch;
+        this.catches = catches;
         this.body_finally = body_finally;
-        this.param = param;
     }
 
 
@@ -47,33 +47,18 @@ class JTryCatchStatement extends JStatement {
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JTryCatchStatement line=\"%d\">\n", line());
         p.indentRight();
-        p.indentRight();
         p.printf("<Body>\n"); // Try Body
         p.indentRight();
         body_try.writeToStdOut(p);
         p.indentLeft();
         p.printf("</Body>\n");
-        p.indentLeft();
 
-        if(body_catch != null){
-            p.printf("<Catch>\n"); // Catch
-
-            if(param != null){ 
-                p.indentRight();
-                param.writeToStdOut(p);
-                p.indentLeft();
+        if (catches != null) {
+            for (JCatchClause clause : catches) {
+                clause.writeToStdOut(p);
             }
-
-            p.indentRight();
-            p.printf("<Body>\n");
-            p.indentRight();
-            body_try.writeToStdOut(p);
-            p.indentLeft();
-            p.printf("</Body>\n");
-            p.indentLeft();
-            p.printf("</Catch>\n");
         }
-        
+
         if(body_finally != null){
             p.printf("<Finally>\n"); // Finally
             p.indentRight();

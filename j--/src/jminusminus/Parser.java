@@ -4,9 +4,6 @@ package jminusminus;
 
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-import javax.naming.spi.DirStateFactory.Result;
-
 import static jminusminus.TokenKind.*;
 
 /**
@@ -1169,9 +1166,10 @@ public class Parser {
 
         } else if (have(FOR)) {
             boolean isEnhanced = false;
-            JForInit forInit;
-            ArrayList<JStatement> forUpdate;
+            JForInit forInit = null;
+            ArrayList<JStatement> forUpdate = null;
             JExpression expression;
+            JFormalParameter formal = null;
 
             mustBe(LPAREN);
             if (seeTraditional()) {
@@ -1183,21 +1181,20 @@ public class Parser {
                 forUpdate = see(RPAREN) ? null : forUpdate();
 
             } else {
-                // enhanced for(forInit : forUpdate)
+                // enhanced for(formalParameter : expression)
                 isEnhanced = true;
-                expression = null;
-                forInit = forInit();
+                formal = formalParameter();
                 mustBe(COLON);
-                forUpdate = forUpdate();
+                expression = expression();
             }
 
             mustBe(RPAREN);
-            JStatement statement = statement();
+            JStatement body = statement();
 
             if (isEnhanced) {
-                return new JForEnhancedStatement(line, forInit, forUpdate, statement);
+                return new JForeachStatement(line, formal, expression, body);
             } else {
-                return new JForStatement(line, forInit, expression, forUpdate, statement);
+                return new JForStatement(line, forInit, expression, forUpdate, body);
             }
 
         } else if (have(DO)) {
@@ -1212,27 +1209,27 @@ public class Parser {
             return new JWhileStatement(line, test, statement);
         } else if (have(TRY)) {
             JBlock body_try = block();
+            ArrayList<JCatchClause> clauses = new ArrayList<>();
             JBlock body_catch = null;
-            JBlock body_finally = null;
             JFormalParameter param = null;
+            JBlock body_finally = null;
 
-            if (have(CATCH)) {
+            while (have(CATCH)) {
+                int catchLine = scanner.token().line();
                 mustBe(LPAREN); // Make sure to consume the parentheses
                 param = formalParameter();
                 mustBe(RPAREN);
                 body_catch = block();
-
-                if (have(FINALLY)) {
-                    body_finally = block();
-                }
-
-            } else {
-                mustBe(FINALLY);
-                body_finally = block();
+                clauses.add(new JCatchClause(catchLine, param, body_catch));
             }
 
-            return new JTryCatchStatement(line, body_try, body_catch, body_finally, param);
-
+            if (clauses.isEmpty()) {
+                mustBe(FINALLY);
+                body_finally = block();
+            } else if (have(FINALLY)) {
+                body_finally = block();
+            }
+            return new JTryCatchStatement(line, body_try, clauses, body_finally);
         } else if (have(RETURN)) {
             if (have(SEMI)) {
                 return new JReturnStatement(line, null);
@@ -1658,29 +1655,29 @@ public class Parser {
         int line = scanner.token().line();
         JExpression lhs = conditionalExpression();
         if (have(ASSIGN)) {
-            return new JAssignOp(line, lhs, assignmentExpression());
+            return new JAssign(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
-            return new JPlusAssignOp(line, lhs, assignmentExpression());
+            return new JPlusAssign(line, lhs, assignmentExpression());
         } else if (have(MINUS_ASSIGN)) {
-            return new JMinusAssignOp(line, lhs, assignmentExpression());
+            return new JMinusAssign(line, lhs, assignmentExpression());
         } else if (have(STAR_ASSIGN)) {
-            return new JStarAssignOp(line, lhs, assignmentExpression());
+            return new JStarAssign(line, lhs, assignmentExpression());
         } else if (have(DIV_ASSIGN)) {
-            return new JDivAssignOp(line, lhs, assignmentExpression());
+            return new JDivAssign(line, lhs, assignmentExpression());
         } else if (have(MOD_ASSIGN)) {
-            return new JModAssignOp(line, lhs, assignmentExpression());
+            return new JModAssign(line, lhs, assignmentExpression());
         } else if (have(SHIFTR_ASSIGN)) {
-            return new JShiftRAssign(line, lhs, assignmentExpression());
+            return new JShiftrAssign(line, lhs, assignmentExpression());
         } else if (have(USHIFTR_ASSIGN)) {
-            return new JUShiftRAssign(line, lhs, assignmentExpression());
+            return new JUshiftrAssign(line, lhs, assignmentExpression());
         } else if (have(SHIFTL_ASSIGN)) {
-            return new JShiftLAssign(line, lhs, assignmentExpression());
+            return new JShiftlAssign(line, lhs, assignmentExpression());
         } else if (have(AND_ASSIGN)) {
-            return new JANDAssign(line, lhs, assignmentExpression());
+            return new JBitAndAssign(line, lhs, assignmentExpression());
         } else if (have(OR_ASSIGN)) {
-            return new JORAssign(line, lhs, assignmentExpression());
+            return new JBitOrAssign(line, lhs, assignmentExpression());
         } else if (have(XOR_ASSIGN)) {
-            return new JXORAssign(line, lhs, assignmentExpression());
+            return new JXorAssign(line, lhs, assignmentExpression());
         } else {
             return lhs;
         }

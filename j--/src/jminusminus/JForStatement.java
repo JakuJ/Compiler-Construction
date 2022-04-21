@@ -42,7 +42,7 @@ public class JForStatement extends JStatement{
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JForStatement line=\"%d\">\n", line());
-
+        p.indentRight();
         if (forInit != null) {
             p.indentRight();
             p.println("<JForInit>");
@@ -95,5 +95,7 @@ public class JForStatement extends JStatement{
         body.writeToStdOut(p);
         p.indentLeft();
         p.printf("</Body>\n");
+        p.indentLeft();
+        p.println("</JForStatement>");
     }
 }
