@@ -70,6 +70,8 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
                 invokesConstructor = true;
             }
         }
+
+        // TODO: Analyse throw types to make sure it's a throwable 
     }
 
     /**
@@ -86,7 +88,7 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
         definingClass = (JClassDeclaration) (context.classContext()
                                                     .definition());
         MethodContext methodContext =
-            new MethodContext(context, isStatic, returnType);
+            new MethodContext(context, isStatic, returnType, exceptions);
         this.context = methodContext;
 
         if (!isStatic) {

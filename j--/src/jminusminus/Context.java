@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -429,6 +430,9 @@ class MethodContext extends LocalContext {
     /** Does (non-void) method have at least one return? */
     private boolean hasReturnStatement = false;
 
+    /** The exceptions thrown by the method */
+    private ArrayList<TypeName> methodThrowTypes;
+
     /**
      * Constructs a method context.
      * 
@@ -441,10 +445,11 @@ class MethodContext extends LocalContext {
      */
 
     public MethodContext(Context surrounding, boolean isStatic,
-            Type methodReturnType) {
+            Type methodReturnType, ArrayList<TypeName> methodThrowTypes) {
         super(surrounding);
         this.isStatic = isStatic;
         this.methodReturnType = methodReturnType;
+        this.methodThrowTypes = methodThrowTypes;
         offset = 0;
     }
 
@@ -484,6 +489,10 @@ class MethodContext extends LocalContext {
 
     public Type methodReturnType() {
         return methodReturnType;
+    }
+    
+    public ArrayList<TypeName> methodThrowTypes(){
+        return methodThrowTypes;
     }
 
     /**
