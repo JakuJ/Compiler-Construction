@@ -16,7 +16,21 @@ public class JForeachStatement extends JStatement {
     }
 
     public JForeachStatement analyze(Context context) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+        LocalContext lContext = new LocalContext(context);
+        parameter.analyze(lContext);
+
+        rhs.analyze(lContext);
+
+        if (!Type.ITERABLE.isJavaAssignableFrom(rhs.type()) && !rhs.type().isArray()) {
+            JAST.compilationUnit.reportSemanticError(line,
+                    "Local variable must be of type array or iterable: \"%s\"", rhs.type().toString());
+        }
+
+        parameter.type().mustMatchExpected(line, rhs.type().componentType());
+
+        body.analyze(lContext);
+
+        return this;
     }
 
     public void codegen(CLEmitter output) {
