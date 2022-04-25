@@ -60,12 +60,15 @@ blockStatement ::= localVariableDeclarationStatement
 statement ::= block
             | IF parExpression statement [ELSE statement]
             | FOR LPAREN [forInit] SEMI [expression] SEMI [forUpdate] RPAREN statement
+            | DO statement WHILE parExpression SEMI
             | WHILE parExpression statement 
             | TRY block
                   {CATCH (formalParameter) block}
                   [finally block]  // Mandatory if there is no CATCH 
             | RETURN [expression] SEMI
             | THROW expression SEMI
+            | BREAK SEMI
+            | CONTINUE SEMI
             | SEMI 
             | statementExpression SEMI
 
@@ -142,11 +145,10 @@ multiplicativeExpression ::= unaryExpression       // level 2
 
 unaryExpression ::= INC unaryExpression // level 1
                   | DEC unaryExpression
-                  | (PLUS | MINUS) unaryExpression
+                  | (PLUS | MINUS | TILDE) unaryExpression
                   | simpleUnaryExpression
 
 simpleUnaryExpression ::= LNOT unaryExpression
-                        | TILDE unaryExpression
                         | LPAREN basicType RPAREN unaryExpression // cast
                         | LPAREN // cast
                             referenceType
@@ -177,5 +179,5 @@ newArrayDeclarator ::= LBRACK expression RBRACK
                          {LBRACK expression RBRACK} {LBRACK RBRACK}
 
 literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL | DOUBLE_LITERAL
-          | TRUE        | FALSE        | NULL           | FLOAT_LITERAL
-          | LONG_LITERAL
+          | TRUE        | FALSE        | NULL           
+          
