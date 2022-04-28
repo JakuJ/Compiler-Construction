@@ -1341,7 +1341,7 @@ public class Parser {
             return new JForInit(null, statements);
             
         } else {
-            ArrayList<JVariableDeclarator> variableDeclarators = new ArrayList<JVariableDeclarator>();
+            ArrayList<JVariableDeclarator> variableDeclarators;
 
             if (have(FINAL)) {
                 // optional TODO: implement optional final

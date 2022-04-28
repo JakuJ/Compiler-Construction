@@ -57,11 +57,11 @@ public abstract class ReservedWords extends Object implements someInterface {
     public void listPrinter() throws RuntimeException {
         String[] list = {};
         for (String i : list) {
-            if (i.equals("Break here")) {
+            if (i.equals((Object)"Break here")) {
                 break;
-            } else if (i.equals("Don't print me")) {
+            } else if (i.equals((Object)"Don't print me")) {
                 continue;
-            } else if (i.equals("Error")) {
+            } else if (i.equals((Object)"Error")) {
                 throw new RuntimeException("Something went wrong");
             } else {
                 System.out.println(i);
