@@ -856,8 +856,7 @@ class TypeName extends Type {
             }
         }
         if (resolvedType != Type.ANY) {
-            Type referencingType = ((JTypeDecl) (context.classContext
-                    .definition())).thisType();
+            Type referencingType = ((JTypeDecl) (context.classContext.definition())).thisType();
             Type.checkAccess(line, referencingType.classRep(), resolvedType
                     .classRep());
         }

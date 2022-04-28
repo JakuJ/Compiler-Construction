@@ -89,11 +89,10 @@ class JFieldDeclaration extends JAST implements JMember {
             // All initializations must be turned into assignment
             // statements and analyzed
             if (decl.initializer() != null) {
-                JAssign assignOp = new JAssign(decl.line(), new JVariable(
-                        decl.line(), decl.name()), decl.initializer());
+                var lhs = new JVariable(decl.line(), decl.name()).analyze(context);
+                JAssign assignOp = new JAssign(decl.line(), lhs, decl.initializer());
                 assignOp.isStatementExpression = true;
-                initializations.add(new JStatementExpression(decl.line(),
-                        assignOp).analyze(context));
+                initializations.add(new JStatementExpression(decl.line(), assignOp).analyze(context));
             }
         }
         return this;

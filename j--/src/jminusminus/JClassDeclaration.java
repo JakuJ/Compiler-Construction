@@ -183,7 +183,12 @@ class JClassDeclaration extends JAST implements JTypeDecl, JMember {
         // Pre-analyze the members and add them to the partial
         // class
         for (JMember member : classBlock) {
+            if (member instanceof JTypeDecl) {
+                throw new UnsupportedOperationException("Nested classes and interfaces not supported");
+            }
+
             member.preAnalyze(this.context, partial);
+
             if (member instanceof JConstructorDeclaration
                     && ((JConstructorDeclaration) member).params.size() == 0) {
                 hasExplicitConstructor = true;
