@@ -42,6 +42,9 @@ class Type {
     /** The primitive type, char. */
     public final static Type CHAR = typeFor(char.class);
 
+    /** java.lang.Iterable */
+    public final static Type ITERABLE = typeFor(Iterable.class);
+
     /** The primitive type, boolean. */
     public final static Type BOOLEAN = typeFor(boolean.class);
 

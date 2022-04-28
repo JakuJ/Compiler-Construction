@@ -28,8 +28,18 @@ public class JForStatement extends JStatement{
         this.expression=expression;
     }
 
-    public JWhileStatement analyze(Context context) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+    public JForStatement analyze(Context context) {
+        LocalContext lContext = new LocalContext(context);
+        forInit.analyze(lContext);
+        
+        // for update analyze
+        for (JStatement jStatement : forUpdate) {
+            jStatement.analyze(lContext);
+        }
+
+        expression.analyze(lContext);
+        body.analyze(lContext);
+        return this;
     }
 
     public void codegen(CLEmitter output) {
