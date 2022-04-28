@@ -74,7 +74,7 @@ class JFormalParameter extends JAST {
      */
 
     public JAST analyze(Context context) {
-        // Nothing to do
+        type = type.resolve(context);
         return this;
     }
 

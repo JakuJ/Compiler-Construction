@@ -815,8 +815,6 @@ public class Parser {
             while (have(COMMA)) {
                 superClasses.add(qualifiedIdentifier());
             }
-        } else {
-            superClasses = null;
         }
 
         return new JInterfaceDeclaration(line, mods, name, superClasses, interfaceBody());

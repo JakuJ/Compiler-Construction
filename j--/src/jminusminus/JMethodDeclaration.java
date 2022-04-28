@@ -98,7 +98,7 @@ class JMethodDeclaration extends JAST implements JMember {
         if (isAbstract && body != null) {
             JAST.compilationUnit.reportSemanticError(line(),
                 "abstract method cannot have a body");
-        } else if (body == null && !isAbstract) {
+        } else if (body == null && !isAbstract && !(context instanceof InterfaceContext)) {
             JAST.compilationUnit.reportSemanticError(line(),
                 "Method with null body must be abstract");
         } else if (isAbstract && isPrivate) {
