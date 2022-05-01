@@ -13,18 +13,24 @@ public class JInitializationBlock extends JAST implements JMember {
 
     @Override
     public void preAnalyze(Context context, CLEmitter partial) {
-        // TODO: PREANALYZE
     }
 
     @Override
     public JAST analyze(Context context) {
-        // TODO: ANALYZE
-        return null;
+        // The analysis on a static and initialization block are the same as JBlock
+
+        Context lc = new LocalContext(context);
+
+        body.analyze(lc);
+
+        return this;
     }
 
     @Override
     public void codegen(CLEmitter output) {
-        // TODO: CODEGEN
+        // The codegen on a static and initialization block are the same as JBlock.
+        
+        body.codegen(output);
     }
 
     @Override
