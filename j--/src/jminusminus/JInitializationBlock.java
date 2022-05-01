@@ -17,9 +17,9 @@ public class JInitializationBlock extends JAST implements JMember {
     }
 
     @Override
-    public JAST analyze(Context context) {
-        // TODO: ANALYZE
-        return null;
+    public JInitializationBlock analyze(Context context) {
+        body = body.analyze(context);
+        return this;
     }
 
     @Override

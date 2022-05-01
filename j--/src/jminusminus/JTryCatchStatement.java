@@ -18,10 +18,10 @@ class JTryCatchStatement extends JStatement {
      * Constructs an AST node for a try-catch-finally-statement given its line number,
      * the bodies for each of the parts (if present) and the parameters to the catch
      * statement (if catch is present).
-     * 
-     * @param line the line at which the try is caught
-     * @param body_try mandatory contains the body to the try
-     * @param catches mandatory contains the catch clauses
+     *
+     * @param line         the line at which the try is caught
+     * @param body_try     mandatory contains the body to the try
+     * @param catches      mandatory contains the catch clauses
      * @param body_finally only optional if there is no catch body, contains the body to the finally
      */
     public JTryCatchStatement(int line, JBlock body_try, ArrayList<JCatchClause> catches, JBlock body_finally) {
@@ -32,8 +32,13 @@ class JTryCatchStatement extends JStatement {
     }
 
 
-    public JWhileStatement analyze(Context context) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+    public JTryCatchStatement analyze(Context context) {
+        body_try = body_try.analyze(context);
+        body_finally = body_finally.analyze(context);
+        for (var clause : catches) {
+            clause.analyze(context);
+        }
+        return this;
     }
 
 
@@ -59,7 +64,7 @@ class JTryCatchStatement extends JStatement {
             }
         }
 
-        if(body_finally != null){
+        if (body_finally != null) {
             p.printf("<Finally>\n"); // Finally
             p.indentRight();
             p.printf("<Body>\n");
@@ -71,7 +76,7 @@ class JTryCatchStatement extends JStatement {
             p.printf("</Finally>\n");
 
         }
-        
+
         p.indentLeft();
         p.printf("</JTryCatchStatement>\n");
     }

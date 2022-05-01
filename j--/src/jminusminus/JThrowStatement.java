@@ -1,5 +1,9 @@
 package jminusminus;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -23,11 +27,24 @@ class JThrowStatement extends JStatement {
         this.expression = expression;
     }
 
-    public JWhileStatement analyze(Context context) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+    public JThrowStatement analyze(Context context) {
+        expression = expression.analyze(context);
+        Type typ = expression.type();
+
+        if (!Type.THROWABLE.isJavaAssignableFrom(typ)) {
+            JAST.compilationUnit.reportSemanticError(line, "Throw type must be of type Throwable: \"%s\"", typ.toString());
+        }
+
+        Type[] types = context.methodContext().methodThrowTypes().toArray(new Type[0]);
+        var resolved = Arrays.stream(types).map(x -> x.resolve(context)).collect(Collectors.toList());
+
+        typ.mustMatchOneOf(expression.line(), resolved.toArray(new Type[0]));
+
+        return this;
     }
 
     public void codegen(CLEmitter output) {
+
         throw new UnsupportedOperationException("NOT IMPLEMENTED");
     }
 

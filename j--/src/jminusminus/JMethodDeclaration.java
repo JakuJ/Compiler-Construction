@@ -2,6 +2,7 @@
 
 package jminusminus;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static jminusminus.CLConstants.*;
@@ -67,10 +68,14 @@ class JMethodDeclaration extends JAST implements JMember {
      */
     protected boolean isPrivate;
 
-    /** Is method public. */
+    /**
+     * Is method public.
+     */
     protected boolean isPublic;
 
-    /** Is method final. */
+    /**
+     * Is method final.
+     */
     protected boolean isFinal;
 
     /**
@@ -133,9 +138,8 @@ class JMethodDeclaration extends JAST implements JMember {
         if(exceptions != null){
             for (Type type : exceptions) {
                 type = type.resolve(context);
-                if (!Type.THROWABLE.isJavaAssignableFrom(type)) {
-                    JAST.compilationUnit.reportSemanticError(line, "Throw type must be of type Throwable: \"%s\"",
-                            type.toString());
+                if (type != Type.ANY && !Type.THROWABLE.isJavaAssignableFrom(type)) {
+                    JAST.compilationUnit.reportSemanticError(line, "Throw type must be of type Throwable: \"%s\"", type.toString());
                 }
             }
         }
@@ -160,7 +164,7 @@ class JMethodDeclaration extends JAST implements JMember {
                     "private method cannot be declared abstract");
         } else if (isAbstract && isStatic) {
             JAST.compilationUnit.reportSemanticError(line(),
-                "static method cannot be declared abstract");
+                    "static method cannot be declared abstract");
         } else if (isStatic && body == null) {
             JAST.compilationUnit.reportSemanticError(line(), "static method must have a body");
         }
