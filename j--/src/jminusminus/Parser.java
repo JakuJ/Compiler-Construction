@@ -221,27 +221,19 @@ public class Parser {
             return false;
         }
         if (seeBasicType()) {
+            scanner.next();
+            if (have(RPAREN)) {
+                scanner.returnToPosition();
+                return true;
+            }
             scanner.returnToPosition();
-            return true;
+            return false;
         }
-        if (!see(IDENTIFIER)) {
+        if (!seeReferenceType()) {
             scanner.returnToPosition();
             return false;
         } else {
-            scanner.next(); // Scan the IDENTIFIER
-            // A qualified identifier is ok
-            while (have(DOT)) {
-                if (!have(IDENTIFIER)) {
-                    scanner.returnToPosition();
-                    return false;
-                }
-            }
-        }
-        while (have(LBRACK)) {
-            if (!have(RBRACK)) {
-                scanner.returnToPosition();
-                return false;
-            }
+            referenceType();
         }
         if (!have(RPAREN)) {
             scanner.returnToPosition();
@@ -311,7 +303,7 @@ public class Parser {
      */
 
     private boolean seeBasicType() {
-        return (see(BOOLEAN) || see(CHAR) || see(INT)) || see(DOUBLE) || see(LONG) || see(FLOAT) || see(BYTE) || see(SHORT);
+        return (see(BOOLEAN) || see(CHAR) || see(INT)) || see(DOUBLE) || see(FLOAT) || see(LONG) || see(FLOAT) || see(BYTE) || see(SHORT);
     }
 
     /**
@@ -399,21 +391,31 @@ public class Parser {
      * @return
      */
     private boolean seeTraditional() {
-        boolean result = false;
         scanner.recordPosition();
-        if (have(SEMI)) {
-            result = true;
-        } else {
-            while (!see(RPAREN)) {
+
+        int depth = 1;
+
+        while (!have(SEMI)) {
+            boolean consumed = false;
+            if (have(LPAREN)) {
+                depth++;
+                consumed = true;
+            }
+            if (have(RPAREN)) {
+                depth--;
+                consumed = true;
+            }
+            if (depth == 0) {
+                scanner.returnToPosition();
+                return false;
+            }
+            if (!consumed) {
                 scanner.next();
-                if (have(SEMI)) {
-                    result = true;
-                    break;
-                }
             }
         }
+
         scanner.returnToPosition();
-        return result;
+        return true;
     }
 
     /**
@@ -2027,11 +2029,15 @@ public class Parser {
             return new JLogicalNotOp(line, unaryExpression());
         } else if (seeCast()) {
             mustBe(LPAREN);
+            Type type;
             boolean isBasicType = seeBasicType();
-            Type type = type();
+            if (isBasicType) {
+                type = basicType();
+            } else {
+                type = referenceType();
+            }
             mustBe(RPAREN);
-            JExpression expr = isBasicType ? unaryExpression()
-                    : simpleUnaryExpression();
+            JExpression expr = isBasicType ? unaryExpression() : simpleUnaryExpression();
             return new JCastOp(line, type, expr);
         } else {
             return postfixExpression();
