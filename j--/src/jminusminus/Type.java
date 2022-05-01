@@ -743,6 +743,7 @@ class Type {
             }
         }
         signature += ")";
+        System.err.println("SIGNATURE: " + signature);
         return signature;
     }
 
@@ -858,8 +859,7 @@ class TypeName extends Type {
         }
         if (resolvedType != Type.ANY) {
             Type referencingType = ((JTypeDecl) (context.classContext.definition())).thisType();
-            Type.checkAccess(line, referencingType.classRep(), resolvedType
-                    .classRep());
+            Type.checkAccess(line, referencingType.classRep(), resolvedType.classRep());
         }
         return resolvedType;
     }
