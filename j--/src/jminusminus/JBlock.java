@@ -59,8 +59,7 @@ class JBlock extends JStatement {
         this.context = new LocalContext(context);
 
         for (int i = 0; i < statements.size(); i++) {
-            statements.set(i, (JStatement) statements.get(i).analyze(
-                    this.context));
+            statements.set(i, (JStatement) statements.get(i).analyze(this.context));
         }
         return this;
     }

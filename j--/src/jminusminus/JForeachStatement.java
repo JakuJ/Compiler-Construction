@@ -28,6 +28,22 @@ public class JForeachStatement extends JStatement {
 
         parameter.type().mustMatchExpected(line, rhs.type().componentType());
 
+        // Local variables are declared here (fields are declared in preAnalyze())
+        int offset = ((LocalContext) context).nextOffset();
+        var defn = new LocalVariableDefn(parameter.type(), offset);
+
+        // First, check for shadowing
+        IDefn previousDefn = context.lookup(parameter.name());
+        if (previousDefn instanceof LocalVariableDefn) {
+            JAST.compilationUnit.reportSemanticError(parameter.line(), "The name " + parameter.name() + " overshadows another local variable.");
+        }
+
+        // Then declare it in the local context
+        lContext.addEntry(parameter.line(), parameter.name(), defn);
+
+        // All initializations must be turned into assignment statements and analyzed
+        defn.initialize(); // TODO: Create assignment to the parameter
+
         body.analyze(lContext);
 
         return this;

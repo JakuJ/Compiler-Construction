@@ -5,9 +5,9 @@ import java.lang.System;
 public class Classes {
 
     public void tryBlocks() {
-        Blocks a = new Blocks();
-        Blocks b = new Blocks();
-        Blocks c = new Blocks();
+        Blocks a = new Blocks(1);
+        Blocks b = new Blocks(2);
+        Blocks c = new Blocks(3);
     }
 
     int x = 10;
@@ -19,18 +19,10 @@ public class Classes {
     public static void main(String[] args) {
         System.out.println(Classes.message()); // Expect: "Hello, World!"
         
-        Classes mClasses = new Classes();
-        Classes.InnerClass innerClass = mClasses.InnerClass();
-        System.out.println(innerClass.y + mClasses.x); // Expect: '15'
-
         Car car = new Car();
         car.honk();
 
         System.out.println(car.brand + " " + car.model); // Expect: 'Ford Mustang'
-    }
-
-    class InnerClass {
-        int y = 5;
     }
 
 }

@@ -70,8 +70,7 @@ class JFieldDeclaration extends JAST implements JMember {
         for (JVariableDeclarator decl : decls) {
             // Add field to (partial) class
             decl.setType(decl.type().resolve(context));
-            partial.addField(mods, decl.name(), decl.type().toDescriptor(),
-                    false);
+            partial.addField(mods, decl.name(), decl.type().toDescriptor(), false);
         }
     }
 
@@ -89,11 +88,9 @@ class JFieldDeclaration extends JAST implements JMember {
             // All initializations must be turned into assignment
             // statements and analyzed
             if (decl.initializer() != null) {
-                JAssign assignOp = new JAssign(decl.line(), new JVariable(
-                        decl.line(), decl.name()), decl.initializer());
-                assignOp.isStatementExpression = true;
-                initializations.add(new JStatementExpression(decl.line(),
-                        assignOp).analyze(context));
+                var lhs = new JVariable(decl.line(), decl.name()).analyze(context);
+                JAssign assignOp = new JAssign(decl.line(), lhs, decl.initializer());
+                initializations.add(new JStatementExpression(decl.line(), assignOp).analyze(context));
             }
         }
         return this;

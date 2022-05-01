@@ -1,6 +1,6 @@
 package pass;
 
-import java.util.ArrayList;
+import java.lang.StringBuilder;
 
 public class Exceptions{
 
@@ -9,7 +9,7 @@ public class Exceptions{
         StringBuilder message;
 
         try {
-            char[] letters = { a, b, c };
+            char[] letters = { 'a', 'b', 'c' };
 
             System.out.println(letters[5]); // ArrayIndexOutOfBoundsException
 

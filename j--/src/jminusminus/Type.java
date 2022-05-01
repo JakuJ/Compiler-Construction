@@ -432,6 +432,7 @@ class Type {
                 : cls.isArray() ? "[" + descriptorFor(cls.getComponentType())
                         : cls.isPrimitive() ? (cls == int.class ? "I"
                                 : cls == char.class ? "C"
+                                    : cls == double.class ? "D"
                                         : cls == boolean.class ? "Z" : "?")
                                 : "L" + cls.getName().replace('.', '/') + ";";
     }
@@ -742,6 +743,7 @@ class Type {
             }
         }
         signature += ")";
+        System.err.println("SIGNATURE: " + signature);
         return signature;
     }
 
@@ -856,10 +858,8 @@ class TypeName extends Type {
             }
         }
         if (resolvedType != Type.ANY) {
-            Type referencingType = ((JTypeDecl) (context.classContext
-                    .definition())).thisType();
-            Type.checkAccess(line, referencingType.classRep(), resolvedType
-                    .classRep());
+            Type referencingType = ((JTypeDecl) (context.classContext.definition())).thisType();
+            Type.checkAccess(line, referencingType.classRep(), resolvedType.classRep());
         }
         return resolvedType;
     }

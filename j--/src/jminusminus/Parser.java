@@ -815,8 +815,6 @@ public class Parser {
             while (have(COMMA)) {
                 superClasses.add(qualifiedIdentifier());
             }
-        } else {
-            superClasses = null;
         }
 
         return new JInterfaceDeclaration(line, mods, name, superClasses, interfaceBody());
@@ -1343,7 +1341,7 @@ public class Parser {
             return new JForInit(null, statements);
             
         } else {
-            ArrayList<JVariableDeclarator> variableDeclarators = new ArrayList<JVariableDeclarator>();
+            ArrayList<JVariableDeclarator> variableDeclarators;
 
             if (have(FINAL)) {
                 // optional TODO: implement optional final

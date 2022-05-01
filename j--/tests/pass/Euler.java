@@ -8,5 +8,6 @@ public class Euler {
         f = 20e-3;
         f = 1e+2;
         f = 0e-3f;
+        return d;
     }
 }
