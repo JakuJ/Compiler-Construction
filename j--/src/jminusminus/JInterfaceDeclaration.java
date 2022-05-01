@@ -18,7 +18,7 @@ public class JInterfaceDeclaration extends JAST implements JTypeDecl, JMember {
 	/** Context for this interface. */
 	private InterfaceContext context;
 
-	/** Super interface type. */
+	/** Super interface types. */
 	private ArrayList<TypeName> superClasses;
 
 	/** This interface type. */
@@ -81,6 +81,7 @@ public class JInterfaceDeclaration extends JAST implements JTypeDecl, JMember {
 	public void preAnalyze(Context context, CLEmitter partial) {
 		// TODO Auto-generated method stub
 
+		// TODO: Analyze inner interfaces.
 	}
 
 	/** This is the pre analyze of a JTypeDecl meaning that the interface is the outer interface */
