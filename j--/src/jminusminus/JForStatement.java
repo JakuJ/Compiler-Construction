@@ -39,22 +39,20 @@ public class JForStatement extends JStatement {
 
     public JForStatement analyze(Context context) {
         LocalContext lContext = new LocalContext(context);
-        if (forInit != null) {
+        if(forInit != null){
             forInit.analyze(lContext);
         }
-
+        
         // for update analyze
-        if (forUpdate != null) {
-            for (JStatement jStatement : forUpdate) {
-                jStatement.analyze(lContext);
+        if(forUpdate != null){
+            for(JStatement statement : forUpdate){
+                statement.analyze(lContext);
             }
         }
-
-        if (expression != null) {
+        if(expression != null){
             expression.analyze(lContext);
         }
-
-        if (body != null) {
+        if(body != null){
             body.analyze(lContext);
         }
         return this;
