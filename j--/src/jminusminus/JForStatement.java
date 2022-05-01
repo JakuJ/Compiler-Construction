@@ -1,6 +1,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+import static jminusminus.CLConstants.*;
 
 public class JForStatement extends JStatement {
 
@@ -60,7 +61,32 @@ public class JForStatement extends JStatement {
     }
 
     public void codegen(CLEmitter output) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+        String test = output.createLabel();
+        String out = output.createLabel();
+
+        if(forInit.isStatementExpression){
+            for(JStatement s : forInit.statements){
+                s.codegen(output);
+            }
+        }
+        else{
+            for(JVariableDeclarator v : forInit.variableDeclarators){
+                v.codegen(output);
+            }
+        }
+
+        output.addLabel(test);
+        expression.codegen(output, out, false);
+        
+        body.codegen(output);
+        
+        for(JStatement s: forUpdate){
+            s.codegen(output);
+        }
+
+        output.addBranchInstruction(GOTO, test);
+
+        output.addLabel(out);
     }
 
     /**
