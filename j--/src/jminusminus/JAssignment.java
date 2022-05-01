@@ -20,8 +20,7 @@ abstract class JAssignment extends JBinaryExpression {
      * @param rhs      the rhs operand.
      */
 
-    public JAssignment(int line, String operator, JExpression lhs,
-                       JExpression rhs) {
+    public JAssignment(int line, String operator, JExpression lhs, JExpression rhs) {
         super(line, operator, lhs, rhs);
     }
 
@@ -58,8 +57,7 @@ class JAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
         } else {
             lhs = ((JLhs) lhs).analyzeLhs(context);
         }
@@ -129,8 +127,7 @@ class JPlusAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
             lhs = ((JLhs) lhs).analyzeLhs(context);
@@ -139,12 +136,14 @@ class JPlusAssign extends JAssignment {
         if (lhs.type().equals(Type.INT)) {
             rhs.type().mustMatchExpected(line(), Type.INT);
             type = Type.INT;
+        } else if (lhs.type().equals(Type.DOUBLE)) {
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
+            type = Type.DOUBLE;
         } else if (lhs.type().equals(Type.STRING)) {
             rhs = (new JStringConcatenationOp(line, lhs, rhs)).analyze(context);
             type = Type.STRING;
         } else {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Invalid lhs type for +=: " + lhs.type());
+            JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for +=: " + lhs.type());
         }
         return this;
     }
@@ -218,9 +217,8 @@ class JMinusAssign extends JAssignment {
             type = Type.INT;
 
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for -=: " + lhs.type());
         }
@@ -292,9 +290,8 @@ class JStarAssign extends JAssignment {
             type = Type.INT;
 
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for *=: " + lhs.type());
         }
@@ -355,8 +352,7 @@ class JDivAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
             lhs = ((JLhs) lhs).analyzeLhs(context);
@@ -367,9 +363,8 @@ class JDivAssign extends JAssignment {
             type = Type.INT;
 
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for /=: " + lhs.type());
         }
@@ -424,8 +419,7 @@ class JModAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
             lhs = ((JLhs) lhs).analyzeLhs(context);
@@ -434,11 +428,9 @@ class JModAssign extends JAssignment {
         if (lhs.type().equals(Type.INT)) {
             rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
             type = Type.INT;
-
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for %=: " + lhs.type());
         }
@@ -483,8 +475,7 @@ class JShiftrAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
             lhs = ((JLhs) lhs).analyzeLhs(context);
@@ -495,9 +486,8 @@ class JShiftrAssign extends JAssignment {
             type = Type.INT;
 
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for >>=: " + lhs.type());
         }
@@ -542,8 +532,7 @@ class JUshiftrAssign extends JAssignment {
 
     public JExpression analyze(Context context) {
         if (!(lhs instanceof JLhs)) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Illegal lhs for assignment");
+            JAST.compilationUnit.reportSemanticError(line(), "Illegal lhs for assignment");
             return this;
         } else {
             lhs = ((JLhs) lhs).analyzeLhs(context);
@@ -554,9 +543,8 @@ class JUshiftrAssign extends JAssignment {
             type = Type.INT;
 
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for >>>=: " + lhs.type());
         }
@@ -612,9 +600,8 @@ class JShiftlAssign extends JAssignment {
             type = Type.INT;
 
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for <<=: " + lhs.type());
         }
@@ -670,9 +657,8 @@ class JBitAndAssign extends JAssignment {
             type = Type.INT;
 
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for &=: " + lhs.type());
         }
@@ -728,9 +714,8 @@ class JBitOrAssign extends JAssignment {
             type = Type.INT;
 
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for |=: " + lhs.type());
         }
@@ -786,9 +771,8 @@ class JXorAssign extends JAssignment {
             type = Type.INT;
 
         } else if (lhs.type().equals(Type.DOUBLE)) {
-            rhs.type.mustMatchOneOf(line, Type.INT, Type.DOUBLE);
+            rhs.type().mustMatchExpected(line(), Type.DOUBLE);
             type = Type.DOUBLE;
-
         } else {
             JAST.compilationUnit.reportSemanticError(line(), "Invalid lhs type for ^=: " + lhs.type());
         }

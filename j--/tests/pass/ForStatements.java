@@ -1,5 +1,7 @@
 package pass;
 
+import java.lang.System;
+
 public class ForStatements {
     public static void main(String[] args) {
         int MAX_LOOP_COUNT = 3;
@@ -22,7 +24,7 @@ public class ForStatements {
             System.out.println("I'm also looping: loop=" + word);
         }
 
-        for(float x=k+1; x<=h+10; x+=3.2){
+        for(float x = k + 1.0; x <= (double)(h + 10); x += 3.2){
             System.out.println("I'm crazy looping: loop=" + x);
         }
 

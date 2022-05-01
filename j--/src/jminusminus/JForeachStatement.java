@@ -16,7 +16,37 @@ public class JForeachStatement extends JStatement {
     }
 
     public JForeachStatement analyze(Context context) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+        LocalContext lContext = new LocalContext(context);
+        parameter.analyze(lContext);
+
+        rhs.analyze(lContext);
+
+        if (!Type.ITERABLE.isJavaAssignableFrom(rhs.type()) && !rhs.type().isArray()) {
+            JAST.compilationUnit.reportSemanticError(line,
+                    "Local variable must be of type array or iterable: \"%s\"", rhs.type().toString());
+        }
+
+        parameter.type().mustMatchExpected(line, rhs.type().componentType());
+
+        // Local variables are declared here (fields are declared in preAnalyze())
+        int offset = ((LocalContext) context).nextOffset();
+        var defn = new LocalVariableDefn(parameter.type(), offset);
+
+        // First, check for shadowing
+        IDefn previousDefn = context.lookup(parameter.name());
+        if (previousDefn instanceof LocalVariableDefn) {
+            JAST.compilationUnit.reportSemanticError(parameter.line(), "The name " + parameter.name() + " overshadows another local variable.");
+        }
+
+        // Then declare it in the local context
+        lContext.addEntry(parameter.line(), parameter.name(), defn);
+
+        // All initializations must be turned into assignment statements and analyzed
+        defn.initialize(); // TODO: Create assignment to the parameter
+
+        body.analyze(lContext);
+
+        return this;
     }
 
     public void codegen(CLEmitter output) {

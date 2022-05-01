@@ -12,18 +12,18 @@ import static jminusminus.CLConstants.*;
 
 class JReturnStatement extends JStatement {
 
-    /** The returned expression. */
+    /**
+     * The returned expression.
+     */
     private JExpression expr;
 
     /**
      * Constructs an AST node for a return-statement given its
      * line number, and the expression that is returned.
-     * 
-     * @param line
-     *            line in which the return-statement appears
-     *            in the source file.
-     * @param expr
-     *            the returned expression.
+     *
+     * @param line line in which the return-statement appears
+     *             in the source file.
+     * @param expr the returned expression.
      */
 
     public JReturnStatement(int line, JExpression expr) {
@@ -36,9 +36,8 @@ class JReturnStatement extends JStatement {
      * or in a regular method in checking return types. In the
      * case of a return expression, analyze it and check types.
      * Determine the (possibly void) return type.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -56,7 +55,7 @@ class JReturnStatement extends JStatement {
             if (expr != null) {
                 // Can't return a value from a constructor
                 JAST.compilationUnit.reportSemanticError(line(),
-                    "cannot return a value from a constructor");
+                        "cannot return a value from a constructor");
             }
         } else {
             // Must be a method
@@ -66,7 +65,7 @@ class JReturnStatement extends JStatement {
                 if (returnType == Type.VOID) {
                     // Can't return a value from void method
                     JAST.compilationUnit.reportSemanticError(line(),
-                        "cannot return a value from a void method");
+                            "cannot return a value from a void method");
                 } else {
                     // There's a (non-void) return expression.
                     // Its type must match the return type of the method
@@ -77,7 +76,7 @@ class JReturnStatement extends JStatement {
                 // The method better have void as return type
                 if (returnType != Type.VOID) {
                     JAST.compilationUnit.reportSemanticError(line(),
-                        "missing return value");
+                            "missing return value");
                 }
             }
         }
@@ -90,10 +89,9 @@ class JReturnStatement extends JStatement {
      * case of a return expression, generate code to load that
      * onto the stack and then generate the appropriate return
      * instruction.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction
-     *            for producing the .class file).
+     *
+     * @param output the code emitter (basically an abstraction
+     *               for producing the .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -102,9 +100,11 @@ class JReturnStatement extends JStatement {
         } else {
             expr.codegen(output);
             if (expr.type() == Type.INT
-                || expr.type() == Type.BOOLEAN
-                || expr.type() == Type.CHAR) {
+                    || expr.type() == Type.BOOLEAN
+                    || expr.type() == Type.CHAR) {
                 output.addNoArgInstruction(IRETURN);
+            } else if (expr.type() == Type.DOUBLE) {
+                output.addNoArgInstruction(DRETURN);
             } else {
                 output.addNoArgInstruction(ARETURN);
             }

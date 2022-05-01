@@ -1,6 +1,6 @@
 package pass;
 
-import java.util.ArrayList;
+import java.lang.System;
 
 /**
  * Dummy class to test the scanning of the reserved words.
@@ -20,8 +20,8 @@ public abstract class ReservedWords extends Object implements someInterface {
 
     abstract void abstractMethod();
 
-    public boolean isString(Object o) {
-        if (o instanceof String) {
+    public boolean isObject(Object o) {
+        if (o instanceof Object) {
             return true;
         } else {
             return false;
@@ -55,14 +55,13 @@ public abstract class ReservedWords extends Object implements someInterface {
     }
 
     public void listPrinter() throws RuntimeException {
-        // WE DON'T HAVE GENERICS
-        // ArrayList<String> list = new ArrayList<>();
+        String[] list = {};
         for (String i : list) {
-            if (i.equals("Break here")) {
+            if (i.equals((Object)"Break here")) {
                 break;
-            } else if (i.equals("Don't print me")) {
+            } else if (i.equals((Object)"Don't print me")) {
                 continue;
-            } else if (i.equals("Error")) {
+            } else if (i.equals((Object)"Error")) {
                 throw new RuntimeException("Something went wrong");
             } else {
                 System.out.println(i);
@@ -75,7 +74,7 @@ public abstract class ReservedWords extends Object implements someInterface {
         ;
     }
 
-    public native void nativeMethod();
+//    public native void nativeMethod();
 
 
 }

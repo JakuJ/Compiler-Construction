@@ -2,34 +2,61 @@ package jminusminus;
 
 import java.util.ArrayList;
 
-public class JForStatement extends JStatement{
+public class JForStatement extends JStatement {
 
-    /** The for loop initializer for the loop declaration commonly follows format: int i=0 */
+    /**
+     * The for loop initializer for the loop declaration commonly follows format: int i=0
+     */
     JForInit forInit;
 
-    /** The for loop update for the loop declaration commonly follows format: i++ */
+    /**
+     * The for loop update for the loop declaration commonly follows format: i++
+     */
     ArrayList<JStatement> forUpdate;
 
-    /** The body of the for loop statement */
+    /**
+     * The body of the for loop statement
+     */
     JStatement body;
 
-    /** The expression of the for loop declaration commonly follows format: i < MAX_LOOP_COUNT */
+    /**
+     * The expression of the for loop declaration commonly follows format: i < MAX_LOOP_COUNT
+     */
     JExpression expression;
 
     public JForStatement(int line,
-            JForInit forInit,
-            JExpression expression, 
-            ArrayList<JStatement> forUpdate, 
-            JStatement body) {
+                         JForInit forInit,
+                         JExpression expression,
+                         ArrayList<JStatement> forUpdate,
+                         JStatement body) {
         super(line);
-        this.forInit=forInit;
-        this.forUpdate=forUpdate;
-        this.body= body;
-        this.expression=expression;
+        this.forInit = forInit;
+        this.forUpdate = forUpdate;
+        this.body = body;
+        this.expression = expression;
     }
 
-    public JWhileStatement analyze(Context context) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+    public JForStatement analyze(Context context) {
+        LocalContext lContext = new LocalContext(context);
+        if (forInit != null) {
+            forInit.analyze(lContext);
+        }
+
+        // for update analyze
+        if (forUpdate != null) {
+            for (JStatement jStatement : forUpdate) {
+                jStatement.analyze(lContext);
+            }
+        }
+
+        if (expression != null) {
+            expression.analyze(lContext);
+        }
+
+        if (body != null) {
+            body.analyze(lContext);
+        }
+        return this;
     }
 
     public void codegen(CLEmitter output) {
@@ -80,7 +107,7 @@ public class JForStatement extends JStatement{
             p.indentRight();
             p.println("<JForUpdate>");
             p.indentRight();
-            for(JStatement statement : forUpdate){
+            for (JStatement statement : forUpdate) {
                 p.indentRight();
                 statement.writeToStdOut(p);
                 p.indentLeft();

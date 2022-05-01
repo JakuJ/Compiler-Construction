@@ -973,8 +973,7 @@ public class CLEmitter {
                 reportEmitterError("'%s' is not in internal form",
                         superInterfaces.get(i));
             }
-            interfaces.add(Integer.valueOf(constantPool
-                    .constantClassInfo(superInterfaces.get(i))));
+            interfaces.add(Integer.valueOf(constantPool.constantClassInfo(superInterfaces.get(i))));
         }
         if (isSynthetic) {
             addClassAttribute(syntheticAttribute());

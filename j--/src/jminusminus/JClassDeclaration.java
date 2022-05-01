@@ -125,11 +125,9 @@ class JClassDeclaration extends JAST implements JTypeDecl, JMember {
      */
 
     public void declareThisType(Context context) {
-        String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
-                : JAST.compilationUnit.packageName() + "/" + name;
+        String qualifiedName = JAST.compilationUnit.packageName().equals("") ? name : JAST.compilationUnit.packageName() + "/" + name;
         CLEmitter partial = new CLEmitter(false);
-        partial.addClass(mods, qualifiedName, Type.OBJECT.jvmName(), null,
-                false); // Object for superClass, just for now
+        partial.addClass(mods, qualifiedName, Type.OBJECT.jvmName(), null, false); // Object for superClass, just for now
         thisType = Type.typeFor(partial.toClass());
         context.addType(line, thisType);
     }
@@ -141,7 +139,6 @@ class JClassDeclaration extends JAST implements JTypeDecl, JMember {
     @Override
     public void preAnalyze(Context context, CLEmitter partial) {
         // TODO Auto-generated method stub
-
     }
 
     /**
@@ -168,24 +165,26 @@ class JClassDeclaration extends JAST implements JTypeDecl, JMember {
         // violated, so we can't defer these checks to analyze()
         thisType.checkAccess(line, superType);
         if (superType.isFinal()) {
-            JAST.compilationUnit.reportSemanticError(line,
-                    "Cannot extend a final type: %s", superType.toString());
+            JAST.compilationUnit.reportSemanticError(line, "Cannot extend a final type: %s", superType.toString());
         }
 
         // Create the (partial) class
         CLEmitter partial = new CLEmitter(false);
 
         // Add the class header to the partial class
-        String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
-                : JAST.compilationUnit.packageName() + "/" + name;
+        String qualifiedName = JAST.compilationUnit.packageName().equals("") ? name : JAST.compilationUnit.packageName() + "/" + name;
         partial.addClass(mods, qualifiedName, superType.jvmName(), null, false);
 
         // Pre-analyze the members and add them to the partial
         // class
         for (JMember member : classBlock) {
+            if (member instanceof JTypeDecl) {
+                throw new UnsupportedOperationException("Nested classes and interfaces not supported");
+            }
+
             member.preAnalyze(this.context, partial);
-            if (member instanceof JConstructorDeclaration
-                    && ((JConstructorDeclaration) member).params.size() == 0) {
+
+            if (member instanceof JConstructorDeclaration && ((JConstructorDeclaration) member).params.size() == 0) {
                 hasExplicitConstructor = true;
             }
         }
@@ -196,8 +195,7 @@ class JClassDeclaration extends JAST implements JTypeDecl, JMember {
         }
 
         // Get the Class rep for the (partial) class and make it
-        // the
-        // representation for this type
+        // the representation for this type
         Type id = this.context.lookupType(name);
         if (id != null && !JAST.compilationUnit.errorHasOccurred()) {
             id.setClassRep(partial.toClass());

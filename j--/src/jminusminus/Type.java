@@ -42,6 +42,9 @@ class Type {
     /** The primitive type, char. */
     public final static Type CHAR = typeFor(char.class);
 
+    /** java.lang.Iterable */
+    public final static Type ITERABLE = typeFor(Iterable.class);
+
     /** The primitive type, boolean. */
     public final static Type BOOLEAN = typeFor(boolean.class);
 
@@ -432,6 +435,7 @@ class Type {
                 : cls.isArray() ? "[" + descriptorFor(cls.getComponentType())
                         : cls.isPrimitive() ? (cls == int.class ? "I"
                                 : cls == char.class ? "C"
+                                    : cls == double.class ? "D"
                                         : cls == boolean.class ? "Z" : "?")
                                 : "L" + cls.getName().replace('.', '/') + ";";
     }
@@ -856,10 +860,8 @@ class TypeName extends Type {
             }
         }
         if (resolvedType != Type.ANY) {
-            Type referencingType = ((JTypeDecl) (context.classContext
-                    .definition())).thisType();
-            Type.checkAccess(line, referencingType.classRep(), resolvedType
-                    .classRep());
+            Type referencingType = ((JTypeDecl) (context.classContext.definition())).thisType();
+            Type.checkAccess(line, referencingType.classRep(), resolvedType.classRep());
         }
         return resolvedType;
     }

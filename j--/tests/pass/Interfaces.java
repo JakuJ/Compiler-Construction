@@ -1,38 +1,26 @@
 package pass;
 
-public interface FirstInterface {
+import java.lang.System;
 
-    public void firstMethod();
-
-    public interface SubInterface{
-        public void subMethod();
-    }
-
-    public class Subclass{
-        public void method(){
-            System.out.println(3);
-        }
-    }
-}
-
-public interface SecondInterface{
-    public void secondMethod();
-}
-
-class Interfaces implements FirstInterface, SecondInterface {
+public class Interfaces implements FirstInterface, SecondInterface {
     public void firstMethod() {
         System.out.println(1);
     }
 
-    public void secondMethod(){
+    public void secondMethod() {
         System.out.println(2);
     }
+}
 
-    public class Subclass {
-        public void method(){
-            System.out.println(3);
-        }
-    }
+interface FirstInterface {
+
+    public void firstMethod();
+
+}
+
+interface SecondInterface {
+    public void secondMethod();
+
 }
 
 class Main {
@@ -41,6 +29,5 @@ class Main {
 
         interfaces.firstMethod();
         interfaces.secondMethod();
-        interfaces.method();
     }
 }

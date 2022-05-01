@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -11,37 +12,59 @@ import static jminusminus.CLConstants.*;
 
 class JMethodDeclaration extends JAST implements JMember {
 
-    /** Method modifiers. */
+    /**
+     * Method modifiers.
+     */
     protected ArrayList<String> mods;
 
-    /** Method name. */
+    /**
+     * Method name.
+     */
     protected String name;
 
-    /** Return type. */
+    /**
+     * Return type.
+     */
     protected Type returnType;
 
-    /** The formal parameters. */
+    /**
+     * The formal parameters.
+     */
     protected ArrayList<JFormalParameter> params;
 
-    /** The qualifiedIdentifiers */
+    /**
+     * The qualifiedIdentifiers
+     */
     protected ArrayList<TypeName> exceptions;
 
-    /** Method body. */
+    /**
+     * Method body.
+     */
     protected JBlock body;
 
-    /** Built in analyze(). */
+    /**
+     * Built in analyze().
+     */
     protected MethodContext context;
 
-    /** Computed by preAnalyze(). */
+    /**
+     * Computed by preAnalyze().
+     */
     protected String descriptor;
 
-    /** Is method abstract. */
+    /**
+     * Is this method abstract?
+     */
     protected boolean isAbstract;
 
-    /** Is method static. */
+    /**
+     * Is this method static?
+     */
     protected boolean isStatic;
 
-    /** Is method private. */
+    /**
+     * Is this method private?
+     */
     protected boolean isPrivate;
 
     /** Is method public. */
@@ -54,7 +77,7 @@ class JMethodDeclaration extends JAST implements JMember {
      * Constructs an AST node for a method declaration given the
      * line number, method name, return type, formal parameters,
      * and the method body.
-     * 
+     *
      * @param line       line in which the constructor declaration occurs in the
      *                   source file.
      * @param mods       modifiers.
@@ -65,10 +88,8 @@ class JMethodDeclaration extends JAST implements JMember {
      */
 
     public JMethodDeclaration(int line, ArrayList<String> mods,
-        String name, Type returnType,
-        ArrayList<JFormalParameter> params, ArrayList<TypeName> exceptions, JBlock body)
-
-    {
+                              String name, Type returnType,
+                              ArrayList<JFormalParameter> params, ArrayList<TypeName> exceptions, JBlock body) {
         super(line);
         this.mods = mods;
         this.name = name;
@@ -85,11 +106,9 @@ class JMethodDeclaration extends JAST implements JMember {
 
     /**
      * Declares this method in the parent (class) context.
-     * 
-     * @param context
-     *                the parent (class) context.
-     * @param partial
-     *                the code emitter (basically an abstraction
+     *
+     * @param context the parent (class) context.
+     * @param partial the code emitter (basically an abstraction
      *                for producing the partial class).
      */
 
@@ -132,13 +151,13 @@ class JMethodDeclaration extends JAST implements JMember {
         // Check proper local use of abstract
         if (isAbstract && body != null) {
             JAST.compilationUnit.reportSemanticError(line(),
-                "abstract method cannot have a body");
-        } else if (body == null && !isAbstract) {
+                    "abstract method cannot have a body");
+        } else if (body == null && !isAbstract && !(context instanceof InterfaceContext)) {
             JAST.compilationUnit.reportSemanticError(line(),
-                "Method with null body must be abstract");
+                    "Method with null body must be abstract");
         } else if (isAbstract && isPrivate) {
             JAST.compilationUnit.reportSemanticError(line(),
-                "private method cannot be declared abstract");
+                    "private method cannot be declared abstract");
         } else if (isAbstract && isStatic) {
             JAST.compilationUnit.reportSemanticError(line(),
                 "static method cannot be declared abstract");
@@ -164,16 +183,14 @@ class JMethodDeclaration extends JAST implements JMember {
      * the offset (for instance methods), (3) declaring the
      * formal parameters in the method context, and (4) analyzing
      * the method's body.
-     * 
-     * @param context
-     *                context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
     public JAST analyze(Context context) {
-        MethodContext methodContext = new MethodContext(context,
-                                                        isStatic,
-                                                        returnType, exceptions);
+        MethodContext methodContext = new MethodContext(context, isStatic, returnType, exceptions);
+
         this.context = methodContext;
 
         if (!isStatic) {
@@ -184,16 +201,15 @@ class JMethodDeclaration extends JAST implements JMember {
         // Declare the parameters. We consider a formal parameter 
         // to be always initialized, via a function call.
         for (JFormalParameter param : params) {
-            LocalVariableDefn defn = new LocalVariableDefn(param.type(), 
-                this.context.nextOffset());
+            LocalVariableDefn defn = new LocalVariableDefn(param.type(), this.context.nextOffset());
             defn.initialize();
             this.context.addEntry(param.line(), param.name(), defn);
         }
         if (body != null) {
             body = body.analyze(this.context);
-            if (returnType!=Type.VOID && ! methodContext.methodHasReturn()){
+            if (returnType != Type.VOID && !methodContext.methodHasReturn()) {
                 JAST.compilationUnit.reportSemanticError(line(),
-                            "Non-void method must have a return statement");
+                        "Non-void method must have a return statement");
             }
         }
         return this;
@@ -201,11 +217,9 @@ class JMethodDeclaration extends JAST implements JMember {
 
     /**
      * Adds this method declaration to the partial class.
-     * 
-     * @param context
-     *                the parent (class) context.
-     * @param partial
-     *                the code emitter (basically an abstraction
+     *
+     * @param context the parent (class) context.
+     * @param partial the code emitter (basically an abstraction
      *                for producing the partial class).
      */
 
@@ -218,9 +232,12 @@ class JMethodDeclaration extends JAST implements JMember {
         if (returnType == Type.VOID) {
             partial.addNoArgInstruction(RETURN);
         } else if (returnType == Type.INT
-            || returnType == Type.BOOLEAN || returnType == Type.CHAR) {
+                || returnType == Type.BOOLEAN || returnType == Type.CHAR) {
             partial.addNoArgInstruction(ICONST_0);
             partial.addNoArgInstruction(IRETURN);
+        } else if (returnType == Type.DOUBLE) {
+            partial.addNoArgInstruction(DCONST_0);
+            partial.addNoArgInstruction(DRETURN);
         } else {
             // A reference type.
             partial.addNoArgInstruction(ACONST_NULL);
@@ -230,10 +247,9 @@ class JMethodDeclaration extends JAST implements JMember {
 
     /**
      * Generates code for the method declaration.
-     * 
-     * @param output
-     *                the code emitter (basically an abstraction
-     *                for producing the .class file).
+     *
+     * @param output the code emitter (basically an abstraction
+     *               for producing the .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -254,9 +270,9 @@ class JMethodDeclaration extends JAST implements JMember {
 
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JMethodDeclaration line=\"%d\" name=\"%s\" "
-            + "returnType=\"%s\">\n", line(),
-                                      name,
-                                      returnType.toString());
+                        + "returnType=\"%s\">\n", line(),
+                name,
+                returnType.toString());
         p.indentRight();
         if (context != null) {
             context.writeToStdOut(p);
@@ -279,7 +295,7 @@ class JMethodDeclaration extends JAST implements JMember {
             }
             p.println("</FormalParameters>");
         }
-        if(exceptions != null){
+        if (exceptions != null) {
             p.println("<Throws>");
             for (TypeName type : exceptions) {
                 p.indentRight();

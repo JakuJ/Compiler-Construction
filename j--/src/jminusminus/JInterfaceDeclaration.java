@@ -107,7 +107,7 @@ public class JInterfaceDeclaration extends JAST implements JTypeDecl, JMember {
 		CLEmitter partial = new CLEmitter(false);
 
 		// Add the class header to the partial class
-		String superTypesjvmNames = (superClasses.size() > 0) ? "" : null;
+		String superTypesjvmNames = (superClasses.size() > 0) ? "" : "java/lang/Object";
 		for (Type type : superClasses) {
 			superTypesjvmNames = superTypesjvmNames + type.jvmName();
 		}
