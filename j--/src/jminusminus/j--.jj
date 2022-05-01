@@ -1750,7 +1750,7 @@ private JExpression inclusiveOrExpression(): {
         (
             <BIT_OR>
             rhs = exclusiveOrExpression()
-            { lhs = new JLogicalAndOp(line, lhs, rhs); }
+            { lhs = new JBitOrOp(line, lhs, rhs); }
         )*
     }
     catch (ParseException e) {
@@ -1780,7 +1780,7 @@ private JExpression exclusiveOrExpression(): {
         (
             <XOR>
             rhs = andExpression()
-            { lhs = new JLogicalAndOp(line, lhs, rhs); }
+            { lhs = new JXorOp(line, lhs, rhs); }
         )*
     }
     catch (ParseException e) {
@@ -1810,7 +1810,7 @@ private JExpression andExpression(): {
         (
             <BIT_AND>
             rhs = equalityExpression()
-            { lhs = new JLogicalAndOp(line, lhs, rhs); }
+            { lhs = new JBitAndOp(line, lhs, rhs); }
         )*
     }
     catch (ParseException e) {

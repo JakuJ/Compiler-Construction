@@ -25,18 +25,18 @@ public class For {
     }
     public static int doubleFor(double a){
         int c = 0;
-        for(double b = 0; b > a; b += 1 ){
+        for(double b = 0.0; b > a; b += 1.0 ){
             c += 1;
         }
         return c;
     }
 
     public static double turboFor(int a){
-        double c = 0;
+        double c = 0.0;
         int d = 2;
         int f = 7;
-        for (c = d+1; c > f+10; c += 3){ //TODO: Increment c += 3.2 does not work?
-            c += 1;
+        for (c = (double)(d + 1); c > (double)(f + 10); c += 3.0){
+            c += 1.0;
         }
         return c;
     }

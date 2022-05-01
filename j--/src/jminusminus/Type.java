@@ -743,7 +743,6 @@ class Type {
             }
         }
         signature += ")";
-        System.err.println("SIGNATURE: " + signature);
         return signature;
     }
 

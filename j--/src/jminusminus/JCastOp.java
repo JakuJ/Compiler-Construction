@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.Hashtable;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -12,28 +13,33 @@ import static jminusminus.CLConstants.*;
 
 class JCastOp extends JExpression {
 
-    /** The cast. */
+    /**
+     * The cast.
+     */
     private Type cast;
 
-    /** The expression we're casting. */
+    /**
+     * The expression we're casting.
+     */
     private JExpression expr;
 
-    /** The conversions table. */
+    /**
+     * The conversions table.
+     */
     private static Conversions conversions;
 
-    /** The converter to use for this cast. */
+    /**
+     * The converter to use for this cast.
+     */
     private Converter converter;
 
     /**
-     * Constructs an AST node for a cast operation given its line number, 
+     * Constructs an AST node for a cast operation given its line number,
      * cast, and expression.
-     * 
-     * @param line
-     *            the line in which the operation occurs in the source file.
-     * @param cast
-     *            the type we're casting our expression as.
-     * @param expr
-     *            the expression we're casting.
+     *
+     * @param line the line in which the operation occurs in the source file.
+     * @param cast the type we're casting our expression as.
+     * @param expr the expression we're casting.
      */
 
     public JCastOp(int line, Type cast, JExpression expr) {
@@ -47,9 +53,8 @@ class JCastOp extends JExpression {
      * Analyzing a cast expression means, resolving the type (to which we are
      * casting), checking the legality of the cast, and computing a (possibly
      * {@code null}) conversion for use in code generation.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
@@ -73,10 +78,9 @@ class JCastOp extends JExpression {
     /**
      * Generating code for a cast expression involves generating code for the
      * original expr and then for any necessary conversion.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {
@@ -128,6 +132,10 @@ class Conversions {
 
         put(Type.CHAR, Type.INT, Converter.Identity);
         put(Type.INT, Type.CHAR, new I2C());
+        put(Type.INT, Type.DOUBLE, new I2D());
+
+
+        // TODO: Boxing and unboxing of doubles
 
         // Boxing
         put(Type.CHAR, Type.BOXED_CHAR, new Boxing(Type.CHAR, Type.BOXED_CHAR));
@@ -146,13 +154,10 @@ class Conversions {
 
     /**
      * Defines a conversion. This is used locally, for populating the table.
-     * 
-     * @param source
-     *            the original type.
-     * @param target
-     *            the target type.
-     * @param c
-     *            the converter necessary.
+     *
+     * @param source the original type.
+     * @param target the target type.
+     * @param c      the converter necessary.
      */
 
     private void put(Type source, Type target, Converter c) {
@@ -163,11 +168,9 @@ class Conversions {
      * Retrieves a converter for converting from some original type to a target
      * type; the converter may be empty (requiring no code for run-time
      * execution).
-     * 
-     * @param source
-     *            the original type.
-     * @param target
-     *            the target type.
+     *
+     * @param source the original type.
+     * @param target the target type.
      * @return the converter.
      */
 
@@ -184,18 +187,21 @@ class Conversions {
 
 interface Converter {
 
-    /** For identity conversion (no run-time code needed). */
+    /**
+     * For identity conversion (no run-time code needed).
+     */
     public static Converter Identity = new Identity();
 
-    /** For widening conversion (no run-time code needed). */
+    /**
+     * For widening conversion (no run-time code needed).
+     */
     public static Converter WidenReference = Identity;
 
     /**
      * Emits code necessary to convert (cast) a source type to a target type.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output);
@@ -225,14 +231,15 @@ class Identity implements Converter {
 
 class NarrowReference implements Converter {
 
-    /** The target type. */
+    /**
+     * The target type.
+     */
     private Type target;
 
     /**
      * Constructs a narrowing converter.
-     * 
-     * @param target
-     *            the target type.
+     *
+     * @param target the target type.
      */
 
     public NarrowReference(Type target) {
@@ -256,19 +263,21 @@ class NarrowReference implements Converter {
 
 class Boxing implements Converter {
 
-    /** The source type. */
+    /**
+     * The source type.
+     */
     private Type source;
 
-    /** The target type. */
+    /**
+     * The target type.
+     */
     private Type target;
 
     /**
      * Constructs a Boxing converter.
-     * 
-     * @param source
-     *            the source type.
-     * @param target
-     *            the target type.
+     *
+     * @param source the source type.
+     * @param target the target type.
      */
 
     public Boxing(Type source, Type target) {
@@ -295,24 +304,27 @@ class Boxing implements Converter {
 
 class UnBoxing implements Converter {
 
-    /** The source type. */
+    /**
+     * The source type.
+     */
     private Type source;
 
-    /** The target type. */
+    /**
+     * The target type.
+     */
     private Type target;
 
-    /** The Java method to invoke for the conversion. */
+    /**
+     * The Java method to invoke for the conversion.
+     */
     private String methodName;
 
     /**
      * Constructs an UnBoxing converter.
-     * 
-     * @param source
-     *            the source type.
-     * @param target
-     *            the target type.
-     * @param methodName
-     *            the Java method to invoke for the conversion.
+     *
+     * @param source     the source type.
+     * @param target     the target type.
+     * @param methodName the Java method to invoke for the conversion.
      */
 
     public UnBoxing(Type source, Type target, String methodName) {
@@ -344,6 +356,22 @@ class I2C implements Converter {
 
     public void codegen(CLEmitter output) {
         output.addNoArgInstruction(I2C);
+    }
+
+}
+
+/**
+ * Converting from an int to a double requires an I2D instruction.
+ */
+
+class I2D implements Converter {
+
+    /**
+     * {@inheritDoc}
+     */
+
+    public void codegen(CLEmitter output) {
+        output.addNoArgInstruction(I2D);
     }
 
 }

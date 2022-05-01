@@ -20,9 +20,22 @@ public class JForInit {
         this.statements = statements;
 
         isStatementExpression = variableDeclarators == null;
+
+        if (this.statements == null) {
+            this.statements = new ArrayList<>();
+        }
+
+        if (this.variableDeclarators == null) {
+            this.variableDeclarators = new ArrayList<>();
+        }
+
     }
 
     public JForInit analyze(Context context) {
+        for (JStatement statement : statements) {
+            statement.analyze(context);
+        }
+
         for (JVariableDeclarator decl : variableDeclarators) {
             // Local variables are declared here (fields are declared in preAnalyze())
             int offset = ((LocalContext) context).nextOffset();
