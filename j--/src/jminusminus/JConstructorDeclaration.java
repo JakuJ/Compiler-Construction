@@ -58,6 +58,8 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
             JAST.compilationUnit.reportSemanticError(line(),
                     "Constructor cannot be declared abstract");
         }
+
+        // Check statements
         if (body.statements().size() > 0
                 && body.statements().get(0) instanceof JStatementExpression) {
             JStatementExpression first = (JStatementExpression) body
@@ -71,7 +73,18 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
             }
         }
 
-        // TODO: Analyse throw types to make sure it's a throwable 
+        // Checks throwables to make sure they are of type: Java.lang.Throwable
+        if(exceptions != null){
+            for (TypeName typeName : exceptions) {
+                // Turn the typeName into a Type Java.lang.Iterable
+                Type type = typeName.resolve(context);
+
+                if(type != Type.ANY && !Type.THROWABLE.isJavaAssignableFrom(type) && type != null){
+                    JAST.compilationUnit.reportSemanticError(line, "Throw type must be of type THROWABLE: \"%s\"", 
+                            type.toString());
+                }
+            }
+        }
     }
 
     /**
@@ -104,9 +117,11 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
             defn.initialize();
             this.context.addEntry(param.line(), param.name(), defn);
         }
+
         if (body != null) {
             body = body.analyze(this.context);
         }
+
         return this;
 
     }

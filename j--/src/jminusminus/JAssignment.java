@@ -457,7 +457,7 @@ class JModAssign extends JAssignment {
  * a rhs.
  */
 
-class JShiftrAssign extends JAssignment {
+class JShiftRAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a %= expression given its lhs and rhs
@@ -469,7 +469,7 @@ class JShiftrAssign extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JShiftrAssign(int line, JExpression lhs, JExpression rhs) {
+    public JShiftRAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, ">>=", lhs, rhs);
     }
 
@@ -514,7 +514,7 @@ class JShiftrAssign extends JAssignment {
  * a rhs.
  */
 
-class JUshiftrAssign extends JAssignment {
+class JUshiftRAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a >>>= expression given its lhs and rhs
@@ -526,7 +526,7 @@ class JUshiftrAssign extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JUshiftrAssign(int line, JExpression lhs, JExpression rhs) {
+    public JUshiftRAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, ">>>=", lhs, rhs);
     }
 
@@ -571,7 +571,7 @@ class JUshiftrAssign extends JAssignment {
  * a rhs.
  */
 
-class JShiftlAssign extends JAssignment {
+class JShiftLAssign extends JAssignment {
 
     /**
      * Constructs the AST node for a <<= expression given its lhs and rhs
@@ -583,7 +583,7 @@ class JShiftlAssign extends JAssignment {
      * @param rhs  the rhs operand.
      */
 
-    public JShiftlAssign(int line, JExpression lhs, JExpression rhs) {
+    public JShiftLAssign(int line, JExpression lhs, JExpression rhs) {
         super(line, "<<=", lhs, rhs);
     }
 
