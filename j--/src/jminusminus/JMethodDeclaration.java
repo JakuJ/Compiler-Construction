@@ -2,6 +2,7 @@
 
 package jminusminus;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static jminusminus.CLConstants.*;
@@ -68,6 +69,16 @@ class JMethodDeclaration extends JAST implements JMember {
     protected boolean isPrivate;
 
     /**
+     * Is method public.
+     */
+    protected boolean isPublic;
+
+    /**
+     * Is method final.
+     */
+    protected boolean isFinal;
+
+    /**
      * Constructs an AST node for a method declaration given the
      * line number, method name, return type, formal parameters,
      * and the method body.
@@ -94,6 +105,8 @@ class JMethodDeclaration extends JAST implements JMember {
         this.isAbstract = mods.contains("abstract");
         this.isStatic = mods.contains("static");
         this.isPrivate = mods.contains("private");
+        this.isPublic = mods.contains("public");
+        this.isFinal = mods.contains("final");
     }
 
     /**
@@ -105,6 +118,32 @@ class JMethodDeclaration extends JAST implements JMember {
      */
 
     public void preAnalyze(Context context, CLEmitter partial) {
+        // Interface method Checking 
+        if (context instanceof InterfaceContext) {
+            if (!isPublic) {
+                mods.add("public");
+                isPublic = true;
+            }
+            if (!isAbstract) {
+                mods.add("abstract");
+                isAbstract = true;
+            }
+            if (isStatic || isFinal) {
+                JAST.compilationUnit.reportSemanticError(line,
+                        "Interface methods can not be declared static or final!");
+            }
+        }
+
+        // Throwables Analysis
+        if(exceptions != null){
+            for (Type type : exceptions) {
+                type = type.resolve(context);
+                if (type != Type.ANY && !Type.THROWABLE.isJavaAssignableFrom(type)) {
+                    JAST.compilationUnit.reportSemanticError(line, "Throw type must be of type Throwable: \"%s\"", type.toString());
+                }
+            }
+        }
+
         // Resolve types of the formal parameters
         for (JFormalParameter param : params) {
             param.setType(param.type().resolve(context));
@@ -126,6 +165,8 @@ class JMethodDeclaration extends JAST implements JMember {
         } else if (isAbstract && isStatic) {
             JAST.compilationUnit.reportSemanticError(line(),
                     "static method cannot be declared abstract");
+        } else if (isStatic && body == null) {
+            JAST.compilationUnit.reportSemanticError(line(), "static method must have a body");
         }
 
         // Compute descriptor
@@ -152,7 +193,8 @@ class JMethodDeclaration extends JAST implements JMember {
      */
 
     public JAST analyze(Context context) {
-        MethodContext methodContext = new MethodContext(context, isStatic, returnType);
+        MethodContext methodContext = new MethodContext(context, isStatic, returnType, exceptions);
+
         this.context = methodContext;
 
         if (!isStatic) {

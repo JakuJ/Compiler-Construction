@@ -43,8 +43,10 @@ public class JForStatement extends JStatement {
         }
 
         // for update analyze
-        for (JStatement jStatement : forUpdate) {
-            jStatement.analyze(lContext);
+        if (forUpdate != null) {
+            for (JStatement jStatement : forUpdate) {
+                jStatement.analyze(lContext);
+            }
         }
 
         if (expression != null) {

@@ -80,8 +80,6 @@ class JShiftLeftOp extends JShiftExpression {
      * Analyzing the << operation involves analyzing its operands, checking
      * types, and determining the result type.
      * 
-     * TODO: Add double checking
-     * 
      * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */

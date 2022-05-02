@@ -17,9 +17,10 @@ public class JCatchClause extends JAST implements JMember {
     }
 
     @Override
-    public JAST analyze(Context context) {
-        // TODO: ANALYZE
-        return null;
+    public JCatchClause analyze(Context context) {
+        param.analyze(context);
+        body.analyze(context);
+        return this;
     }
 
     @Override

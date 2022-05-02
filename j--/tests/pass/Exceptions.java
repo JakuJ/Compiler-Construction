@@ -1,12 +1,15 @@
 package pass;
 
 import java.lang.StringBuilder;
+import java.lang.NullPointerException;
+import java.lang.Exception;
+import java.lang.System;
 
 public class Exceptions{
 
     public String testTryCatch() {
 
-        StringBuilder message;
+        StringBuilder message = new StringBuilder();
 
         try {
             char[] letters = { 'a', 'b', 'c' };
@@ -40,7 +43,7 @@ public class testClass implements testInterface {
     int[] list;
 
     public testClass(int[] list) throws NullPointerException {
-        if(list != null){
+        if((Object)list != null){
             this.list = list;
         } else {
             throw new NullPointerException();

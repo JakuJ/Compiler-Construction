@@ -6,22 +6,23 @@ package jminusminus;
 
 class JDoWhileStatement extends JStatement {
 
-    /** Test expression. */
+    /**
+     * Test expression.
+     */
     private JExpression condition;
 
-    /** The body. */
+    /**
+     * The body.
+     */
     private JStatement body;
 
     /**
      * Constructs an AST node for a do-while-statement given its line number, the
      * test expression, and the body.
      *
-     * @param line
-     *            line in which the do-while-statement occurs in the source file.
-     * @param condition
-     *            test expression.
-     * @param body
-     *            the body.
+     * @param line      line in which the do-while-statement occurs in the source file.
+     * @param condition test expression.
+     * @param body      the body.
      */
 
     public JDoWhileStatement(int line, JExpression condition, JStatement body) {
@@ -33,23 +34,22 @@ class JDoWhileStatement extends JStatement {
     /**
      * Analysis involves analyzing the test, checking its type and analyzing the
      * body statement.
-     * 
-     * @param context
-     *            context in which names are resolved.
+     *
+     * @param context context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
     public JDoWhileStatement analyze(Context context) {
-        // TODO: ANALYZE
+        condition = condition.analyze(context);
+        body.analyze(context);
         return this;
     }
 
     /**
      * Generates code for the while loop.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .class file).
+     *
+     * @param output the code emitter (basically an abstraction for producing the
+     *               .class file).
      */
 
     public void codegen(CLEmitter output) {

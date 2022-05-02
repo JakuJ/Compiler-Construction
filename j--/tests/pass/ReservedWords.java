@@ -1,6 +1,8 @@
 package pass;
 
 import java.lang.System;
+import java.lang.RuntimeException;
+import java.lang.Exception;
 
 /**
  * Dummy class to test the scanning of the reserved words.
