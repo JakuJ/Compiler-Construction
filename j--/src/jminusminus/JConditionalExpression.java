@@ -1,5 +1,6 @@
 package jminusminus;
 
+import static jminusminus.CLConstants.GOTO;
 import static jminusminus.CLConstants.IREM;
 
 public class JConditionalExpression extends JExpression{
@@ -29,7 +30,18 @@ public class JConditionalExpression extends JExpression{
     }
 
     public void codegen(CLEmitter output) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+        if(thenBranch == null){
+            condition.codegen(output);
+        } else {
+            String elseLabel = output.createLabel();
+            String endLabel = output.createLabel();
+            condition.codegen(output, elseLabel, false);
+            thenBranch.codegen(output);
+            output.addBranchInstruction(GOTO, endLabel);
+            output.addLabel(elseLabel);
+            elseBranch.codegen(output);
+            output.addLabel(endLabel);
+        }
     }
 
     @Override
