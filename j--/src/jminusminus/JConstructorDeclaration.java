@@ -79,7 +79,7 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
                 // Turn the typeName into a Type Java.lang.Iterable
                 Type type = typeName.resolve(context);
 
-                if(type != Type.ANY && !Type.THROWABLE.isJavaAssignableFrom(type) && type != null){
+                if(type != Type.ANY && !Type.THROWABLE.isJavaAssignableFrom(type)){
                     JAST.compilationUnit.reportSemanticError(line, "Throw type must be of type THROWABLE: \"%s\"", 
                             type.toString());
                 }

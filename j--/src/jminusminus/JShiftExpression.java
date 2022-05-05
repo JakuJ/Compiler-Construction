@@ -1,7 +1,5 @@
 package jminusminus;
 
-import static jminusminus.CLConstants.*;
-
 /**
  * This class generates the AST node for: SHIFTL (<<) , SHIFTR (>>), USHIFTR (>>>) 
  * 
