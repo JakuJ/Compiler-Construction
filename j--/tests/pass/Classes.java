@@ -1,6 +1,7 @@
 package pass;
 
 import java.lang.System;
+import java.lang.Integer;
 
 public class Classes {
 
@@ -55,15 +56,24 @@ class Blocks {
 
     private int i;
 
+    private static int s;
+
     public Blocks(int i) {
-        this.i = i;
+        this.i += i;
     }
 
     static {
         System.out.println("I only get called once");
+        s = 15;
     }
 
     {
         System.out.println("I have been called multiple times!");
+        i =+ 20;
+    }
+
+    public static void main(String[] args) {
+        Blocks b = new Blocks(6);
+        System.out.println("Main: " + Integer.toString(s) + ", " + Integer.toString(b.i));
     }
 }
