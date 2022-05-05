@@ -1905,7 +1905,7 @@ public class Parser {
                 lhs = new JShiftRightOp(line, lhs, additiveExpression()); // SHIFTR (num >> num)
 
             } else if (have(USHIFTR)) {
-                lhs = new JShiftUOp(line, lhs, additiveExpression()); // USHIFTR (num >>> num)
+                lhs = new JUnsignedShiftRightOp(line, lhs, additiveExpression()); // USHIFTR (num >>> num)
 
             } else {
                 more = false;

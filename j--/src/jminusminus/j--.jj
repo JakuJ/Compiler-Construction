@@ -1922,15 +1922,15 @@ private JExpression shiftExpression(): {
         (
             <SHIFTL>
             rhs = additiveExpression()
-            { lhs = new JShiftlOp(line, lhs, rhs); } |
+            { lhs = new JShiftLeftOp(line, lhs, rhs); } |
 
             <SHIFTR>
             rhs = additiveExpression()
-            { lhs = new JShiftrOp(line, lhs, rhs); } |
+            { lhs = new JShiftRightOp(line, lhs, rhs); } |
 
             <USHIFTR>
             rhs = additiveExpression()
-            { lhs = new JUshiftrOp(line, lhs, rhs); }
+            { lhs = new JUnsignedShiftRightOp(line, lhs, rhs); }
         )*
     }
     catch (ParseException e) {
