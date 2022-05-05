@@ -61,11 +61,7 @@ public class JForInit {
                 }
             }
         }
-        if(isStatementExpression){
-            for(JStatement s : statements){
-                s.analyze(context);
-            }
-        }
+       
 
         return this;
     }

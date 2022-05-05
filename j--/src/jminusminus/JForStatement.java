@@ -62,24 +62,30 @@ public class JForStatement extends JStatement {
         String test = output.createLabel();
         String out = output.createLabel();
 
-        if(forInit.isStatementExpression){
-            for(JStatement s : forInit.statements){
-                s.codegen(output);
-            }
-        }
-        else{
-            for(JVariableDeclarator v : forInit.variableDeclarators){
-                v.codegen(output);
+        if(forInit != null){
+            if(forInit.isStatementExpression){
+                for(JStatement s : forInit.statements){
+                    s.codegen(output);
+                }
+            } else {
+                for(JVariableDeclarator v : forInit.variableDeclarators){
+                    v.codegen(output);
+                }
             }
         }
 
         output.addLabel(test);
-        expression.codegen(output, out, false);
+        if(expression != null){
+            expression.codegen(output, out, false);
+        }
         
-        body.codegen(output);
-        
-        for(JStatement s: forUpdate){
-            s.codegen(output);
+        if(body != null){
+            body.codegen(output);
+        }
+        if(forUpdate != null){
+            for(JStatement statement : forUpdate){
+                statement.codegen(output);
+            }
         }
 
         output.addBranchInstruction(GOTO, test);
