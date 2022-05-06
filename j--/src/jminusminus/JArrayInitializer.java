@@ -58,8 +58,7 @@ class JArrayInitializer extends JExpression {
             JExpression component = initials.get(i);
             initials.set(i, component = component.analyze(context));
             if (!(component instanceof JArrayInitializer)) {
-                component.type().mustMatchExpected(line,
-                    componentType);
+                component.type().mustMatchExpected(line, componentType);
             }
         }
         return this;
@@ -103,6 +102,8 @@ class JArrayInitializer extends JExpression {
             // Code to store the initial value in the array
             if (componentType == Type.INT) {
                 output.addNoArgInstruction(IASTORE);
+            } else if (componentType == Type.DOUBLE) {
+                output.addNoArgInstruction(DASTORE);
             } else if (componentType == Type.BOOLEAN) {
                 output.addNoArgInstruction(BASTORE);
             } else if (componentType == Type.CHAR) {

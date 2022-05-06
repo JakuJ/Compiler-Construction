@@ -59,7 +59,7 @@ class JCastOp extends JExpression {
      */
 
     public JExpression analyze(Context context) {
-        expr = (JExpression) expr.analyze(context);
+        expr = expr.analyze(context);
         type = cast = cast.resolve(context);
         if (cast.equals(expr.type())) {
             converter = Converter.Identity;
@@ -69,8 +69,7 @@ class JCastOp extends JExpression {
             converter = new NarrowReference(cast);
         } else if ((converter = conversions.get(expr.type(), cast)) != null) {
         } else {
-            JAST.compilationUnit.reportSemanticError(line, "Cannot cast a "
-                    + expr.type().toString() + " to a " + cast.toString());
+            JAST.compilationUnit.reportSemanticError(line, "Cannot cast a " + expr.type().toString() + " to a " + cast.toString());
         }
         return this;
     }
@@ -185,12 +184,12 @@ interface Converter {
     /**
      * For identity conversion (no run-time code needed).
      */
-    public static Converter Identity = new Identity();
+    Converter Identity = new Identity();
 
     /**
      * For widening conversion (no run-time code needed).
      */
-    public static Converter WidenReference = Identity;
+    Converter WidenReference = Identity;
 
     /**
      * Emits code necessary to convert (cast) a source type to a target type.
@@ -199,7 +198,7 @@ interface Converter {
      *               .class file).
      */
 
-    public void codegen(CLEmitter output);
+    void codegen(CLEmitter output);
 
 }
 

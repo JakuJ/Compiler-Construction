@@ -173,7 +173,9 @@ class JArrayExpression extends JExpression implements JLhs {
     public void codegenStore(CLEmitter output) {
         if (type == Type.INT) {
             output.addNoArgInstruction(IASTORE);
-        } else if (type == Type.BOOLEAN) {
+        } else if (type == Type.DOUBLE) {
+            output.addNoArgInstruction(DASTORE);
+        }else if (type == Type.BOOLEAN) {
             output.addNoArgInstruction(BASTORE);
         } else if (type == Type.CHAR) {
             output.addNoArgInstruction(CASTORE);

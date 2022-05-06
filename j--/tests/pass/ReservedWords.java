@@ -9,7 +9,7 @@ import java.lang.Exception;
  * Does not include "const" and "goto".
  */
 public abstract class ReservedWords extends Object implements someInterface {
-    final boolean booleanField = true;
+    boolean booleanField = true;
     private byte byteField;
     protected char charField;
     static double doubleField;

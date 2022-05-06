@@ -90,6 +90,7 @@ class JFieldDeclaration extends JAST implements JMember {
             if (decl.initializer() != null) {
                 var lhs = new JVariable(decl.line(), decl.name()).analyze(context);
                 JAssign assignOp = new JAssign(decl.line(), lhs, decl.initializer());
+                assignOp.analyze(context);
                 initializations.add(new JStatementExpression(decl.line(), assignOp).analyze(context));
             }
         }
