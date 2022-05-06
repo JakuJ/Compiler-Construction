@@ -53,16 +53,12 @@ public class JInitBlock extends JBlock implements JMember {
         return this;
     }
 
-    /**
-     * Generating code for a block consists of generating code for each of its
-     * statements.
-     * 
-     * @param output
-     *               the code emitter (basically an abstraction for producing the
-     *               .class file).
-     */
 
-    public void codegen(CLEmitter output) {
+    /**
+     * This is called in both the explicit and implicit  
+     * constructors in class declarations
+     */
+    public void codegen(CLEmitter output) {        
         for (JStatement statement : statements) {
             statement.codegen(output);
         }

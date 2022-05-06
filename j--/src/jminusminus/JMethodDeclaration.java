@@ -136,8 +136,8 @@ class JMethodDeclaration extends JAST implements JMember {
 
         // Throwables Analysis
         if(exceptions != null){
-            for (Type type : exceptions) {
-                type = type.resolve(context);
+            for (TypeName typeName : exceptions) {
+                Type type = typeName.resolve(context);
                 if (type != Type.ANY && !Type.THROWABLE.isJavaAssignableFrom(type)) {
                     JAST.compilationUnit.reportSemanticError(line, "Throw type must be of type Throwable: \"%s\"", type.toString());
                 }
