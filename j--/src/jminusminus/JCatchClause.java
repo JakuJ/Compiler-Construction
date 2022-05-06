@@ -27,7 +27,16 @@ public class JCatchClause extends JAST implements JMember {
     @Override
     public JCatchClause analyze(Context context) {
         param.analyze(context);
-        body.analyze(context);
+
+        // Declare the parameter inside the catch block
+        var c = new LocalContext(context);
+
+        var defn = new LocalVariableDefn(param.type(), c.nextOffset());
+        defn.initialize();
+
+        c.addEntry(param.line(), param.name(), defn);
+
+        body.analyze(c);
         return this;
     }
 

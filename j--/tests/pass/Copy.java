@@ -27,7 +27,7 @@ public class Copy {
         } catch (FileNotFoundException e) {
             System.err.println(e.toString()); // rely on e's toString ()
         } catch (IOException e) {
-            System.err.println(e);
+            System.err.println(e.toString());
         } finally { // close the files
             inStream.close();
             outStream.close();
