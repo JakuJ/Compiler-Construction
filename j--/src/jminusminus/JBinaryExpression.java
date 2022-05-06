@@ -104,8 +104,7 @@ class JPlusOp extends JBinaryExpression {
         lhs = lhs.analyze(context);
         rhs = rhs.analyze(context);
         if (lhs.type() == Type.STRING || rhs.type() == Type.STRING) {
-            return (new JStringConcatenationOp(line, lhs, rhs))
-                    .analyze(context);
+            return (new JStringConcatenationOp(line, lhs, rhs)).analyze(context);
         } else if (lhs.type() == Type.INT && rhs.type() == Type.INT) {
             type = Type.INT;
         } else if (lhs.type() == Type.DOUBLE && rhs.type() == Type.DOUBLE) {
@@ -128,11 +127,9 @@ class JPlusOp extends JBinaryExpression {
      */
 
     public void codegen(CLEmitter output) {
-        if (type == Type.INT) {
-            lhs.codegen(output);
-            rhs.codegen(output);
-            output.addNoArgInstruction(IADD);
-        }
+        lhs.codegen(output);
+        rhs.codegen(output);
+        output.addNoArgInstruction(type == Type.INT ? IADD : DADD);
     }
 
 }
@@ -187,7 +184,7 @@ class JSubtractOp extends JBinaryExpression {
     public void codegen(CLEmitter output) {
         lhs.codegen(output);
         rhs.codegen(output);
-        output.addNoArgInstruction(ISUB);
+        output.addNoArgInstruction(type == Type.INT ? ISUB : DSUB);
     }
 
 }
@@ -242,7 +239,7 @@ class JMultiplyOp extends JBinaryExpression {
     public void codegen(CLEmitter output) {
         lhs.codegen(output);
         rhs.codegen(output);
-        output.addNoArgInstruction(IMUL);
+        output.addNoArgInstruction(type == Type.INT ? IMUL : DMUL);
     }
 
 }
@@ -282,7 +279,7 @@ class JDivideOp extends JBinaryExpression {
     public void codegen(CLEmitter output) {
         lhs.codegen(output);
         rhs.codegen(output);
-        output.addNoArgInstruction(IDIV);
+        output.addNoArgInstruction(type == Type.INT ? IDIV : DDIV);
     }
 }
 
@@ -307,8 +304,8 @@ class JModOp extends JBinaryExpression {
     }
 }
 
-class JShiftlOp extends JBinaryExpression {
-    public JShiftlOp(int line, JExpression lhs, JExpression rhs) {
+class JShiftLeftOp extends JBinaryExpression {
+    public JShiftLeftOp(int line, JExpression lhs, JExpression rhs) {
         super(line, "<<", lhs, rhs);
     }
 
@@ -328,8 +325,8 @@ class JShiftlOp extends JBinaryExpression {
     }
 }
 
-class JShiftrOp extends JBinaryExpression {
-    public JShiftrOp(int line, JExpression lhs, JExpression rhs) {
+class JShiftRightOp extends JBinaryExpression {
+    public JShiftRightOp(int line, JExpression lhs, JExpression rhs) {
         super(line, ">>", lhs, rhs);
     }
 
@@ -349,8 +346,8 @@ class JShiftrOp extends JBinaryExpression {
     }
 }
 
-class JUshiftrOp extends JBinaryExpression {
-    public JUshiftrOp(int line, JExpression lhs, JExpression rhs) {
+class JUnsignedShiftRightOp extends JBinaryExpression {
+    public JUnsignedShiftRightOp(int line, JExpression lhs, JExpression rhs) {
         super(line, ">>>", lhs, rhs);
     }
 
