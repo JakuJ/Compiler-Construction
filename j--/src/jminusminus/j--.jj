@@ -2171,7 +2171,7 @@ private JExpression selector(JExpression target): {
     try {
         <DOT> { line = token.beginLine; }
         id = qualifiedIdentifier()
-        { expr = new JFieldSelection(line, ambiguousPart(id), target, id.simpleName()); System.out.println("AAAAAAAAAAAAAAAAAAA"); }
+        { expr = new JFieldSelection(line, ambiguousPart(id), target, id.simpleName()); }
         [
             args = arguments()
             { expr = new JMessageExpression(line, target, ambiguousPart(id), id.simpleName(), args); }

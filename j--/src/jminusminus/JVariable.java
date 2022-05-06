@@ -21,7 +21,7 @@ class JVariable extends JExpression implements JLhs {
 
     /**
      * Constructs the AST node for a variable given its line number and name.
-     * 
+     *
      * @param line
      *            line in which the variable occurs in the source file.
      * @param name
@@ -35,7 +35,7 @@ class JVariable extends JExpression implements JLhs {
 
     /**
      * Returns the identifier name.
-     * 
+     *
      * @return the identifier name.
      */
 
@@ -45,7 +45,7 @@ class JVariable extends JExpression implements JLhs {
 
     /**
      * Returns the identifier's definition.
-     * 
+     *
      * @return the identifier's definition.
      */
 
@@ -57,7 +57,7 @@ class JVariable extends JExpression implements JLhs {
      * Analyzing identifiers involves resolving them in the context. Identifiers
      * denoting fields (with implicit targets) are rewritten as explicit field
      * selection operations.
-     * 
+     *
      * @param context
      *            context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
@@ -98,7 +98,7 @@ class JVariable extends JExpression implements JLhs {
 
     /**
      * Analyze the identifier as used on the lhs of an assignment.
-     * 
+     *
      * @param context
      *            context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
@@ -120,7 +120,7 @@ class JVariable extends JExpression implements JLhs {
 
     /**
      * Generates code to load value of variable on stack.
-     * 
+     *
      * @param output
      *            the code emitter (basically an abstraction for producing the
      *            .class file).
@@ -176,7 +176,7 @@ class JVariable extends JExpression implements JLhs {
     /**
      * The semantics of j-- requires that we implement short-circuit branching
      * in implementing the identifier expression.
-     * 
+     *
      * @param output
      *            the code emitter (basically an abstraction for producing the
      *            .class file).
@@ -202,10 +202,10 @@ class JVariable extends JExpression implements JLhs {
     }
 
     /**
-     * Generates the code required for setting up an Lvalue, for example, for 
+     * Generates the code required for setting up an Lvalue, for example, for
      * use in an assignment. Here, this requires nothing; all information is in
      * the store instruction.
-     * 
+     *
      * @param output
      *            the emitter (an abstraction of the class file.
      */
@@ -215,10 +215,10 @@ class JVariable extends JExpression implements JLhs {
     }
 
     /**
-     * Generates the code required for loading an Rvalue for this variable, for 
-     * example, for use in a {@code +=}. Here, this requires loading the Rvalue 
+     * Generates the code required for loading an Rvalue for this variable, for
+     * example, for use in a {@code +=}. Here, this requires loading the Rvalue
      * for the variable.
-     * 
+     *
      * @param output
      *            the emitter (an abstraction of the class file).
      */
@@ -229,10 +229,10 @@ class JVariable extends JExpression implements JLhs {
 
     /**
      * Generates the code required for duplicating the Rvalue that is on the
-     * stack because it is to be used in a surrounding expression, as in 
-     * {@code a[i] = x =} &lt;expr&gt; or {@code x = y--}. Here this means 
+     * stack because it is to be used in a surrounding expression, as in
+     * {@code a[i] = x =} &lt;expr&gt; or {@code x = y--}. Here this means
      * simply duplicating the value on the stack.
-     * 
+     *
      * @param output
      *            the code emitter (basically an abstraction for producing the
      *            .class file).
@@ -248,7 +248,7 @@ class JVariable extends JExpression implements JLhs {
     /**
      * Generates the code required for doing the actual assignment. Here, this
      * requires storing what's on the stack at the appropriate offset.
-     * 
+     *
      * @param output
      *            the code emitter (basically an abstraction for producing the
      *            .class file).
@@ -277,8 +277,7 @@ class JVariable extends JExpression implements JLhs {
                 }
             } else {
                 // Primitive types
-                if (type == Type.INT || type == Type.BOOLEAN
-                        || type == Type.CHAR) {
+                if (type == Type.INT || type == Type.BOOLEAN || type == Type.CHAR) {
                     switch (offset) {
                     case 0:
                         output.addNoArgInstruction(ISTORE_0);
@@ -294,6 +293,24 @@ class JVariable extends JExpression implements JLhs {
                         break;
                     default:
                         output.addOneArgInstruction(ISTORE, offset);
+                        break;
+                    }
+                } else if (type == Type.DOUBLE) {
+                    switch (offset) {
+                    case 0:
+                        output.addNoArgInstruction(DSTORE_0);
+                        break;
+                    case 1:
+                        output.addNoArgInstruction(DSTORE_1);
+                        break;
+                    case 2:
+                        output.addNoArgInstruction(DSTORE_2);
+                        break;
+                    case 3:
+                        output.addNoArgInstruction(DSTORE_3);
+                        break;
+                    default:
+                        output.addOneArgInstruction(DSTORE, offset);
                         break;
                     }
                 }
