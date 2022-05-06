@@ -63,14 +63,8 @@ public class JForStatement extends JStatement {
         String out = output.createLabel();
 
         if(forInit != null){
-            if(forInit.isStatementExpression){
-                for(JStatement s : forInit.statements){
-                    s.codegen(output);
-                }
-            } else {
-                for(JVariableDeclarator v : forInit.variableDeclarators){
-                    v.codegen(output);
-                }
+            for(JStatement s : forInit.statements){
+                s.codegen(output);
             }
         }
 

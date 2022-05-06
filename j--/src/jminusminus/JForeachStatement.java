@@ -64,7 +64,7 @@ public class JForeachStatement extends JStatement {
             JExpression condition = new JLessThanOp(line(), lhs, rhs);
 
             // Create i ’ = i ’ + 1; the update
-            JPostIncrementOp incrementOp = new JPostIncrementOp(line(), new JVariable(line(), iteratorName));
+            JPostIncrementOp incrementOp = new JPostIncrementOp(line(), lhs);
             ArrayList<JStatement> update = new ArrayList<JStatement>();
             update.add(new JStatementExpression(line(), incrementOp));
 

@@ -35,7 +35,7 @@ public class JForInit {
         for (JStatement statement : statements) {
             statement.analyze(context);
         }
-
+        
         if(variableDeclarators != null){
             statements = new ArrayList<JStatement>();
             for (JVariableDeclarator decl : variableDeclarators) {
