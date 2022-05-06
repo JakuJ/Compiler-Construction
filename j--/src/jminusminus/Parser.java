@@ -840,7 +840,7 @@ public class Parser {
         mustBe(LCURLY);
         while (!see(RCURLY) && !see(EOF)) {
             if (have(SEMI)) {
-                reportParserError("Warning: Ignored lone SEMI");
+                // Random lone semi should be ignored
             } else if (seeStaticInitBlock()) {
                 have(STATIC);
                 JBlock block = block();
@@ -873,7 +873,7 @@ public class Parser {
         mustBe(LCURLY);
         while (!see(RCURLY) && !see(EOF)) {
             if (have(SEMI)) {
-                reportParserError("Warning: Ignored lone SEMI");
+                // Random lone semi should be ignored
 
             } else {
                 members.add(interfaceMemberDecl(modifiers()));
@@ -1660,11 +1660,11 @@ public class Parser {
         } else if (have(MOD_ASSIGN)) {
             return new JModAssign(line, lhs, assignmentExpression());
         } else if (have(SHIFTR_ASSIGN)) {
-            return new JShiftrAssign(line, lhs, assignmentExpression());
+            return new JShiftRAssign(line, lhs, assignmentExpression());
         } else if (have(USHIFTR_ASSIGN)) {
-            return new JUshiftrAssign(line, lhs, assignmentExpression());
+            return new JUshiftRAssign(line, lhs, assignmentExpression());
         } else if (have(SHIFTL_ASSIGN)) {
-            return new JShiftlAssign(line, lhs, assignmentExpression());
+            return new JShiftLAssign(line, lhs, assignmentExpression());
         } else if (have(AND_ASSIGN)) {
             return new JBitAndAssign(line, lhs, assignmentExpression());
         } else if (have(OR_ASSIGN)) {
@@ -1905,7 +1905,7 @@ public class Parser {
                 lhs = new JShiftRightOp(line, lhs, additiveExpression()); // SHIFTR (num >> num)
 
             } else if (have(USHIFTR)) {
-                lhs = new JShiftUOp(line, lhs, additiveExpression()); // USHIFTR (num >>> num)
+                lhs = new JUnsignedShiftRightOp(line, lhs, additiveExpression()); // USHIFTR (num >>> num)
 
             } else {
                 more = false;

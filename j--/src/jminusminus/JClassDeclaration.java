@@ -364,6 +364,15 @@ class JClassDeclaration extends JAST implements JTypeDecl, JMember {
             instanceField.codegenInitializations(output);
         }
 
+        // The Initialization Block
+        for (JMember member : classBlock) {
+            if (member instanceof JInitBlock) {
+                JInitBlock iBlock = (JInitBlock) member;
+
+                iBlock.codegen(output);
+            }
+        }
+
         // Return
         output.addNoArgInstruction(RETURN);
     }
@@ -383,14 +392,41 @@ class JClassDeclaration extends JAST implements JTypeDecl, JMember {
         mods.add("static");
         output.addMethod(mods, "<clinit>", "()V", null, false);
 
+        /* The order that fields and static initializers are executed (and so the order they appear in <clinit>) is the order that the members appear in the class;
+        */
+
+        // Field Declarations will be 
         // If there are instance initializations, generate code
         // for them
         for (JFieldDeclaration staticField : staticFieldInitializations) {
             staticField.codegenInitializations(output);
         }
 
+        // It is important to note that in out compiler the initializations are always handled first but it is not the case in Java
+        for(JMember member:classBlock){
+            if(member instanceof JStaticBlock){
+                JStaticBlock sBlock = (JStaticBlock) member;
+
+                sBlock.codegen(output);
+            }
+        }
+        
+
         // Return
         output.addNoArgInstruction(RETURN);
+    }
+
+    public JInitBlock getInitBlock() {
+        // The Initialization Block
+        for (JMember member : classBlock) {
+            if (member instanceof JInitBlock) {
+                JInitBlock iBlock = (JInitBlock) member;
+
+                return iBlock;
+            }
+        }
+
+        return null;
     }
 
 }

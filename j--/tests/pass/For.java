@@ -23,9 +23,9 @@ public class For {
         }
         return sum;
     }
-    public static int doubleFor(double a){
+    public static int doubleFor(int a){
         int c = 0;
-        for(double b = 0.0; b > a; b += 1.0 ){
+        for(double b = 0.0; b > (double)a; b += 1.0 ){
             c += 1;
         }
         return c;
