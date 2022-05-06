@@ -137,12 +137,11 @@ public class JInterfaceDeclaration extends JAST implements JTypeDecl, JMember {
 
 	public void codegen(CLEmitter output) {
 		// The interface header
-		String superTypesjvmNames = (superClasses.size() > 0) ? "" : null;
+		String superTypesjvmNames = (superClasses.size() > 0) ? "" : Type.OBJECT.toDescriptor();
 		for (Type type : superClasses) {
 			superTypesjvmNames = superTypesjvmNames + type.jvmName();
 		}
-		String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
-				: JAST.compilationUnit.packageName() + "/" + name;
+		String qualifiedName = JAST.compilationUnit.packageName().equals("") ? name : JAST.compilationUnit.packageName() + "/" + name;
 		output.addClass(mods, qualifiedName, superTypesjvmNames, null, false);
 
 		// The members

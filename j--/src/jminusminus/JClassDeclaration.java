@@ -179,7 +179,8 @@ class JClassDeclaration extends JAST implements JTypeDecl, JMember {
         // class
         for (JMember member : classBlock) {
             if (member instanceof JTypeDecl) {
-                throw new UnsupportedOperationException("Nested classes and interfaces not supported");
+                JAST.compilationUnit.reportSemanticError(line, "Nested classes and interfaces not supported");
+                return;
             }
 
             member.preAnalyze(this.context, partial);
