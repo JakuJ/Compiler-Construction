@@ -19,7 +19,7 @@ public class Classes {
 
     public static void main(String[] args) {
         System.out.println(Classes.message()); // Expect: "Hello, World!"
-        
+
         Car car = new Car();
         car.honk();
 
@@ -31,7 +31,7 @@ public class Classes {
 class Vehicle {
     protected String brand = "Ford";
 
-    public void honk(){
+    public void honk() {
         System.out.println("HONK!");
     }
 }
@@ -73,7 +73,12 @@ class Blocks {
     }
 
     public static void main(String[] args) {
-        Blocks b = new Blocks(6);
-        System.out.println("Main: " + Integer.toString(s) + ", " + Integer.toString(b.i));
+        Blocks b1 = new Blocks(6);
+        Blocks b2 = new Blocks(6);
+        Blocks b3 = new Blocks(6);
+        System.out.println("Main: " + Integer.toString(s)
+                + ", " + Integer.toString(b1.i) + ", "
+                + Integer.toString(b2.i)
+                + ", " + Integer.toString(b3.i));
     }
 }

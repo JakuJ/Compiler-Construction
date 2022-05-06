@@ -674,9 +674,9 @@ private ArrayList<JMember> classBody(): {
         (
             LOOKAHEAD(<STATIC> <LCURLY>)
             <STATIC>
-            aBlock = block() { members.add(new JInitializationBlock(aBlock, true)); }
+            aBlock = block() { members.add(new JStaticBlock(aBlock.line(), aBlock.statements())); }
             | (
-                aBlock = block() { members.add(new JInitializationBlock(aBlock, false)); }
+                aBlock = block() { members.add(new JInitBlock(aBlock.line(), aBlock.statements())); }
             ) |
             (
                 mods = modifiers()
