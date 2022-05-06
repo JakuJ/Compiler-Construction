@@ -44,8 +44,8 @@ class JThrowStatement extends JStatement {
     }
 
     public void codegen(CLEmitter output) {
-
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+        expression.codegen(output);
+        output.addNoArgInstruction(ATHROW);
     }
 
     /**
