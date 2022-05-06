@@ -1,6 +1,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+import static jminusminus.CLConstants.*;
 
 public class JStaticBlock extends JBlock implements JMember {
 
@@ -19,10 +20,9 @@ public class JStaticBlock extends JBlock implements JMember {
 
     @Override
     public void preAnalyze(Context context, CLEmitter partial) {
-        // TODO Auto-generated method stub
-        
+            // not used
     }
-    
+
     /**
      * Returns the list of statements comprising the block.
      * 
@@ -54,8 +54,10 @@ public class JStaticBlock extends JBlock implements JMember {
     }
 
     /**
-     * Generating code for a block consists of generating code for each of its
-     * statements.
+     * The codegen of the static blocks is done inside
+     * the codegen of the class declaration.
+     * 
+     * The code of a static block goes in the same place as a static initialization inside the secret method <clinit>.
      * 
      * @param output
      *               the code emitter (basically an abstraction for producing the
@@ -63,9 +65,47 @@ public class JStaticBlock extends JBlock implements JMember {
      */
 
     public void codegen(CLEmitter output) {
-        for (JStatement statement : statements) {
-            statement.codegen(output);
+        // This will be called inside the codegenClassInit() inside the JClassDeclaration
+
+        for (JStatement jStatement : statements) {
+            jStatement.codegen(output);
         }
+
+        // Failed Attempt
+        // String clint = JClassDeclaration.label;
+
+        // boolean needReturn = false;
+
+        // // Checks if the static method has been created
+        // if (label == null) {
+        //     if (clint == null) {
+        //         // The static method has not been created yet so it needs to make it.
+        //         ArrayList<String> mods = new ArrayList<String>();
+        //         mods.add("public");
+        //         mods.add("static");
+        //         output.addMethod(mods, "<clinit>", "()V", null, false);
+        //         updateLabel(output.createLabel());
+        //     } else {
+        //         // The static method has been created so just needs to get the label to jump to.
+        //         updateLabel(clint);
+        //     }
+
+        // } else {
+        //     output.addLabel(label);
+        // }
+        
+        // /**
+        
+        // for (JStatement statement : statements) {
+        //     statement.codegen(output);
+        // }
+
+        // // The return statement has to be made if not yet made.
+        // if (needReturn) {
+        //     // Return
+        //     output.addNoArgInstruction(RETURN);
+        // }
+
     }
 
     /**
