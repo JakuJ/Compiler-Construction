@@ -44,14 +44,16 @@ public class OperatorsTest extends TestCase {
         assertFalse(operators.logicalOr(false, false));
 
         // Prefix Operators
-        assertEquals(operators.prefixOperator(1), 0);
-        
+        assertEquals(operators.preIncrement(1), 2);
+        assertEquals(operators.preDecrement(1), 0);
+
         // Postfix Operators
-        assertEquals(operators.postfixOperator(1), 1);
+        assertEquals(operators.postIncrement(1), 2);
+        assertEquals(operators.postDecrement(1), 0);
 
         // Shift-wise Operators 
         // ----------------------------------------------------
-        assertEquals(operators.shiftLeft(5, 1), 2);
+        assertEquals(operators.shiftLeft(5, 1), 10);
         assertEquals(operators.shiftRight(5, 1), 2);
         assertEquals(operators.shiftRightUnsigned(5, 1), 2);
 

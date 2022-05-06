@@ -7,7 +7,7 @@ import java.lang.System;
 
 public class Exceptions{
 
-    public String testTryCatch() {
+    public static String testTryCatch() {
 
         StringBuilder message = new StringBuilder();
 
@@ -26,7 +26,7 @@ public class Exceptions{
         return message.toString();
     }
 
-    public void testThrows() throws NullPointerException {
+    public static void testThrows() throws NullPointerException {
         boolean test = true;
 
         if (test) {

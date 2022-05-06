@@ -1,12 +1,18 @@
 package junit;
 
 import junit.framework.TestCase;
-import pass.Exception;
+import pass.Exceptions;
+import java.lang.NullPointerException;
 
 public class ExceptionsTest extends TestCase {
 
     public void testExceptions(){
-        this.assertEquals(Exceptions.testTryCatch(), "Exception caught successfully!" + "Finally reached successfully!");
-        this.assertEquals(Exceptions.testThrows(), NullPointerException);
+        assertEquals(Exceptions.testTryCatch(), "Exception caught successfully!" + "Finally reached successfully!");
+        try {
+            Exceptions.testThrows();
+        } catch (NullPointerException ignored) {
+        } catch (Exception e) {
+            fail();
+        }
     }
 }
