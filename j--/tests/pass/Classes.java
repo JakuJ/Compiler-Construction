@@ -69,7 +69,7 @@ class Blocks {
 
     {
         System.out.println("I have been called multiple times!");
-        i =+ 20;
+        i += 20;
     }
 
     public static void main(String[] args) {

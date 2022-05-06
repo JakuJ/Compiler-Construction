@@ -840,7 +840,7 @@ public class Parser {
         mustBe(LCURLY);
         while (!see(RCURLY) && !see(EOF)) {
             if (have(SEMI)) {
-                reportParserError("Warning: Ignored lone SEMI");
+                // Random lone semi should be ignored
             } else if (seeStaticInitBlock()) {
                 have(STATIC);
                 JBlock block = block();
@@ -873,7 +873,7 @@ public class Parser {
         mustBe(LCURLY);
         while (!see(RCURLY) && !see(EOF)) {
             if (have(SEMI)) {
-                reportParserError("Warning: Ignored lone SEMI");
+                // Random lone semi should be ignored
 
             } else {
                 members.add(interfaceMemberDecl(modifiers()));

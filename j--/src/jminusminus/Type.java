@@ -448,7 +448,6 @@ class Type {
      * @param cls internal representation whose descriptor is required.
      * @return the JVM descriptor.
      */
-
     private static String descriptorFor(Class<?> cls) {
         return cls == null ? "V" : cls == void.class ? "V"
                 : cls.isArray() ? "[" + descriptorFor(cls.getComponentType())
