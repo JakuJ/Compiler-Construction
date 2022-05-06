@@ -3,6 +3,8 @@
 package jminusminus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static jminusminus.CLConstants.*;
 
@@ -136,9 +138,11 @@ class JMessageExpression extends JExpression {
         // Find appropriate Method for this message expression
         method = target.type().methodFor(messageName, argTypes);
         if (method == null) {
-            JAST.compilationUnit.reportSemanticError(line(),
-                    "Cannot find method for: "
-                            + Type.signatureFor(messageName, argTypes));
+            try {
+                JAST.compilationUnit.reportSemanticError(line(), "Cannot find method for: " + Type.signatureFor(messageName, argTypes));
+            } catch (Exception e) {
+                JAST.compilationUnit.reportSemanticError(line(), "Cannot find method for: " + messageName);
+            }
             type = Type.ANY;
         } else {
             context.definingType().checkAccess(line, (Member) method);

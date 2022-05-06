@@ -11,6 +11,14 @@ public class JCatchClause extends JAST implements JMember {
         this.body = body;
     }
 
+    public JFormalParameter getParam() {
+        return param;
+    }
+
+    public JBlock getBody() {
+        return body;
+    }
+
     @Override
     public void preAnalyze(Context context, CLEmitter partial) {
         // TODO: PREANALYZE
@@ -25,7 +33,8 @@ public class JCatchClause extends JAST implements JMember {
 
     @Override
     public void codegen(CLEmitter output) {
-        // TODO: CODEGEN
+        param.codegen(output);
+        body.codegen(output);
     }
 
     @Override

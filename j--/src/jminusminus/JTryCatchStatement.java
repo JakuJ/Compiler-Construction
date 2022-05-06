@@ -34,16 +34,40 @@ class JTryCatchStatement extends JStatement {
 
     public JTryCatchStatement analyze(Context context) {
         body_try = body_try.analyze(context);
-        body_finally = body_finally.analyze(context);
-        for (var clause : catches) {
-            clause.analyze(context);
+        if (body_finally != null) {
+            body_finally = body_finally.analyze(context);
+        }
+        if (catches != null) {
+            for (var clause : catches) {
+                clause.analyze(context);
+            }
         }
         return this;
     }
 
 
     public void codegen(CLEmitter output) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+        String startLabel = output.createLabel();
+        String endLabel = output.createLabel();
+        output.addLabel(startLabel);
+        body_try.codegen(output);
+        output.addLabel(endLabel);
+        if(catches != null){
+            for(JCatchClause catchClaues : catches){
+                Type exceptionType = catchClaues.getParam().type();
+                String handleLabel = output.createLabel();
+                output.addLabel(handleLabel);
+                output.addExceptionHandler(startLabel, endLabel, handleLabel, exceptionType.jvmName());
+                catchClaues.getBody().codegen(output);
+                if(body_finally != null){
+                    body_finally.codegen(output);
+                }
+            }
+        } else {
+            if(body_finally != null){
+                body_finally.codegen(output);
+            }
+        }
     }
 
     /**
