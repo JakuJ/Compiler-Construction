@@ -1930,7 +1930,8 @@ private JExpression shiftExpression(): {
 
             <USHIFTR>
             rhs = additiveExpression()
-            { lhs = new JShiftUOp(line, lhs, rhs); }
+            { lhs = new JUnsignedShiftRightOp(line, lhs, rhs); }
+
         )*
     }
     catch (ParseException e) {

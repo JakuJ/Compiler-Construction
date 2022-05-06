@@ -68,6 +68,11 @@ class Type {
     public final static Type BOXED_INT = typeFor(java.lang.Integer.class);
 
     /**
+     * java.lang.Double.
+     */
+    public final static Type BOXED_DOUBLE = typeFor(java.lang.Double.class);
+
+    /**
      * java.lang.Character.
      */
     public final static Type BOXED_CHAR = typeFor(java.lang.Character.class);

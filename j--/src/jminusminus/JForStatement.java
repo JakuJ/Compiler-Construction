@@ -1,6 +1,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+import static jminusminus.CLConstants.*;
 
 public class JForStatement extends JStatement {
 
@@ -38,29 +39,58 @@ public class JForStatement extends JStatement {
 
     public JForStatement analyze(Context context) {
         LocalContext lContext = new LocalContext(context);
-        if (forInit != null) {
+        if(forInit != null){
             forInit.analyze(lContext);
         }
-
+        
         // for update analyze
-        if (forUpdate != null) {
-            for (JStatement jStatement : forUpdate) {
-                jStatement.analyze(lContext);
+        if(forUpdate != null){
+            for(JStatement statement : forUpdate){
+                statement.analyze(lContext);
             }
         }
-
-        if (expression != null) {
+        if(expression != null){
             expression.analyze(lContext);
         }
-
-        if (body != null) {
+        if(body != null){
             body.analyze(lContext);
         }
         return this;
     }
 
     public void codegen(CLEmitter output) {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED");
+        String test = output.createLabel();
+        String out = output.createLabel();
+
+        if(forInit != null){
+            if(forInit.isStatementExpression){
+                for(JStatement s : forInit.statements){
+                    s.codegen(output);
+                }
+            } else {
+                for(JVariableDeclarator v : forInit.variableDeclarators){
+                    v.codegen(output);
+                }
+            }
+        }
+
+        output.addLabel(test);
+        if(expression != null){
+            expression.codegen(output, out, false);
+        }
+        
+        if(body != null){
+            body.codegen(output);
+        }
+        if(forUpdate != null){
+            for(JStatement statement : forUpdate){
+                statement.codegen(output);
+            }
+        }
+
+        output.addBranchInstruction(GOTO, test);
+
+        output.addLabel(out);
     }
 
     /**
