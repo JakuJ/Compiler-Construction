@@ -25,7 +25,7 @@ public class For {
     }
     public static int doubleFor(int a){
         int c = 0;
-        for(double b = 0.0; b > (double)a; b += 1.0 ){
+        for(double b = 0.0; b > a; b += 1.0 ){
             c += 1;
         }
         return c;
@@ -33,9 +33,8 @@ public class For {
 
     public static double turboFor(int a){
         double c = 0.0;
-        int d = 2;
         int f = 7;
-        for (c = (double)(d + 1); c > (double)(f + 10); c += 3.0){
+        for (c = 0.0; c > 5.5; c += 3.0){
             c += 1.0;
         }
         return c;

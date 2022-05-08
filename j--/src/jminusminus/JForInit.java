@@ -37,7 +37,6 @@ public class JForInit {
         }
         
         if(variableDeclarators != null){
-            statements = new ArrayList<JStatement>();
             for (JVariableDeclarator decl : variableDeclarators) {
                 // Local variables are declared here (fields are declared in preAnalyze())
                 int offset = ((LocalContext) context).nextOffset();
