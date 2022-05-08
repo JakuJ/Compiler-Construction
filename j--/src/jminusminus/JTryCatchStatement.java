@@ -2,18 +2,19 @@ package jminusminus;
 
 import java.util.ArrayList;
 
+import static jminusminus.CLConstants.*;
+
 /**
  * The AST node for a try-catch finally statement
  */
 
 class JTryCatchStatement extends JStatement {
 
-    private JBlock body_try, body_finally;
+    private JBlock body_try;
+
+    private JFinallyBlock body_finally;
 
     private ArrayList<JCatchClause> catches;
-
-    private JFormalParameter param;
-
     /**
      * Constructs an AST node for a try-catch-finally-statement given its line number,
      * the bodies for each of the parts (if present) and the parameters to the catch
@@ -28,7 +29,7 @@ class JTryCatchStatement extends JStatement {
         super(line);
         this.body_try = body_try;
         this.catches = catches;
-        this.body_finally = body_finally;
+        this.body_finally = new JFinallyBlock(body_finally);
     }
 
 
@@ -49,25 +50,39 @@ class JTryCatchStatement extends JStatement {
     public void codegen(CLEmitter output) {
         String startLabel = output.createLabel();
         String endLabel = output.createLabel();
+        String afterTryCatch = output.createLabel();
+
         output.addLabel(startLabel);
         body_try.codegen(output);
         output.addLabel(endLabel);
-        if(catches != null){
-            for(JCatchClause catchClaues : catches){
-                Type exceptionType = catchClaues.getParam().type();
+
+        if (body_finally != null) {
+            body_finally.codegen(output);
+        }
+        output.addBranchInstruction(GOTO, afterTryCatch);
+
+        if (catches != null) {
+            for (JCatchClause catchClause : catches) {
+                Type exceptionType = catchClause.getParam().type();
                 String handleLabel = output.createLabel();
                 output.addLabel(handleLabel);
                 output.addExceptionHandler(startLabel, endLabel, handleLabel, exceptionType.jvmName());
-                catchClaues.getBody().codegen(output);
-                if(body_finally != null){
+                catchClause.codegen(output);
+                if (body_finally != null) {
                     body_finally.codegen(output);
                 }
-            }
-        } else {
-            if(body_finally != null){
-                body_finally.codegen(output);
+                output.addBranchInstruction(GOTO, afterTryCatch);
             }
         }
+
+        if (body_finally != null) {
+            String handleLabel = output.createLabel();
+            output.addLabel(handleLabel);
+            output.addExceptionHandler(startLabel, endLabel, handleLabel, null);
+            body_finally.codegenUncaught(output);
+        }
+
+        output.addLabel(afterTryCatch);
     }
 
     /**

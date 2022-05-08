@@ -10,112 +10,112 @@
 "//" {~("\n"|"\r")} ("\n"|"\r"["\n"])
 
 
-// Multi-line comment -- ignored
-
+// Multi-line comment -- ignored 
+// Added in course
 
 // Reserved words
 ABSTRACT    ::= "abstract"
 BOOLEAN     ::= "boolean"
-BREAK       ::= "break"
-BYTE        ::= "byte"
-CASE        ::= "case"
-CATCH       ::= "catch"
-CHAR        ::= "char"
-CONST       ::= "const"
-CONTINUE    ::= "continue"
-DEFAULT     ::= "default"
-DO          ::= "do"
-DOUBLE      ::= "double"
-CLASS       ::= "class"
+BREAK       ::= "break" // Added in course
+BYTE        ::= "byte" // Added in course
+CASE        ::= "case" // Added in course
+CATCH       ::= "catch" // Added in course
+CHAR        ::= "char" 
+CONST       ::= "const" // Added in course
+CONTINUE    ::= "continue" // Added in course
+DEFAULT     ::= "default" // Added in course
+DO          ::= "do" // Added in course
+DOUBLE      ::= "double" // Added in course
+CLASS       ::= "class" 
 ELSE        ::= "else"
 EXTENDS     ::= "extends"
 FALSE       ::= "false"
-FINAL       ::= "final"
-FINALLY     ::= "finally"
-FLOAT       ::= "float"
-FOR    		::= "for"
-GOTO        ::= "goto"
-IMPLEMENT   ::= "implements"
-INTERFACE   ::= "interface"
-IF          ::= "if"
-IMPORT      ::= "import"
+FINAL       ::= "final" // Added in course
+FINALLY     ::= "finally" // Added in course
+FLOAT       ::= "float" // Added in course
+FOR    		::= "for" // Added in course
+GOTO        ::= "goto" // Added in course
+IMPLEMENT   ::= "implements" // Added in course
+INTERFACE   ::= "interface" // Added in course
+IF          ::= "if" 
+IMPORT      ::= "import" 
 INSTANCEOF  ::= "instanceof"
 INT         ::= "int"
-LONG        ::= "long"
-NATIVE      ::= "native"
-NEW         ::= "new"
+LONG        ::= "long" // Added in course
+NATIVE      ::= "native" // Added in course
+NEW         ::= "new" 
 NULL        ::= "null"
 PACKAGE     ::= "package"
 PRIVATE     ::= "private"
 PROTECTED   ::= "protected"
 PUBLIC      ::= "public"
 RETURN      ::= "return"
-RETURN      ::= "short"
-STRICTFP    ::= "strictfp"
-SWITCH      ::= "switch"
-SYNCHRONIZED ::= "synchronized"
-STATIC      ::= "static"
+SHORT      ::= "short" // Added in course
+STRICTFP    ::= "strictfp" // Added in course
+SWITCH      ::= "switch" // Added in course
+SYNCHRONIZED ::= "synchronized" // Added in course
+STATIC      ::= "static" 
 SUPER       ::= "super"
-THREADSAFE 	::= "threadsafe"
-THROW       ::= "throw"
-THROWS      ::= "throws"
-TRANSIENT   ::= "transient"
-TRY         ::= "try"
+THREADSAFE 	::= "threadsafe" // Added in course
+THROW       ::= "throw" // Added in course
+THROWS      ::= "throws" // Added in course
+TRANSIENT   ::= "transient" // Added in course
+TRY         ::= "try" // Added in course
 THIS        ::= "this"
 TRUE        ::= "true"
 VOID        ::= "void"
-VOLATILE	::= "volatile"
+VOLATILE	::= "volatile" // Added in course
 WHILE       ::= "while"
 
 // Operators
-TERNARY         ::= "?"
+TERNARY         ::= "?" // Added in course
 ASSIGN          ::= "="
 EQ              ::= "=="
-LNOT            ::= "!"
-TILDE           ::= "~"
-NEQ             ::= "!="
-DIV             ::= "/"
-DIV_ASSIGN      ::= "/="
-PLUS            ::= "+"
+LNOT            ::= "!" // Added in course
+TILDE           ::= "~" // Added in course
+NEQ             ::= "!=" // Added in course
+DIV             ::= "/" // Added in course
+DIV_ASSIGN      ::= "/=" // Added in course
+PLUS            ::= "+" 
 PLUS_ASSIGN     ::= "+="
 INC             ::= "++"
 MINUS           ::= "-"
-MINUS_ASSIGN    ::= "-="
-DEC             ::= "--"
-STAR            ::= "*"
-STAR_ASSIGN     ::= "*="
-MOD             ::= "%"
-MOD_ASSIGN      ::= "%="
-SHIFTR          ::= ">>"
-SHIFTR_ASSIGN   ::= ">>="
-USHIFTR         ::= ">>>"
-USHIFTR_ASSIGN  ::= ">>>="
-GE              ::= ">="
-GT              ::= ">"
-SHIFTL          ::= "<<"
-SHIFTL_ASSIGN   ::= "<<="
-LE              ::= "<="
-LT              ::= "<"
-XOR             ::= "^"
-XOR_ASSIGN      ::= "^="
-BIT_OR          ::= "|"
-BIT_OR_ASSIGN   ::= "|="
-LOR             ::= "||"
-BIT_AND         ::= "&"
-BIT_AND_ASSIGN  ::= "&="
-LAND            ::= "&&"
+MINUS_ASSIGN    ::= "-=" // Added in course
+DEC             ::= "--" // Added in course
+STAR            ::= "*" 
+STAR_ASSIGN     ::= "*=" // Added in course
+MOD             ::= "%" // Added in course
+MOD_ASSIGN      ::= "%=" // Added in course
+SHIFTR          ::= ">>" // Added in course
+SHIFTR_ASSIGN   ::= ">>=" // Added in course
+USHIFTR         ::= ">>>" // Added in course
+USHIFTR_ASSIGN  ::= ">>>=" // Added in course
+GE              ::= ">=" // Added in course
+GT              ::= ">" 
+SHIFTL          ::= "<<" // Added in course
+SHIFTL_ASSIGN   ::= "<<=" // Added in course
+LE              ::= "<=" 
+LT              ::= "<" // Added in course
+XOR             ::= "^" // Added in course
+XOR_ASSIGN      ::= "^=" // Added in course
+BIT_OR          ::= "|" // Added in course
+BIT_OR_ASSIGN   ::= "|=" // Added in course
+LOR             ::= "||" // Added in course
+BIT_AND         ::= "&" // Added in course
+BIT_AND_ASSIGN  ::= "&=" // Added in course
+LAND            ::= "&&" // Added in course
 
 // Separators
-COMMA       ::= ","
-DOT         ::= "."
-LBRACK      ::= "["
-LCURLY      ::= "{"
-LPAREN      ::= "("
-RBRACK      ::= "]"
-RCURLY      ::= "}"
-RPAREN      ::= ")"
-SEMI        ::= ";"
-COLON       ::= ":"
+COMMA       ::= "," // Added in course
+DOT         ::= "." // Added in course
+LBRACK      ::= "[" // Added in course
+LCURLY      ::= "{" // Added in course
+LPAREN      ::= "(" // Added in course
+RBRACK      ::= "]" // Added in course
+RCURLY      ::= "}" // Added in course
+RPAREN      ::= ")" // Added in course
+SEMI        ::= ";" // Added in course
+COLON       ::= ":" // Added in course
 
 // Identifiers
 IDENTIFIER ::= ("a"-"z"|"A"-"Z"|"_"|"$") {"a"-"z"|"A"-"Z"|"_"|"0"-"9"|"$"}
@@ -125,7 +125,7 @@ INT_LITERAL    ::= "0" | ("1"-"9") {"0"-"9"} // Decimal
 					| "0" ("x" | "X") (("0"-"9") | ("a"-"f") | ("A"-"F")) {("0"-"9") | ("a"-"f") | ("A"-"F")} // Hexadecimal
 					| "0" ("0" - "7") {"0" - "7"} // Octal
 					| "0" ("b" | "B") ("0" - "1") {"0" - "1"} // Binary
-LONG_LITERAL   ::= INT_LITERAL ("l" | "L")
+LONG_LITERAL   ::= INT_LITERAL ("l" | "L") 
 DOUBLE_LITERAL ::= {"0"-"9"} [ ["."] {"0"-"9"} [("e" | "E") ["+" | "-"] ("0"-"9") {"0"-"9"} ]] ["d" | "D"] 
 FLOAT_LITERAL  ::= ("0"-"9") {"0"-"9"}  "." {"0"-"9"} [("e" | "E") ["+" | "-"] ("0"-"9") {"0"-"9"} ] ["f" | "F"]
 					| "." {"0"-"9"} [("e" | "E") ["+" | "-"] ("0"-"9") {"0"-"9"} ] ["f" | "F"]

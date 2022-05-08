@@ -3,6 +3,7 @@ package pass;
 import java.lang.StringBuilder;
 import java.lang.NullPointerException;
 import java.lang.Exception;
+import java.lang.IndexOutOfBoundsException;
 import java.lang.System;
 
 public class Exceptions{
@@ -13,13 +14,14 @@ public class Exceptions{
 
         try {
             char[] letters = { 'a', 'b', 'c' };
-
             System.out.println(letters[5]); // ArrayIndexOutOfBoundsException
 
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
+            double pi = 3.14;
             message.append("Exception caught successfully!");
-
+            message.append(e.getMessage());
         } finally {
+            double pi = 3.14;
             message.append("Finally reached successfully!");
         }
 
@@ -35,11 +37,11 @@ public class Exceptions{
     }
 }
 
-public interface testInterface {
+interface testInterface {
     public void interfaceMethod() throws Exception;
 }
 
-public class testClass implements testInterface {
+class testClass implements testInterface {
     int[] list;
 
     public testClass(int[] list) throws NullPointerException {

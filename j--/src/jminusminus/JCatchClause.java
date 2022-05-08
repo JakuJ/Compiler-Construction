@@ -1,9 +1,12 @@
 package jminusminus;
 
+import static jminusminus.CLConstants.ASTORE;
+
 public class JCatchClause extends JAST implements JMember {
 
     private JFormalParameter param;
     private JBlock body;
+    private LocalVariableDefn exception;
 
     public JCatchClause(int line, JFormalParameter param, JBlock body) {
         super(line);
@@ -31,11 +34,10 @@ public class JCatchClause extends JAST implements JMember {
         // Declare the parameter inside the catch block
         var c = new LocalContext(context);
 
-        var defn = new LocalVariableDefn(param.type(), c.nextOffset());
-        defn.initialize();
+        exception = new LocalVariableDefn(param.type(), c.nextOffset());
+        exception.initialize();
 
-        c.addEntry(param.line(), param.name(), defn);
-
+        c.addEntry(param.line(), param.name(), exception);
         body.analyze(c);
         return this;
     }
@@ -43,6 +45,7 @@ public class JCatchClause extends JAST implements JMember {
     @Override
     public void codegen(CLEmitter output) {
         param.codegen(output);
+        output.addOneArgInstruction(ASTORE, exception.offset());
         body.codegen(output);
     }
 

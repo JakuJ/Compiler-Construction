@@ -1203,8 +1203,7 @@ public class CLEmitter {
         if (catchType != null && !validInternalForm(catchType)) {
             reportEmitterError("'%s' is not in internal form", catchType);
         }
-        CLException e = new CLException(startLabel, endLabel, handlerLabel,
-                catchType);
+        CLException e = new CLException(startLabel, endLabel, handlerLabel, catchType);
         mExceptionHandlers.add(e);
     }
 
