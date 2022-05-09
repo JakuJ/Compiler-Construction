@@ -23,7 +23,7 @@ public class For {
         }
         return sum;
     }
-    public static int doubleFor(int a){
+    public static int doubleFor(double a){
         int c = 0;
         for(double b = 0.0; b > a; b += 1.0 ){
             c += 1;
@@ -33,10 +33,8 @@ public class For {
 
     public static double turboFor(int a){
         double c = 0.0;
-        int f = 7;
-        for (c = 0.0; c > 5.5; c += 3.0){
-            c += 1.0;
-        }
+        int b = 0;
+        double d = 0.0;
         return c;
     }
 
@@ -49,5 +47,10 @@ public class For {
             }
         }
 
+    }
+
+    public static double doublefunc(double a){
+        double b = 0.0;
+        int c = 0;
     }
 }
