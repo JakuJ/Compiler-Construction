@@ -37,11 +37,11 @@ public class JForInit {
         }
         
         if(variableDeclarators != null){
-            statements = new ArrayList<JStatement>();
             for (JVariableDeclarator decl : variableDeclarators) {
                 // Local variables are declared here (fields are declared in preAnalyze())
-                int offset = ((LocalContext) context).nextOffset();
-                var defn = new LocalVariableDefn(decl.type().resolve(context), offset);
+                var typ = decl.type().resolve(context);
+                int offset = ((LocalContext) context).nextOffset(typ);
+                var defn = new LocalVariableDefn(typ, offset);
     
                 // First, check for shadowing
                 IDefn previousDefn = context.lookup(decl.name());

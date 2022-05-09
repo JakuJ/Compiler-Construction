@@ -34,7 +34,7 @@ public class JCatchClause extends JAST implements JMember {
         // Declare the parameter inside the catch block
         var c = new LocalContext(context);
 
-        exception = new LocalVariableDefn(param.type(), c.nextOffset());
+        exception = new LocalVariableDefn(param.type(), c.nextOffset(param.type()));
         exception.initialize();
 
         c.addEntry(param.line(), param.name(), exception);

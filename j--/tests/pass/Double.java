@@ -17,4 +17,13 @@ public class Double {
         return a + b - c / d + arg1 - arg2 + e;
     }
 
+    public static double doubleVariableAllocation(double a){
+        double b = 0.0;
+        int e1 = 0;
+        double c = 0.0;
+        int e2 = 0;
+        double d = 0.0;
+        int e3 = 0;
+        return a + b + c + d;
+    }
 }

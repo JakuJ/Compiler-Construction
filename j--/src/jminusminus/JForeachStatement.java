@@ -41,14 +41,13 @@ public class JForeachStatement extends JStatement {
         // All initializations must be turned into assignment statements and analyzed
         ArrayList<JStatement> statements = new ArrayList<JStatement>();
 
-        if(expression.type().isArray()){
-
+        if (expression.type().isArray()) {
             // Create T[] a ’ = Expression ; iterable
             String arrayName = createUniqueName(parameter.name(), context);
             JVariableDeclarator arrayDecl = new JVariableDeclarator(line(), arrayName, expression.type(), expression);
-            ArrayList<JVariableDeclarator> decls = new ArrayList<JVariableDeclarator>();
+            ArrayList<JVariableDeclarator> decls = new ArrayList<>();
             decls.add(arrayDecl);
-            JVariableDeclaration arrayDeclaration = new JVariableDeclaration(line(), new ArrayList<String>(), decls);
+            JVariableDeclaration arrayDeclaration = new JVariableDeclaration(line(), new ArrayList<>(), decls);
             statements.add(arrayDeclaration);
 
             //Create int i ’ = 0; the iterator
@@ -81,7 +80,7 @@ public class JForeachStatement extends JStatement {
 
             // Create the for loop
             JForStatement forLoop = new JForStatement(line(), initStmt, condition, update, bodyBlock);
-            
+
             // Add the loop to statements
             statements.add(forLoop);
         } else {
@@ -109,12 +108,11 @@ public class JForeachStatement extends JStatement {
 
             // Create the for loop
             JForStatement forLoop = new JForStatement(line(), initStmt, condition, null, bodyBlock);
-            
+
             // Add the loop to statements
             statements.add(forLoop);
-
         }
-        
+
         //Create a block to hold all the statements
         JBlock forBlock = new JBlock(line(), statements);
         //Analyze the block
@@ -125,7 +123,7 @@ public class JForeachStatement extends JStatement {
 
     private String createUniqueName(String name, Context context) {
         String uniqueName = "$" + name;
-        while(context.lookup(uniqueName) != null) {
+        while (context.lookup(uniqueName) != null) {
             uniqueName += "_";
         }
         return uniqueName;
