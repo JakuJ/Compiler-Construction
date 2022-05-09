@@ -359,11 +359,8 @@ class LocalContext extends Context {
      */
 
     public LocalContext(Context surrounding) {
-        super(surrounding, surrounding.classContext(), surrounding
-                .compilationUnitContext());
-        offset = (surrounding instanceof LocalContext) ? ((LocalContext) surrounding)
-                .offset()
-                : 0;
+        super(surrounding, surrounding.classContext(), surrounding.compilationUnitContext());
+        offset = (surrounding instanceof LocalContext) ? ((LocalContext) surrounding).offset() : 0;
     }
 
     /**
@@ -383,7 +380,12 @@ class LocalContext extends Context {
      * @return the next allocated offset.
      */
 
-    public int nextOffset() {
+    public int nextOffset(Type type) {
+        if (type == Type.DOUBLE) {
+            var ret = offset++;
+            offset++;
+            return ret;
+        }
         return offset++;
     }
 

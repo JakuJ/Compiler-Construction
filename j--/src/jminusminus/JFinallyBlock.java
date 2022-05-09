@@ -26,7 +26,8 @@ public class JFinallyBlock extends JAST implements JMember {
         // Declare the parameter inside the catch block
         var c = new LocalContext(context);
 
-        exception = new LocalVariableDefn(Type.typeFor(Exception.class), c.nextOffset());
+        var exType = Type.typeFor(Exception.class);
+        exception = new LocalVariableDefn(exType, c.nextOffset(exType));
         exception.initialize();
 
         c.addEntry(body.line(), "finally_exception", exception);
