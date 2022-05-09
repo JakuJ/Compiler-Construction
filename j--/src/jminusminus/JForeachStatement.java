@@ -60,7 +60,7 @@ public class JForeachStatement extends JStatement {
             // Create i ’ < a ’. length ; the condition
             JExpression lhs = new JVariable(line(), iteratorName);
             JExpression rhs = new JFieldSelection(line(), new JVariable(line(), arrayName), "length");
-            JExpression condition = new JLessThanOp(line(), rhs, lhs);
+            JExpression condition = new JLessThanOp(line(), lhs, rhs);
 
             // Create i ’ = i ’ + 1; the update
             JPostIncrementOp incrementOp = new JPostIncrementOp(line(), lhs);
