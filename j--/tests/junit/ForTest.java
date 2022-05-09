@@ -19,5 +19,6 @@ public class ForTest extends TestCase{
         assertEquals(10, For.doubleFor(2));
         assertEquals(6, For.emptyFor(5));
         assertEquals(6, For.enhancedFor(a));
+        assertEquals(19.0, For.turboFor(5));
     }
 }
