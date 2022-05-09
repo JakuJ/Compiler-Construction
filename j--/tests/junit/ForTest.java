@@ -13,12 +13,11 @@ public class ForTest extends TestCase{
     }
 
     public void testFor() {
-        assertEquals(For.normalFor(5), 5);
-        assertEquals(For.noTypeFor(5), 5);
+        assertEquals(5, For.normalFor(5));
+        assertEquals(5, For.noTypeFor(5));
         int[] a = {1,2,3};
-        assertEquals(For.enhancedFor(a), 6);
-        assertEquals(For.doubleFor(2), 2);
-        assertEquals(For.turboFor(5), 19);
-        assertEquals(For.emptyFor(5), 6);
+        assertEquals(10, For.doubleFor(2));
+        assertEquals(6, For.emptyFor(5));
+        assertEquals(6, For.enhancedFor(a));
     }
 }

@@ -80,7 +80,7 @@ class JGreaterThanOp extends JComparison {
         if (lhs.type() == Type.INT) {
             output.addBranchInstruction(onTrue ? IF_ICMPGT : IF_ICMPLE, targetLabel);
         } else {
-            output.addNoArgInstruction(DCMPG);
+            output.addNoArgInstruction(DCMPL);
             output.addBranchInstruction(onTrue ? IFGT : IFLE, targetLabel);
         }
     }
@@ -122,8 +122,8 @@ class JLessThanOp extends JComparison {
         if (lhs.type() == Type.INT) {
             output.addBranchInstruction(onTrue ? IF_ICMPLT : IF_ICMPGE, targetLabel);
         } else {
-            output.addNoArgInstruction(DCMPL);
-            output.addBranchInstruction(onTrue ? IFGT : IFLE, targetLabel);
+            output.addNoArgInstruction(DCMPG);
+            output.addBranchInstruction(onTrue ? IFLT : IFGE, targetLabel);
         }
     }
 
@@ -211,7 +211,7 @@ class JGreaterEqualOp extends JComparison {
             output.addBranchInstruction(onTrue ? IF_ICMPGE : IF_ICMPLT, targetLabel);
         } else {
             output.addNoArgInstruction(DCMPL);
-            output.addBranchInstruction(onTrue ? IFLE : IFGT, targetLabel);
+            output.addBranchInstruction(onTrue ? IFGE : IFLT, targetLabel);
         }
     }
 

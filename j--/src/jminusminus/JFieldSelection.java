@@ -159,8 +159,7 @@ class JFieldSelection extends JExpression implements JLhs {
             output.addNoArgInstruction(ARRAYLENGTH);
         } else {
             int mnemonic = field.isStatic() ? GETSTATIC : GETFIELD;
-            output.addMemberAccessInstruction(mnemonic,
-                    target.type().jvmName(), fieldName, type.toDescriptor());
+            output.addMemberAccessInstruction(mnemonic, target.type().jvmName(), fieldName, type.toDescriptor());
         }
     }
 

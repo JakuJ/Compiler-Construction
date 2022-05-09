@@ -45,9 +45,9 @@ public class JForeachStatement extends JStatement {
             // Create T[] a ’ = Expression ; iterable
             String arrayName = createUniqueName(parameter.name(), context);
             JVariableDeclarator arrayDecl = new JVariableDeclarator(line(), arrayName, expression.type(), expression);
-            ArrayList<JVariableDeclarator> decls = new ArrayList<JVariableDeclarator>();
+            ArrayList<JVariableDeclarator> decls = new ArrayList<>();
             decls.add(arrayDecl);
-            JVariableDeclaration arrayDeclaration = new JVariableDeclaration(line(), new ArrayList<String>(), decls);
+            JVariableDeclaration arrayDeclaration = new JVariableDeclaration(line(), new ArrayList<>(), decls);
             statements.add(arrayDeclaration);
 
             //Create int i ’ = 0; the iterator
