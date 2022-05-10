@@ -382,9 +382,8 @@ class LocalContext extends Context {
 
     public int nextOffset(Type type) {
         if (type == Type.DOUBLE) {
-            var ret = offset++;
-            offset++;
-            return ret;
+            offset += 2;
+            return offset - 2;
         }
         return offset++;
     }

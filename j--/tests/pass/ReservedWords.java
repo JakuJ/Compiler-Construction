@@ -43,19 +43,6 @@ public abstract class ReservedWords extends Object implements someInterface {
         } while (counter != 10);
     }
 
-    public void typePrinter(String type) {
-        // TODO: SUPPORT SWITCH STATEMENTS
-        // switch (type) {
-        //    case "boolean":
-        //        System.out.println(this.booleanField);
-        //        break;
-        //    case "byte":
-        //        System.out.println(this.byteField);
-        //    default:
-        //        System.out.println("Type does not exist");
-        // }
-    }
-
     public void listPrinter() throws RuntimeException {
         String[] list = {};
         for (String i : list) {
@@ -75,9 +62,6 @@ public abstract class ReservedWords extends Object implements someInterface {
         System.out.println("I'm synchronized");
         ;
     }
-
-//    public native void nativeMethod();
-
 
 }
 

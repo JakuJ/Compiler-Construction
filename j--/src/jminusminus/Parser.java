@@ -2135,8 +2135,7 @@ public class Parser {
                 String name = scanner.previousToken().image();
                 JExpression newTarget = new JSuper(line);
                 if (see(LPAREN)) {
-                    return new JMessageExpression(line, newTarget, null, name,
-                            arguments());
+                    return new JMessageExpression(line, newTarget, null, name, arguments());
                 } else {
                     return new JFieldSelection(line, newTarget, name);
                 }

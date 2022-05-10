@@ -135,13 +135,13 @@ PARSER_END(JavaCCParser)
 //         The j-- lexical grammar starts here         //
 /////////////////////////////////////////////////////////
 
-// Whitespace -- ignored
+// Whitespace
 SKIP: {" "|"\t"|"\n"|"\r"|"\f"}
 
-// Single line comment -- ignored
+// Single-line comments
 SKIP: {<SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>}
 
-// Single multiline comment -- ignored
+// Multi-line comments
 SKIP: {<MULTI_LINE_COMMENT: "/*"> : ML_COMMENT_STATE }
 <ML_COMMENT_STATE> SKIP : { "*/" : DEFAULT | < ~[] > }
 
@@ -2209,6 +2209,7 @@ private JExpression selector(JExpression target): {
 private JExpression primary(): {
     int line = 0;
     JExpression expr = null;
+    String ident = "";
     JExpression newTarget = null;
     ArrayList<JExpression> args = null;
     TypeName id = null;
@@ -2226,19 +2227,18 @@ private JExpression primary(): {
         <SUPER> { line = token.beginLine; }
         (
             args = arguments()
-            { expr = new JSuperConstruction(line, args); } |
-            
+            { expr = new JSuperConstruction(line, args); }
+            |
             <DOT> <IDENTIFIER>
-            {
-                newTarget = new JSuper(line);
-                expr = new JFieldSelection(line, newTarget,
-                                           token.image );
-            }
-            [
+            { newTarget = new JSuper(line); ident = token.image; }
+            (
+                LOOKAHEAD (<LPAREN>)
                 args = arguments()
-                { expr = new JMessageExpression(line, newTarget,
-                                                null, token.image, args); }
-            ]
+                { expr = new JMessageExpression(line, newTarget, null, ident, args); }
+
+            |
+                { expr = new JFieldSelection(line, newTarget, ident); }
+            )
         ) |
         expr = literal() |
 

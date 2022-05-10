@@ -51,8 +51,7 @@ class JFieldSelection extends JExpression implements JLhs {
      *            the field name.
      */
 
-    public JFieldSelection(int line, AmbiguousName ambiguousPart,
-            JExpression target, String fieldName) {
+    public JFieldSelection(int line, AmbiguousName ambiguousPart, JExpression target, String fieldName) {
         super(line);
         this.ambiguousPart = ambiguousPart;
         this.target = target;
@@ -79,8 +78,7 @@ class JFieldSelection extends JExpression implements JLhs {
                     target = expr;
                 else {
                     // Can't even happen syntactically
-                    JAST.compilationUnit.reportSemanticError(line(),
-                            "Badly formed suffix");
+                    JAST.compilationUnit.reportSemanticError(line(), "Badly formed suffix");
                 }
             }
         }
@@ -94,19 +92,16 @@ class JFieldSelection extends JExpression implements JLhs {
             // Other than that, targetType has to be a
             // ReferenceType
             if (targetType.isPrimitive()) {
-                JAST.compilationUnit.reportSemanticError(line(),
-                        "Target of a field selection must "
-                                + "be a defined type");
+                JAST.compilationUnit.reportSemanticError(line(), "Target of a field selection must " + "be a defined type");
                 type = Type.ANY;
                 return this;
             }
             field = targetType.fieldFor(fieldName);
             if (field == null) {
-                JAST.compilationUnit.reportSemanticError(line(),
-                        "Cannot find a field: " + fieldName);
+                JAST.compilationUnit.reportSemanticError(line(), "Cannot find a field: " + fieldName);
                 type = Type.ANY;
             } else {
-                context.definingType().checkAccess(line, (Member) field);
+                context.definingType().checkAccess(line, field);
                 type = field.type();
 
                 // Non-static field cannot be referenced from a static context.
@@ -271,8 +266,7 @@ class JFieldSelection extends JExpression implements JLhs {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
-        p.printf("<JFieldSelection line=\"%d\" name=\"%s\"/>\n", line(),
-                fieldName);
+        p.printf("<JFieldSelection line=\"%d\" name=\"%s\"/>\n", line(), fieldName);
         p.indentRight();
         if (target != null) {
             p.println("<Target>");
